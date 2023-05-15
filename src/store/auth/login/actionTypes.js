@@ -1,0 +1,6 @@
+export const LOGIN_USER = "LOGIN_USER"
+export const LOGIN_SUCCESS = "LOGIN_SUCCESS"
+
+export const LOGOUT_USER = "LOGOUT_SUCCESS"
+export const LOGOUT_USER_SUCCESS = "LOGOUT_USER_SUCCESS"
+export const API_ERROR = "API_ERROR"
