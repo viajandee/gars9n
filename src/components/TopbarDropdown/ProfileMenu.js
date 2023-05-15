@@ -50,6 +50,11 @@ const ProfileMenu = props => {
           <i className='mdi mdi-chevron-down d-none d-xl-inline-block' />
         </DropdownToggle>
         <DropdownMenu className='dropdown-menu-end'>
+          <Link to='/profile' className='dropdown-item'>
+            <i className='bx bx-user font-size-16 align-middle me-1' />
+            <span>{props.t("Profile")}</span>
+          </Link>
+          <div className="dropdown-divider" />
           <Link to='/logout' className='dropdown-item'>
             <i className='bx bx-power-off font-size-16 align-middle me-1 text-danger' />
             <span>{props.t("Logout")}</span>
