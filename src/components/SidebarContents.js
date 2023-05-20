@@ -91,11 +91,13 @@ const SidebarContent = props => {
           <ul className='metismenu list-unstyled' id='side-menu'>
             <li className="menu-title">{props.t("Menu")} </li>
             <li>
-              <Link to='/'>
-                <i className="bx bx-home-circle"></i>
+              <Link to='/#'>
+                <i className="bx bx-home"></i>
                 <span>{props.t("Dashboard")}</span>
               </Link>
+            </li>
             <li className="menu-title">{props.t("Manage")} </li>
+            <li>
               <Link to='/clients'>
                 <i className="bx bx-user-circle"></i>
                 <span>{props.t("Clients")}</span>
@@ -108,16 +110,31 @@ const SidebarContent = props => {
                 <i className="bx bx-food-menu"></i>
                 <span>{props.t("Menus")}</span>
               </Link>
-              <Link to='/payments'>
-                <i className="bx bx-credit-card"></i>
-                <span>{props.t("Payments")}</span>
+            </li>
+            <li className="menu-title">{props.t("Utilities")} </li>
+            <li>
+              <Link to='/email'>
+                <i className="bx bx-envelope"></i>
+                <span>{props.t("Email")}</span>
+              </Link>
+              <Link to='/generator'>
+                <i className="bx bx-area"></i>
+                <span>{props.t("QR Code Generator")}</span>
+              </Link>
+              <Link to='/reports'>
+                <i className="bx bx-line-chart"></i>
+                <span>{props.t("Reports")}</span>
               </Link>
             </li>
             <li className="menu-title">{props.t("Settings")} </li>
             <li>
               <Link to='/permissions'>
                 <i className="bx bx-key"></i>
-                <span>{props.t("Permissions")}</span>
+                <span>{props.t("Users & Access")}</span>
+              </Link>
+              <Link to='/preferences'>
+                <i className="bx bx-cog"></i>
+                <span>{props.t("Preferences")}</span>
               </Link>
             </li>
           </ul>

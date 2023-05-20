@@ -1,9 +1,7 @@
-import PropTypes from 'prop-types';
 import { Container } from 'reactstrap';
 
 import Breadcrumb from '../../components/Breadcrumb'
 import CardUser from './card-user';
-import Pages404 from 'pages/Utility/pages-404';
 
 const Dashboard = props => {
 

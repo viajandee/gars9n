@@ -10,7 +10,7 @@ import {
   DropdownItem
  } from "reactstrap";
 
- import avatar1 from '../../assets/images/users/avatar-6.jpg'
+import avatar1 from '../../assets/images/users/avatar-6.jpg'
 
 function CardUser(props) {
   const [settingsMenu, setSettingsMenu] = useState(false)

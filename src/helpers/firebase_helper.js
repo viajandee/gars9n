@@ -22,6 +22,25 @@ class FirebaseAuthBackend {
   /**
    * Registers the user with given details
    */
+  registerAdmin = (email, password) => {
+    return new Promise((resolve, reject) => {
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then(
+          user => {
+            resolve(firebase.auth().currentUser);
+          },
+          error => {
+            reject(this._handleError(error));
+          }
+        );
+    });
+  };
+
+  /**
+ * Registers the user with given details
+ */
   // registerUser = (email, password) => {
   //   return new Promise((resolve, reject) => {
   //     firebase
