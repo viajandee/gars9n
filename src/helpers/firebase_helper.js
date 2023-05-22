@@ -38,6 +38,30 @@ class FirebaseAuthBackend {
     });
   };
 
+  // add a function to add the details from registerAdmin to firestore
+  addNewAdminToFirestore = (admin) => {
+    const collection = firebase.firestore().collection("admins");
+    const details = {
+      firstName: admin.firstName,
+      lastName: admin.lastName,
+      title: admin.title,
+      email: admin.email,
+      phone: admin.phone,
+      password: admin.password,
+      createdDtm: firebase.firestore.FieldValue.serverTimestamp(),
+    };
+    return new Promise((resolve, reject) => {
+      collection
+        .add(details)
+        .then(docRef => {
+          resolve(docRef);
+        })
+        .catch(error => {
+          reject(this._handleError(error));
+        });
+    });
+  }
+
   /**
  * Registers the user with given details
  */
@@ -132,45 +156,19 @@ class FirebaseAuthBackend {
     });
   };
 
-  /**
-   * Social Login user with given details
-   */
-  // socialLoginUser = (data, type) => {
-  //   let credential = {};
-  //   if (type === "google") {
-  //     credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.token);
-  //   } else if (type === "facebook") {
-  //     credential = firebase.auth.FacebookAuthProvider.credential(data.token);
-  //   }
-  //   return new Promise((resolve, reject) => {
-  //     if (!!credential) {
-  //       firebase.auth().signInWithCredential(credential)
-  //         .then(user => {
-  //           resolve(this.addNewUserToFirestore(user));
-  //         })
-  //         .catch(error => {
-  //           reject(this._handleError(error));
-  //         });
-  //     } else {
-  //       reject(this._handleError(error));
-  //     }
-  //   });
-  // };
-
   // addNewUserToFirestore = (user) => {
   //   const collection = firebase.firestore().collection("users");
-  //   const { profile } = user.additionalUserInfo;
   //   const details = {
-  //     firstName: profile.given_name ? profile.given_name : profile.first_name,
-  //     lastName: profile.family_name ? profile.family_name : profile.last_name,
-  //     fullName: profile.name,
-  //     email: profile.email,
-  //     picture: profile.picture,
+  //     firstName: userDetails.first_name,
+  //     lastName: userDetails.last_name,
+  //     title: userDetails.title,
+  //     email: userDetails.email,
+  //     phone: userDetails.phone,
+  //     password: userDetails.password,
   //     createdDtm: firebase.firestore.FieldValue.serverTimestamp(),
   //     lastLoginTime: firebase.firestore.FieldValue.serverTimestamp()
   //   };
-  //   collection.doc(firebase.auth().currentUser.uid).set(details);
-  //   return { user, details };
+  //   collection.doc(user.uid).set(details);
   // };
 
   setLoggeedInUser = user => {

@@ -128,10 +128,15 @@ const SidebarContent = props => {
             </li>
             <li className="menu-title">{props.t("Settings")} </li>
             <li>
-              <Link to='/permissions'>
+              <Link to='/#' className='has-arrow'>
                 <i className="bx bx-key"></i>
                 <span>{props.t("Users & Access")}</span>
               </Link>
+              <ul className='sub-menu'>
+                <li>
+                  <Link to="/add-admin">{props.t("Add Admin")}</Link>
+                </li>
+              </ul>
               <Link to='/preferences'>
                 <i className="bx bx-cog"></i>
                 <span>{props.t("Preferences")}</span>
