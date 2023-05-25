@@ -2,7 +2,6 @@ import {
   REGISTER_ADMIN,
   REGISTER_ADMIN_SUCCESSFUL,
   REGISTER_ADMIN_FAILED,
-  ADD_DETAILS_TO_FIRESTORE
 } from "./actionTypes";
 
 const initialState = {
@@ -35,12 +34,6 @@ const account = (state = initialState, action) => {
         admin: null,
         loading: false,
         registrationError: action.payload,
-      }
-      break
-    case ADD_DETAILS_TO_FIRESTORE:
-      state = {
-        ...state,
-        admin: action.payload,
       }
       break
     default:

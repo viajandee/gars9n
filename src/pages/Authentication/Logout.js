@@ -12,7 +12,7 @@ const Logout = props => {
 
   useEffect(() => {
     dispatch(logoutUser(props.history))
-  }, [dispatch])
+  }, [dispatch, props.history])
 
   return <></>
 }

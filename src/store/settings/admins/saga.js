@@ -18,6 +18,7 @@ function* registerAdmin({ payload: { admin } }) {
       admin.firstName,
       admin.lastName,
       admin.title,
+      admin.company,
       admin.phone
     )
     yield put(registerAdminSuccessful(response))

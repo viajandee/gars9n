@@ -4,6 +4,33 @@ import firebase from 'firebase/compat/app'
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 
+const onAuthStateChanged = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
+      if (user) {
+        const userRef = firebase.firestore().collection('users').doc(user.uid);
+        const userDoc = await userRef.get();
+        const userData = userDoc.data();
+        const authUser = {
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+          emailVerified: user.emailVerified,
+          phoneNumber: user.phoneNumber,
+          ...userData
+        };
+        localStorage.setItem('authUser', JSON.stringify(authUser));
+        resolve(authUser);
+      } else {
+        localStorage.removeItem('authUser');
+        resolve(null);
+      }
+    });
+    return () => unsubscribe();
+  });
+};
+
 class FirebaseAuthBackend {
   constructor(firebaseConfig) {
     if (firebaseConfig) {
@@ -22,45 +49,74 @@ class FirebaseAuthBackend {
   /**
    * Registers the user with given details
    */
-  registerAdmin = (email, password) => {
-    return new Promise((resolve, reject) => {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(email, password)
-        .then(
-          user => {
-            resolve(firebase.auth().currentUser);
-          },
-          error => {
-            reject(this._handleError(error));
-          }
-        );
-    });
-  };
+  // registerAdmin = (email, password) => {
+  //   return new Promise((resolve, reject) => {
+  //     firebase
+  //       .auth()
+  //       .createUserWithEmailAndPassword(email, password)
+  //       .then(
+  //         user => {
+  //           const userRef = firebase.firestore().collection("admins").doc(user.uid);
+  //           userRef.set({
+  //             email: user.email,
+  //             isAdmin: true
+  //           }).then(() => {
+  //             resolve(firebase.auth().currentUser);
+  //           }).catch(error => {
+  //             reject(this._handleError(error));
+  //           });
+  //         },
+  //         error => {
+  //           reject(this._handleError(error));
+  //         }
+  //       );
+  //   });
+  // };
+
+  //working code
+  registerAdmin = async (email, password, firstName, lastName, title, company, phone) => {
+    try {
+      const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+      const user = userCredential.user;
+      const adminRef = firebase.firestore().collection('users').doc(user.uid);
+      await adminRef.set({
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        title: title,
+        company: company,
+        phone: phone,
+        isAdmin: true
+      });
+      return { user: user, admin: { email, firstName, lastName, title, company, phone } };
+    } catch (error) {
+      throw error;
+    }
+  }
 
   // add a function to add the details from registerAdmin to firestore
-  addNewAdminToFirestore = (admin) => {
-    const collection = firebase.firestore().collection("admins");
-    const details = {
-      firstName: admin.firstName,
-      lastName: admin.lastName,
-      title: admin.title,
-      email: admin.email,
-      phone: admin.phone,
-      password: admin.password,
-      createdDtm: firebase.firestore.FieldValue.serverTimestamp(),
-    };
-    return new Promise((resolve, reject) => {
-      collection
-        .add(details)
-        .then(docRef => {
-          resolve(docRef);
-        })
-        .catch(error => {
-          reject(this._handleError(error));
-        });
-    });
-  }
+  // addNewAdminToFirestore = (admin) => {
+  //   const collection = firebase.firestore().collection("admins");
+  //   const details = {
+  //     firstName: admin.firstName,
+  //     lastName: admin.lastName,
+  //     title: admin.title,
+  //     email: admin.email,
+  //     phone: admin.phone,
+  //     password: admin.password,
+  //     createdDtm: firebase.firestore.FieldValue.serverTimestamp(),
+  //   };
+  //   return new Promise((resolve, reject) => {
+  //     collection
+  //       .add(details)
+  //       .then(docRef => {
+  //         resolve(docRef);
+  //       })
+  //       .catch(error => {
+  //         reject(this._handleError(error));
+  //       });
+  //   });
+  // }
 
   /**
  * Registers the user with given details
@@ -171,17 +227,17 @@ class FirebaseAuthBackend {
   //   collection.doc(user.uid).set(details);
   // };
 
-  setLoggeedInUser = user => {
-    localStorage.setItem("authUser", JSON.stringify(user));
-  };
+  // setLoggeedInUser = user => {
+  //   localStorage.setItem("authUser", JSON.stringify(user));
+  // };
 
   /**
    * Returns the authenticated user
    */
-  getAuthenticatedUser = () => {
-    if (!localStorage.getItem("authUser")) return null;
-    return JSON.parse(localStorage.getItem("authUser"));
-  };
+  // getAuthenticatedUser = () => {
+  //   if (!localStorage.getItem("authUser")) return null;
+  //   return JSON.parse(localStorage.getItem("authUser"));
+  // };
 
   /**
    * Handle the error
@@ -214,4 +270,4 @@ const getFirebaseBackend = () => {
   return _fireBaseBackend;
 };
 
-export { initFirebaseBackend, getFirebaseBackend };
+export { initFirebaseBackend, getFirebaseBackend, onAuthStateChanged };

@@ -20,17 +20,21 @@ const AdminCreate = props => {
       firstName: '',
       lastName: '',
       title: '',
+      company: '',
       email: '',
       phone: '',
       password: '',
+      repassword: '',
     },
     validationSchema: Yup.object({
       firstName: Yup.string().required('Please Enter First Name'),
       lastName: Yup.string().required('Please Enter Last Name'),
       title: Yup.string().required('Please Enter Title'),
+      company: Yup.string().required('Please Enter Company Name'),
       email: Yup.string().required('Please Enter Email'),
       phone: Yup.string().required('Please Enter Phone'),
       password: Yup.string().required('Please Enter Password'),
+      repassword: Yup.string().required('Please Enter Password Again').oneOf([Yup.ref('password'), null], 'Passwords must match'),
     }),
     onSubmit: (values) => {
       dispatch(registerAdmin(values));
@@ -42,7 +46,6 @@ const AdminCreate = props => {
     registrationError: state.Account.registrationError,
     loading: state.Account.loading,
   }));
-  console.log('admin', admin);
 
   useEffect(() => {
     dispatch(apiError(""));
@@ -122,7 +125,7 @@ const AdminCreate = props => {
                       </Col>
                     </Row>
                     <Row>
-                      <Col lg='12'>
+                      <Col lg='6'>
                         <div className='mb-3'>
                           <Label className='form-label'>
                             Title
@@ -140,6 +143,27 @@ const AdminCreate = props => {
                           />
                           {validation.touched.title && validation.errors.title ? (
                             <FormFeedback type='invalid'>{validation.errors.title}</FormFeedback>
+                          ) : null}
+                        </div>
+                      </Col>
+                      <Col lg='6'>
+                        <div className='mb-3'>
+                          <Label className='form-label'>
+                            Company Name
+                          </Label>
+                          <Input
+                            type='text'
+                            className='form-control'
+                            id='company'
+                            onChange={validation.handleChange}
+                            onBlur={validation.handleBlur}
+                            value={validation.values.company || ''}
+                            invalid={
+                              validation.touched.company && validation.errors.company ? true : false
+                            }
+                          />
+                          {validation.touched.company && validation.errors.company ? (
+                            <FormFeedback type='invalid'>{validation.errors.company}</FormFeedback>
                           ) : null}
                         </div>
                       </Col>
@@ -218,16 +242,16 @@ const AdminCreate = props => {
                           <Input
                             type='password'
                             className='form-control'
-                            id='repeatPassword'
+                            id='repassword'
                             onChange={validation.handleChange}
                             onBlur={validation.handleBlur}
-                            value={validation.values.repeatPassword || ''}
+                            value={validation.values.repassword || ''}
                             invalid={
-                              validation.touched.repeatPassword && validation.errors.repeatPassword ? true : false
+                              validation.touched.repassword && validation.errors.repassword ? true : false
                             }
                           />
-                          {validation.touched.repeatPassword && validation.errors.repeatPassword ? (
-                            <FormFeedback type='invalid'>{validation.errors.repeatPassword}</FormFeedback>
+                          {validation.touched.repassword && validation.errors.repassword ? (
+                            <FormFeedback type='invalid'>{validation.errors.repassword}</FormFeedback>
                           ) : null}
                         </div>
                       </Col>

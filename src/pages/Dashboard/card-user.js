@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Row,
   Col,
@@ -12,11 +12,25 @@ import {
 
 import avatar1 from '../../assets/images/users/avatar-6.jpg'
 
-function CardUser(props) {
+import { onAuthStateChanged } from "../../helpers/firebase_helper";
+
+const CardUser = () => {
+
+  const [user, setUser] = useState(null);
+  const [clients, setClients] = useState(null);
+
   const [settingsMenu, setSettingsMenu] = useState(false)
   const toggleSettings = () => {
     setSettingsMenu(settingsMenu)
   }
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const userData = await onAuthStateChanged();
+      setUser(userData);
+    };
+    fetchUser();
+  }, []);
 
   return (
     <>
@@ -37,8 +51,8 @@ function CardUser(props) {
                     <div className='flex-grow-1 align-self-center'>
                       <div className='text-muted'>
                         <p className='mb-2'>Welcome to Gars9n Dashboard</p>
-                        <h5 className='mb-1'>Fady Zaki</h5>
-                        <p className='mb-0'>System Admin</p>
+                            <h5 className='mb-1'>{user ? user.firstName : ''} {user ? user.lastName : ''}</h5>
+                            <p className='mb-0'>{user ? user.title : ''}</p>
                       </div>
                     </div>
                   </div>
@@ -51,7 +65,7 @@ function CardUser(props) {
                           <p className='text-muted text-truncate mb-2'>
                             Clients
                           </p>
-                          <h5 className='mb-0'>14</h5>
+                          <h5 className='mb-0'>{clients ? clients.count : '0'}</h5>
                         </div>
                       </Col>
                       <Col xs='4'>
@@ -59,7 +73,7 @@ function CardUser(props) {
                           <p className='text-muted text-truncate mb-2'>
                             Total Branches
                           </p>
-                          <h5 className='mb-0'>43</h5>
+                          <h5 className='mb-0'>{clients ? clients.count : '0'}</h5>
                         </div>
                       </Col>
                       <Col xs='4'>
@@ -67,7 +81,7 @@ function CardUser(props) {
                           <p className='text-muted text-truncate mb-2'>
                             Total Tables
                           </p>
-                          <h5 className='mb-0'>635</h5>
+                          <h5 className='mb-0'>{clients ? clients.count : '0'}</h5>
                         </div>
                       </Col>
                     </Row>
