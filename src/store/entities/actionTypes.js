@@ -1,0 +1,3 @@
+export const GET_STORES = "GET_STORES"
+export const GET_STORES_SUCCESS = "GET_STORES_SUCCESS"
+export const GET_STORES_FAIL = "GET_STORES_FAIL"

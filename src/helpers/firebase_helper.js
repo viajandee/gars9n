@@ -1,4 +1,4 @@
-import firebase from 'firebase/compat/app'
+import firebase from "firebase/compat/app";
 
 // Add the Firebase products that you want to use
 import "firebase/compat/auth";
@@ -8,7 +8,7 @@ const onAuthStateChanged = () => {
   return new Promise((resolve, reject) => {
     const unsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
-        const userRef = firebase.firestore().collection('users').doc(user.uid);
+        const userRef = firebase.firestore().collection("users").doc(user.uid);
         const userDoc = await userRef.get();
         const userData = userDoc.data();
         const authUser = {
@@ -18,12 +18,12 @@ const onAuthStateChanged = () => {
           photoURL: user.photoURL,
           emailVerified: user.emailVerified,
           phoneNumber: user.phoneNumber,
-          ...userData
+          ...userData,
         };
-        localStorage.setItem('authUser', JSON.stringify(authUser));
+        localStorage.setItem("authUser", JSON.stringify(authUser));
         resolve(authUser);
       } else {
-        localStorage.removeItem('authUser');
+        localStorage.removeItem("authUser");
         resolve(null);
       }
     });
@@ -36,7 +36,7 @@ class FirebaseAuthBackend {
     if (firebaseConfig) {
       // Initialize Firebase
       firebase.initializeApp(firebaseConfig);
-      firebase.auth().onAuthStateChanged(user => {
+      firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           localStorage.setItem("authUser", JSON.stringify(user));
         } else {
@@ -74,11 +74,21 @@ class FirebaseAuthBackend {
   // };
 
   //working code
-  registerAdmin = async (email, password, firstName, lastName, title, company, phone) => {
+  registerAdmin = async (
+    email,
+    password,
+    firstName,
+    lastName,
+    title,
+    company,
+    phone
+  ) => {
     try {
-      const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+      const userCredential = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password);
       const user = userCredential.user;
-      const adminRef = firebase.firestore().collection('users').doc(user.uid);
+      const adminRef = firebase.firestore().collection("users").doc(user.uid);
       await adminRef.set({
         email: email,
         firstName: firstName,
@@ -86,13 +96,16 @@ class FirebaseAuthBackend {
         title: title,
         company: company,
         phone: phone,
-        isAdmin: true
+        isAdmin: true,
       });
-      return { user: user, admin: { email, firstName, lastName, title, company, phone } };
+      return {
+        user: user,
+        admin: { email, firstName, lastName, title, company, phone },
+      };
     } catch (error) {
       throw error;
     }
-  }
+  };
 
   // add a function to add the details from registerAdmin to firestore
   // addNewAdminToFirestore = (admin) => {
@@ -119,8 +132,8 @@ class FirebaseAuthBackend {
   // }
 
   /**
- * Registers the user with given details
- */
+   * Registers the user with given details
+   */
   // registerUser = (email, password) => {
   //   return new Promise((resolve, reject) => {
   //     firebase
@@ -146,10 +159,10 @@ class FirebaseAuthBackend {
         .auth()
         .createUserWithEmailAndPassword(email, password)
         .then(
-          user => {
+          (user) => {
             resolve(firebase.auth().currentUser);
           },
-          error => {
+          (error) => {
             reject(this._handleError(error));
           }
         );
@@ -165,10 +178,10 @@ class FirebaseAuthBackend {
         .auth()
         .signInWithEmailAndPassword(email, password)
         .then(
-          user => {
+          (user) => {
             resolve(firebase.auth().currentUser);
           },
-          error => {
+          (error) => {
             reject(this._handleError(error));
           }
         );
@@ -206,7 +219,7 @@ class FirebaseAuthBackend {
         .then(() => {
           resolve(true);
         })
-        .catch(error => {
+        .catch((error) => {
           reject(this._handleError(error));
         });
     });
@@ -256,7 +269,7 @@ let _fireBaseBackend = null;
  * Initilize the backend
  * @param {*} config
  */
-const initFirebaseBackend = config => {
+const initFirebaseBackend = (config) => {
   if (!_fireBaseBackend) {
     _fireBaseBackend = new FirebaseAuthBackend(config);
   }

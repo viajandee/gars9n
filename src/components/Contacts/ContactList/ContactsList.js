@@ -1,17 +1,13 @@
-import SimpleBar from "simplebar-react";
-
-import React, { useRef, useEffect } from "react";
 import PropTypes from "prop-types";
+import React, { useEffect, useRef } from "react";
+import SimpleBar from "simplebar-react";
+import MetisMenu from "metismenujs";
 import { withRouter } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-import { withTranslation } from "react-i18next";
-
-import MetisMenu from "metismenujs";
-
-const SidebarContent = (props) => {
+const SidebarContent = props => {
   const ref = useRef();
-  // Use ComponentDidMount and ComponentDidUpdate method symultaniously
+
   useEffect(() => {
     const pathName = props.location.pathname;
 
@@ -85,73 +81,38 @@ const SidebarContent = (props) => {
   }
 
   return (
-    <>
+    <React.Fragment>
       <SimpleBar className='h-100' ref={ref}>
         <div id='sidebar-menu'>
           <ul className='metismenu list-unstyled' id='side-menu'>
             <li className='menu-title'>{props.t("Menu")} </li>
             <li>
-              <Link to='/#'>
-                <i className='bx bx-home'></i>
-                <span>{props.t("Dashboard")}</span>
-              </Link>
-            </li>
-            <li className='menu-title'>{props.t("Manage")} </li>
-            <li>
-              <Link to='/clients'>
-                <i className='bx bx-user-circle'></i>
-                <span>{props.t("Clients")}</span>
-              </Link>
-              <Link to='/stores-grid'>
-                <i className='bx bx-store'></i>
-                <span>{props.t("Stores")}</span>
-              </Link>
-              <Link to='/menus'>
-                <i className='bx bx-food-menu'></i>
-                <span>{props.t("Menus")}</span>
-              </Link>
-            </li>
-            <li className='menu-title'>{props.t("Utilities")} </li>
-            <li>
-              <Link to='/Email'>
-                <i className='bx bx-envelope'></i>
-                <span>{props.t("Email")}</span>
-              </Link>
-              <Link to='/generator'>
-                <i className='bx bx-area'></i>
-                <span>{props.t("QR Code Generator")}</span>
-              </Link>
-              <Link to='/reports'>
-                <i className='bx bx-line-chart'></i>
-                <span>{props.t("Reports")}</span>
-              </Link>
-            </li>
-            <li className='menu-title'>{props.t("Settings")} </li>
-            <li>
-              <Link to='/#' className='has-arrow'>
-                <i className='bx bx-key'></i>
-                <span>{props.t("Users & Access")}</span>
+              <Link to='/#' className='has-arrow '>
+                <i className='bx bxs-user-detail'></i>
+                <span>{props.t("Contacts")}</span>
               </Link>
               <ul className='sub-menu'>
                 <li>
-                  <Link to='/add-admin'>{props.t("Add Admin")}</Link>
+                  <Link to='/contacts-grid'>{props.t("User Grid")}</Link>
+                </li>
+                <li>
+                  <Link to='/contacts-list'>{props.t("User List")}</Link>
+                </li>
+                <li>
+                  <Link to='/contacts-profile'>{props.t("Profile")}</Link>
                 </li>
               </ul>
-              <Link to='/preferences'>
-                <i className='bx bx-cog'></i>
-                <span>{props.t("Preferences")}</span>
-              </Link>
             </li>
           </ul>
         </div>
       </SimpleBar>
-    </>
+    </React.Fragment>
   );
 };
 
 SidebarContent.propTypes = {
-  location: PropTypes.object,
-  t: PropTypes.any,
-};
+    location: PropTypes.object,
+    t: PropTypes.any,
+  };
 
-export default withRouter(withTranslation()(SidebarContent));
+export default withRouter(SidebarContent);

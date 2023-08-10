@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
 import { Switch, BrowserRouter as Router } from "react-router-dom";
 
@@ -9,11 +9,12 @@ import { authProtectedRoutes, publicRoutes } from "./routes";
 
 import Authmiddleware from "./routes/route";
 
-import { initFirebaseBackend } from './helpers/firebase_helper';
+import { initFirebaseBackend } from "./helpers/firebase_helper";
 import VerticalLayout from "./components";
 import NonAuthLayout from "./components";
 
 import "./assets/scss/theme.scss";
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyApOYXLJ1jFQVu_g_qlJJLBV2mr88InXgA",
@@ -22,13 +23,12 @@ const firebaseConfig = {
   storageBucket: "gars9n-080523.appspot.com",
   messagingSenderId: "442460433343",
   appId: "1:442460433343:web:91280b7fed3939e7e24f0a",
-  measurementId: "G-6V81GWF6Z7"
+  measurementId: "G-6V81GWF6Z7",
 };
 
 initFirebaseBackend(firebaseConfig);
 
-const App = props => {
-
+const App = (props) => {
   function getLayout() {
     let layoutCls = VerticalLayout;
     switch (props.layout.layoutType) {
@@ -72,10 +72,10 @@ const App = props => {
 };
 
 App.propTypes = {
-  layout: PropTypes.any
+  layout: PropTypes.any,
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     layout: state.Layout,
   };
