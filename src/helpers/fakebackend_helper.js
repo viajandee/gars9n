@@ -15,14 +15,15 @@ const isUserAuthenticated = () => {
 };
 
 // Register Method
-const postFakeRegister = data => {
+const postFakeRegister = (data) => {
   return axios
     .post(url.POST_FAKE_REGISTER, data)
-    .then(response => {
-      if (response.status >= 200 || response.status <= 299) return response.data;
+    .then((response) => {
+      if (response.status >= 200 || response.status <= 299)
+        return response.data;
       throw response.data;
     })
-    .catch(err => {
+    .catch((err) => {
       let message;
       if (err.response && err.response.status) {
         switch (err.response.status) {
@@ -46,25 +47,26 @@ const postFakeRegister = data => {
 };
 
 // Login Method
-const postFakeLogin = data => post(url.POST_FAKE_LOGIN, data);
+const postFakeLogin = (data) => post(url.POST_FAKE_LOGIN, data);
 
 // postForgetPwd
-const postFakeForgetPwd = data => post(url.POST_FAKE_PASSWORD_FORGET, data);
+const postFakeForgetPwd = (data) => post(url.POST_FAKE_PASSWORD_FORGET, data);
 
 // Edit profile
-const postJwtProfile = data => post(url.POST_EDIT_JWT_PROFILE, data);
+const postJwtProfile = (data) => post(url.POST_EDIT_JWT_PROFILE, data);
 
-const postFakeProfile = data => post(url.POST_EDIT_PROFILE, data);
+const postFakeProfile = (data) => post(url.POST_EDIT_PROFILE, data);
 
 // Register Method
 const postJwtRegister = (url, data) => {
   return axios
     .post(url, data)
-    .then(response => {
-      if (response.status >= 200 || response.status <= 299) return response.data;
+    .then((response) => {
+      if (response.status >= 200 || response.status <= 299)
+        return response.data;
       throw response.data;
     })
-    .catch(err => {
+    .catch((err) => {
       var message;
       if (err.response && err.response.status) {
         switch (err.response.status) {
@@ -88,32 +90,33 @@ const postJwtRegister = (url, data) => {
 };
 
 // Login Method
-const postJwtLogin = data => post(url.POST_FAKE_JWT_LOGIN, data);
+const postJwtLogin = (data) => post(url.POST_FAKE_JWT_LOGIN, data);
 
 // postForgetPwd
-const postJwtForgetPwd = data => post(url.POST_FAKE_JWT_PASSWORD_FORGET, data);
+const postJwtForgetPwd = (data) =>
+  post(url.POST_FAKE_JWT_PASSWORD_FORGET, data);
 
 // postSocialLogin
-export const postSocialLogin = data => post(url.SOCIAL_LOGIN, data);
+export const postSocialLogin = (data) => post(url.SOCIAL_LOGIN, data);
 
 // get Products
 export const getProducts = () => get(url.GET_PRODUCTS);
 
 // get Product detail
-export const getProductDetail = id =>
+export const getProductDetail = (id) =>
   get(`${url.GET_PRODUCTS_DETAIL}/${id}`, { params: { id } });
 
 // get Events
 export const getEvents = () => get(url.GET_EVENTS);
 
 // add Events
-export const addNewEvent = event => post(url.ADD_NEW_EVENT, event);
+export const addNewEvent = (event) => post(url.ADD_NEW_EVENT, event);
 
 // update Event
-export const updateEvent = event => put(url.UPDATE_EVENT, event);
+export const updateEvent = (event) => put(url.UPDATE_EVENT, event);
 
 // delete Event
-export const deleteEvent = event =>
+export const deleteEvent = (event) =>
   del(url.DELETE_EVENT, { headers: { event } });
 
 // get Categories
@@ -133,19 +136,19 @@ export const getMessages = (roomId = "") =>
   get(`${url.GET_MESSAGES}/${roomId}`, { params: { roomId } });
 
 // post messages
-export const addMessage = message => post(url.ADD_MESSAGE, message);
+export const addMessage = (message) => post(url.ADD_MESSAGE, message);
 
 // get orders
 export const getOrders = () => get(url.GET_ORDERS);
 
 // add order
-export const addNewOrder = order => post(url.ADD_NEW_ORDER, order);
+export const addNewOrder = (order) => post(url.ADD_NEW_ORDER, order);
 
 // update order
-export const updateOrder = order => put(url.UPDATE_ORDER, order);
+export const updateOrder = (order) => put(url.UPDATE_ORDER, order);
 
 // delete order
-export const deleteOrder = order =>
+export const deleteOrder = (order) =>
   del(url.DELETE_ORDER, { headers: { order } });
 
 // get cart data
@@ -155,13 +158,14 @@ export const getCartData = () => get(url.GET_CART_DATA);
 export const getCustomers = () => get(url.GET_CUSTOMERS);
 
 // add CUSTOMER
-export const addNewCustomer = customer => post(url.ADD_NEW_CUSTOMER, customer);
+export const addNewCustomer = (customer) =>
+  post(url.ADD_NEW_CUSTOMER, customer);
 
 // update CUSTOMER
-export const updateCustomer = customer => put(url.UPDATE_CUSTOMER, customer);
+export const updateCustomer = (customer) => put(url.UPDATE_CUSTOMER, customer);
 
 // delete CUSTOMER
-export const deleteCustomer = customer =>
+export const deleteCustomer = (customer) =>
   del(url.DELETE_CUSTOMER, { headers: { customer } });
 
 // get shops
@@ -177,53 +181,82 @@ export const getCryptoOrder = () => get(url.GET_CRYPTO_ORDERS);
 export const getInvoices = () => get(url.GET_INVOICES);
 
 // get invoice details
-export const getInvoiceDetail = id =>
+export const getInvoiceDetail = (id) =>
   get(`${url.GET_INVOICE_DETAIL}/${id}`, { params: { id } });
 
 // get project
 export const getProjects = () => get(url.GET_PROJECTS);
 
 // get project details
-export const getProjectsDetails = id =>
+export const getProjectsDetails = (id) =>
   get(`${url.GET_PROJECT_DETAIL}/${id}`, { params: { id } });
 
 // get tasks
 export const getTasks = () => get(url.GET_TASKS);
 
-// get contacts
+// get stores
 export const getStores = () => get(url.GET_STORES);
 
+// get contacts
+export const getClients = () => get(url.GET_CLIENTS);
+
 // add user
-export const addNewUser = user => post(url.ADD_NEW_USER, user);
+export const addNewUser = (user) => post(url.ADD_NEW_USER, user);
+
+// add stores
+export const addNewStore = (store) => post(url.ADD_NEW_STORE, store);
 
 // update user
-export const updateUser = user => put(url.UPDATE_USER, user);
+export const updateUser = (user) => put(url.UPDATE_USER, user);
+
+// update stores
+export const updateStore = (store) => put(url.UPDATE_STORE, store);
 
 // delete user
-export const deleteUser = user => del(url.DELETE_USER, { headers: { user } });
+export const deleteUser = (user) => del(url.DELETE_USER, { headers: { user } });
+
+// delete stores
+export const deleteStore = (store) =>
+  del(url.DELETE_STORE, { headers: { store } });
 
 /** PROJECT */
-// add user
-export const addNewProject = project => post(url.ADD_NEW_PROJECT, project);
+//  add user
+export const addNewProject = (project) => post(url.ADD_NEW_PROJECT, project);
+
+// add client
+export const addNewClient = (client) => post(url.ADD_NEW_CLIENT, client);
 
 // update user
-export const updateProject = project => put(url.UPDATE_PROJECT, project);
+export const updateProject = (project) => put(url.UPDATE_PROJECT, project);
+
+// update client
+export const updateClient = (client) => put(url.UPDATE_CLIENT, client);
 
 // delete user
-export const deleteProject = project =>
+export const deleteProject = (project) =>
   del(url.DELETE_PROJECT, { headers: { project } });
 
+// delete client
+export const deleteClient = (client) =>
+  del(url.DELETE_CLIENT, { headers: { client } });
+
 export const getUserProfile = () => get(url.GET_USER_PROFILE);
+
+// get client profile
+export const getClientProfile = () => get(url.GET_CLIENT_PROFILE);
+
+// get user profile
+export const getStoreProfile = () => get(url.GET_USER_PROFILE);
 
 // get inboxmail
 export const getInboxMails = () => get(url.GET_INBOX_MAILS);
 
 // add inboxmail
-export const addNewInboxMail = inboxmail =>
+export const addNewInboxMail = (inboxmail) =>
   post(url.ADD_NEW_INBOX_MAIL, inboxmail);
 
 // delete inboxmail
-export const deleteInboxMail = inboxmail =>
+export const deleteInboxMail = (inboxmail) =>
   del(url.DELETE_INBOX_MAIL, { headers: { inboxmail } });
 
 // get starredmail
@@ -246,10 +279,10 @@ export const getWeeklyData = () => get(url.GET_WEEKLY_DATA);
 export const getYearlyData = () => get(url.GET_YEARLY_DATA);
 export const getMonthlyData = () => get(url.GET_MONTHLY_DATA);
 
-export const topSellingData = month =>
+export const topSellingData = (month) =>
   get(`${url.TOP_SELLING_DATA}/${month}`, { params: { month } });
 
-export const getEarningChartsData = month =>
+export const getEarningChartsData = (month) =>
   get(`${url.GET_EARNING_DATA}/${month}`, { params: { month } });
 
 const getProductComents = () => get(url.GET_PRODUCT_COMMENTS);

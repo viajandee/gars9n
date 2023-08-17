@@ -13,7 +13,7 @@ function* loginUser({ payload: { user, history } }) {
       const response = yield call(
         fireBaseBackend.loginUser,
         user.email,
-        user.password,
+        user.password
       );
       yield put(loginSuccess(response));
     }

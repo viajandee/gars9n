@@ -8,7 +8,8 @@ import UserCreate from "pages/Users/users-create";
 import UserAdmin from "pages/Settings/admins-create";
 import Pages404 from "pages/Utility/pages-404";
 
-import StoresGrid from "components/Stores/stores-grid";
+import StoresGrid from "components/Stores/StoresGrid";
+import ClientsList from "components/Client/ClientsList";
 
 const authProtectedRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -16,7 +17,7 @@ const authProtectedRoutes = [
   { path: "/add-user", component: UserCreate },
   { path: "/add-admin", component: UserAdmin },
   { path: "/stores-grid", component: StoresGrid },
-
+  { path: "/clients-list", component: ClientsList },
   { component: Pages404 },
 ];
 

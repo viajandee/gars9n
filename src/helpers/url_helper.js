@@ -86,12 +86,26 @@ export const DELETE_PROJECT = "/delete/project";
 //TASKS
 export const GET_TASKS = "/tasks";
 
-//CONTACTS
-export const GET_STORES = "/stores";
+//STORES
+export const GET_STORES = "/stores-grid";
+export const GET_STORE_PROFILE = "/store";
+export const ADD_NEW_STORE = "/add/store";
+export const UPDATE_STORE = "/update/store";
+export const DELETE_STORE = "/delete/store";
+
+// USERS
+export const GET_USERS = "/users";
 export const GET_USER_PROFILE = "/user";
 export const ADD_NEW_USER = "/add/user";
 export const UPDATE_USER = "/update/user";
 export const DELETE_USER = "/delete/user";
+
+// CLIENTS
+export const GET_CLIENTS = "/clients";
+export const GET_CLIENT_PROFILE = "/client";
+export const ADD_NEW_CLIENT = "/add/client";
+export const UPDATE_CLIENT = "/update/client";
+export const DELETE_CLIENT = "/delete/client";
 
 //dashboard charts data
 export const GET_WEEKLY_DATA = "/weekly-data";

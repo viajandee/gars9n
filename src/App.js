@@ -15,6 +15,10 @@ import NonAuthLayout from "./components";
 
 import "./assets/scss/theme.scss";
 
+import fakeBackend from "helpers/AuthType/fakeBackend";
+
+// Activating fake backend
+fakeBackend();
 
 const firebaseConfig = {
   apiKey: "AIzaSyApOYXLJ1jFQVu_g_qlJJLBV2mr88InXgA",

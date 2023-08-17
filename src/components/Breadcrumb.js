@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import { Row, Col, BreadcrumbItem } from "reactstrap";
 
-const Breadcrumbs = props => {
+const Breadcrumbs = (props) => {
   return (
     <Row>
       <Col xs='12'>
@@ -21,12 +21,12 @@ const Breadcrumbs = props => {
         </div>
       </Col>
     </Row>
-  )
-}
+  );
+};
 
 Breadcrumbs.propTypes = {
   BreadcrumbItem: PropTypes.string,
-  title: PropTypes.string
-}
+  title: PropTypes.string,
+};
 
-export default Breadcrumbs
+export default Breadcrumbs;

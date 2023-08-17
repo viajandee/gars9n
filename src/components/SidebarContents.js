@@ -98,7 +98,7 @@ const SidebarContent = (props) => {
             </li>
             <li className='menu-title'>{props.t("Manage")} </li>
             <li>
-              <Link to='/clients'>
+              <Link to='/clients-list'>
                 <i className='bx bx-user-circle'></i>
                 <span>{props.t("Clients")}</span>
               </Link>
