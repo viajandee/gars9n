@@ -3,26 +3,22 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import { size, map } from "lodash";
 
-function formatDate(date, format) {
-  const dateFormat = format ? format : "MM DD YYYY";
-  const formattedDate = moment(date).format(dateFormat);
-  return formattedDate;
-}
+const formateDate = (date, format) => {
+  const dateFormat = format ? format : "DD MMM YYYY";
+  const date1 = moment(new Date(date)).format(dateFormat);
+  return date1;
+};
 
 const toLowerCase1 = (str) => {
-  if (!str) {
-    return "";
-  } else {
-    return str.toLowerCase();
-  }
+  return str === "" || str === undefined ? "" : str.toLowerCase();
 };
 
 const Name = (cell) => {
-  return cell.value || "";
+  return cell.value ? cell.value : "";
 };
 
 const Email = (cell) => {
-  return cell.value || "";
+  return cell.value ? cell.value : "";
 };
 
 const Tags = (cell) => {
@@ -53,7 +49,7 @@ const Tags = (cell) => {
 };
 
 const Projects = (cell) => {
-  return cell.value || "";
+  return cell.value ? cell.value : "";
 };
 
 const Img = (cell) => {
@@ -75,4 +71,4 @@ const Img = (cell) => {
   );
 };
 
-export { Name, Email, Tags, Projects, Img, formatDate, toLowerCase1 };
+export { Name, Email, Tags, Projects, Img, formateDate, toLowerCase1 };

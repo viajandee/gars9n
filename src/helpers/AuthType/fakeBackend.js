@@ -2,7 +2,19 @@ import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import * as url from "../url_helper";
 import accessToken from "../jwt-token-access/accessToken";
-import { storeProfile, clients as members, store } from "../../common/data";
+import {
+  foodsData,
+  store,
+  recentFoods,
+  clientProfile,
+  clients as members,
+  inboxmails,
+  starredmails,
+  importantmails,
+  draftmails,
+  sentmails,
+  trashmails,
+} from "../../common/data";
 
 let clients = [
   {
@@ -39,7 +51,7 @@ const fakeBackend = () => {
           resolve([200, validClient[0]]);
         } else {
           reject([
-            "Clientname and password are invalid. Please enter correct clientname and password",
+            "Clientname and password are invalid. Please enter correct Clientname and password",
           ]);
         }
       });
@@ -47,7 +59,7 @@ const fakeBackend = () => {
   });
 
   mock.onPost("/fake-forget-pwd").reply((config) => {
-    // client needs to check that client is eXist or not and send mail for Reset New password
+    // Client needs to check that Client is eXist or not and send mail for Reset New password
 
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -136,7 +148,6 @@ const fakeBackend = () => {
 
   mock.onPost("/post-fake-profile").reply((config) => {
     const client = JSON.parse(config["data"]);
-    // console.log("validclient",client)
 
     const validClient = clients.filter((usr) => usr.uid === client.idx);
 
@@ -164,7 +175,7 @@ const fakeBackend = () => {
   });
 
   mock.onPost("/jwt-forget-pwd").reply((config) => {
-    // client needs to check that client is eXist or not and send mail for Reset New password
+    // Client needs to check that client is eXist or not and send mail for Reset New password
 
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -185,7 +196,7 @@ const fakeBackend = () => {
 
           // JWT AccessToken
           const tokenObj = { accessToken: token, clientname: clientName }; // Token Obj
-          const validClientObj = { ...client[0], ...tokenObj, ...client.name }; // validclient Obj
+          const validClientObj = { ...client[0], ...tokenObj, ...client.name }; // validClient Obj
 
           resolve([200, validClientObj]);
         } else {
@@ -198,7 +209,51 @@ const fakeBackend = () => {
     });
   });
 
-  //  CLIENT
+  // FOODS DATA
+  mock.onGet(url.GET_MENUS).reply(() => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (foodsData) {
+          // Passing fake JSON data as response
+          resolve([200, foodsData]);
+        } else {
+          reject([400, "Cannot get foodsData"]);
+        }
+      });
+    });
+  });
+
+  // RECENT FOODS &
+  mock.onGet(new RegExp(`${url.GET_MENUS_DETAIL}/*`)).reply((config) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (foodsData) {
+          // Passing fake JSON data as response
+          const { params } = config;
+          const menus = foodsData.find(
+            (menu) => menu.id.toString() === params.id.toString()
+          );
+          resolve([200, { ...menus, recentFoods }]);
+        } else {
+          reject([400, "Cannot get menus detail"]);
+        }
+      });
+    });
+  });
+
+  mock.onPost(url.ADD_NEW_CLIENT).reply((client) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (client && client.data) {
+          // Passing fake JSON data as response
+          resolve([200, client.data]);
+        } else {
+          reject([400, "Cannot add client"]);
+        }
+      });
+    });
+  });
+
   mock.onPut(url.UPDATE_CLIENT).reply((client) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -225,34 +280,33 @@ const fakeBackend = () => {
     });
   });
 
-  mock.onGet(url.GET_CLIENTS).reply(() => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (members) {
-          // Passing fake JSON data as response
-          resolve([200, members]);
-        } else {
-          reject([400, "Cannot get clients"]);
-        }
-      });
-    });
-  });
-
-  //  STORE PROFILE
-  mock.onGet(url.GET_STORE_PROFILE).reply(() => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (storeProfile) {
-          // Passing fake JSON data as response
-          resolve([200, storeProfile]);
-        } else {
-          reject([400, "Cannot get store Profile"]);
-        }
-      });
-    });
-  });
-
   // STORE
+  mock.onGet(url.GET_STORES).reply(() => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (store) {
+          // Passing fake JSON data as response
+          resolve([200, store]);
+        } else {
+          reject([400, "Cannot get store"]);
+        }
+      });
+    });
+  });
+
+  mock.onPost(url.ADD_NEW_STORE).reply((store) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (store && store.data) {
+          // Passing fake JSON data as response
+          resolve([200, store.data]);
+        } else {
+          reject([400, "Cannot add store"]);
+        }
+      });
+    });
+  });
+
   mock.onPut(url.UPDATE_STORE).reply((store) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -279,14 +333,174 @@ const fakeBackend = () => {
     });
   });
 
-  mock.onGet(url.GET_STORES).reply(() => {
+  // MENUS
+  mock.onPost(url.ADD_NEW_MENU).reply((foodsData) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        if (store) {
+        if (foodsData && foodsData.data) {
           // Passing fake JSON data as response
-          resolve([200, store]);
+          resolve([200, foodsData.data]);
         } else {
-          reject([400, "Cannot get store"]);
+          reject([400, "Cannot add foodsData"]);
+        }
+      });
+    });
+  });
+
+  mock.onPut(url.UPDATE_MENU).reply((foodsData) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (foodsData && foodsData.data) {
+          // Passing fake JSON data as response
+          resolve([200, foodsData.data]);
+        } else {
+          reject([400, "Cannot update foodsData"]);
+        }
+      });
+    });
+  });
+
+  mock.onDelete(url.DELETE_MENU).reply((config) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (config && config.headers) {
+          // Passing fake JSON data as response
+          resolve([200, config.headers.foodsData]);
+        } else {
+          reject([400, "Cannot delete foodsData"]);
+        }
+      });
+    });
+  });
+
+  //  CLIENT
+  mock.onGet(url.GET_CLIENTS).reply(() => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (members) {
+          // Passing fake JSON data as response
+          resolve([200, members]);
+        } else {
+          reject([400, "Cannot get clients"]);
+        }
+      });
+    });
+  });
+
+  // CLIENT PROFILE
+  mock.onGet(url.GET_CLIENT_PROFILE).reply(() => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (clientProfile) {
+          // Passing fake JSON data as response
+          resolve([200, clientProfile]);
+        } else {
+          reject([400, "Cannot get client profile"]);
+        }
+      });
+    });
+  });
+
+  // EMAIL
+  mock.onGet(url.GET_INBOX_MAILS).reply(() => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (inboxmails) {
+          // Passing fake JSON data as response
+          resolve([200, inboxmails]);
+        } else {
+          reject([400, "Cannot get inboxmails"]);
+        }
+      });
+    });
+  });
+
+  mock.onPost(url.ADD_NEW_INBOX_MAIL).reply((inboxmail) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (inboxmail && inboxmail.data) {
+          // Passing fake JSON data as response
+          resolve([200, inboxmail.data]);
+        } else {
+          reject([400, "Cannot add project"]);
+        }
+      });
+    });
+  });
+
+  mock.onDelete(url.DELETE_INBOX_MAIL).reply((config) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (config && config.headers) {
+          // Passing fake JSON data as response
+          resolve([200, config.headers.inboxmail]);
+        } else {
+          reject([400, "Cannot delete inboxmail"]);
+        }
+      });
+    });
+  });
+
+  mock.onGet(url.GET_STARRED_MAILS).reply(() => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (starredmails) {
+          // Passing fake JSON data as response
+          resolve([200, starredmails]);
+        } else {
+          reject([400, "Cannot get starredmails"]);
+        }
+      });
+    });
+  });
+
+  mock.onGet(url.GET_IMPORTANT_MAILS).reply(() => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (importantmails) {
+          // Passing fake JSON data as response
+          resolve([200, importantmails]);
+        } else {
+          reject([400, "Cannot get importantmails"]);
+        }
+      });
+    });
+  });
+
+  mock.onGet(url.GET_TRASH_MAILS).reply(() => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (trashmails) {
+          // Passing fake JSON data as response
+          resolve([200, trashmails]);
+        } else {
+          reject([400, "Cannot get trashmails"]);
+        }
+      });
+    });
+  });
+
+  mock.onGet(url.GET_DRAFT_MAILS).reply(() => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (draftmails) {
+          // Passing fake JSON data as response
+          resolve([200, draftmails]);
+        } else {
+          reject([400, "Cannot get draftmails"]);
+        }
+      });
+    });
+  });
+
+  mock.onGet(url.GET_SENT_MAILS).reply(() => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (sentmails) {
+          // Passing fake JSON data as response
+          resolve([200, sentmails]);
+        } else {
+          reject([400, "Cannot get sentmails"]);
         }
       });
     });

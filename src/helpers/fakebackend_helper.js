@@ -99,12 +99,12 @@ const postJwtForgetPwd = (data) =>
 // postSocialLogin
 export const postSocialLogin = (data) => post(url.SOCIAL_LOGIN, data);
 
-// get Products
-export const getProducts = () => get(url.GET_PRODUCTS);
+// get Menus
+export const getMenus = () => get(url.GET_MENUS);
 
-// get Product detail
-export const getProductDetail = (id) =>
-  get(`${url.GET_PRODUCTS_DETAIL}/${id}`, { params: { id } });
+// get Menu detail
+export const getMenuDetail = (id) =>
+  get(`${url.GET_MENUS_DETAIL}/${id}`, { params: { id } });
 
 // get Events
 export const getEvents = () => get(url.GET_EVENTS);
@@ -164,6 +164,9 @@ export const addNewCustomer = (customer) =>
 // update CUSTOMER
 export const updateCustomer = (customer) => put(url.UPDATE_CUSTOMER, customer);
 
+// update menu
+export const updateMenu = (menu) => put(url.UPDATE_MENU, menu);
+
 // delete CUSTOMER
 export const deleteCustomer = (customer) =>
   del(url.DELETE_CUSTOMER, { headers: { customer } });
@@ -203,6 +206,9 @@ export const getClients = () => get(url.GET_CLIENTS);
 // add user
 export const addNewUser = (user) => post(url.ADD_NEW_USER, user);
 
+// add menu
+export const addNewMenu = (menu) => post(url.ADD_NEW_MENU, menu);
+
 // add stores
 export const addNewStore = (store) => post(url.ADD_NEW_STORE, store);
 
@@ -239,6 +245,9 @@ export const deleteProject = (project) =>
 // delete client
 export const deleteClient = (client) =>
   del(url.DELETE_CLIENT, { headers: { client } });
+
+// delete menu
+export const deleteMenu = (menu) => del(url.DELETE_MENU, { headers: { menu } });
 
 export const getUserProfile = () => get(url.GET_USER_PROFILE);
 
@@ -285,28 +294,28 @@ export const topSellingData = (month) =>
 export const getEarningChartsData = (month) =>
   get(`${url.GET_EARNING_DATA}/${month}`, { params: { month } });
 
-const getProductComents = () => get(url.GET_PRODUCT_COMMENTS);
+const getMenuComents = () => get(url.GET_MENU_COMMENTS);
 
-const onLikeComment = (commentId, productId) => {
-  return post(`${url.ON_LIKNE_COMMENT}/${productId}/${commentId}`, {
-    params: { commentId, productId },
+const onLikeComment = (commentId, menuId) => {
+  return post(`${url.ON_LIKNE_COMMENT}/${menuId}/${commentId}`, {
+    params: { commentId, menuId },
   });
 };
-const onLikeReply = (commentId, productId, replyId) => {
-  return post(`${url.ON_LIKNE_COMMENT}/${productId}/${commentId}/${replyId}`, {
-    params: { commentId, productId, replyId },
-  });
-};
-
-const onAddReply = (commentId, productId, replyText) => {
-  return post(`${url.ON_ADD_REPLY}/${productId}/${commentId}`, {
-    params: { commentId, productId, replyText },
+const onLikeReply = (commentId, menuId, replyId) => {
+  return post(`${url.ON_LIKNE_COMMENT}/${menuId}/${commentId}/${replyId}`, {
+    params: { commentId, menuId, replyId },
   });
 };
 
-const onAddComment = (productId, commentText) => {
-  return post(`${url.ON_ADD_COMMENT}/${productId}`, {
-    params: { productId, commentText },
+const onAddReply = (commentId, menuId, replyText) => {
+  return post(`${url.ON_ADD_REPLY}/${menuId}/${commentId}`, {
+    params: { commentId, menuId, replyText },
+  });
+};
+
+const onAddComment = (menuId, commentText) => {
+  return post(`${url.ON_ADD_COMMENT}/${menuId}`, {
+    params: { menuId, commentText },
   });
 };
 
@@ -321,7 +330,7 @@ export {
   postJwtLogin,
   postJwtForgetPwd,
   postJwtProfile,
-  getProductComents,
+  getMenuComents,
   onLikeComment,
   onLikeReply,
   onAddReply,

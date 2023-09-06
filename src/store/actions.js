@@ -9,3 +9,7 @@ export * from "./dashboard/actions";
 export * from "./entities/actions";
 
 export * from "./client/actions";
+
+export * from "./menus/actions";
+
+export * from "./mails/actions";

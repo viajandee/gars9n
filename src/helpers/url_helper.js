@@ -12,10 +12,6 @@ export const SOCIAL_LOGIN = "/social-login";
 export const POST_EDIT_JWT_PROFILE = "/post-jwt-profile";
 export const POST_EDIT_PROFILE = "/post-fake-profile";
 
-//PRODUCTS
-export const GET_PRODUCTS = "/products";
-export const GET_PRODUCTS_DETAIL = "/product";
-
 //Mails
 export const GET_INBOX_MAILS = "/inboxmails";
 export const ADD_NEW_INBOX_MAIL = "/add/inboxmail";
@@ -86,6 +82,13 @@ export const DELETE_PROJECT = "/delete/project";
 //TASKS
 export const GET_TASKS = "/tasks";
 
+//CLIENTS
+export const GET_CLIENTS = "/clients";
+export const GET_CLIENT_PROFILE = "/client";
+export const ADD_NEW_CLIENT = "/add/client";
+export const UPDATE_CLIENT = "/update/client";
+export const DELETE_CLIENT = "/delete/client";
+
 //STORES
 export const GET_STORES = "/stores-grid";
 export const GET_STORE_PROFILE = "/store";
@@ -93,19 +96,19 @@ export const ADD_NEW_STORE = "/add/store";
 export const UPDATE_STORE = "/update/store";
 export const DELETE_STORE = "/delete/store";
 
-// USERS
+//MENUS
+export const GET_MENUS = "/menus";
+export const GET_MENUS_DETAIL = "/menu";
+export const ADD_NEW_MENU = "/add/menu";
+export const UPDATE_MENU = "/update/menu";
+export const DELETE_MENU = "/delete/menu";
+
+//USERS
 export const GET_USERS = "/users";
 export const GET_USER_PROFILE = "/user";
 export const ADD_NEW_USER = "/add/user";
 export const UPDATE_USER = "/update/user";
 export const DELETE_USER = "/delete/user";
-
-// CLIENTS
-export const GET_CLIENTS = "/clients";
-export const GET_CLIENT_PROFILE = "/client";
-export const ADD_NEW_CLIENT = "/add/client";
-export const UPDATE_CLIENT = "/update/client";
-export const DELETE_CLIENT = "/delete/client";
 
 //dashboard charts data
 export const GET_WEEKLY_DATA = "/weekly-data";
@@ -116,10 +119,10 @@ export const TOP_SELLING_DATA = "/top-selling-data";
 
 export const GET_EARNING_DATA = "/earning-charts-data";
 
-export const GET_PRODUCT_COMMENTS = "/comments-product";
+export const GET_MENU_COMMENTS = "/comments-menu";
 
-export const ON_LIKNE_COMMENT = "/comments-product-action";
+export const ON_LIKNE_COMMENT = "/comments-menu-action";
 
-export const ON_ADD_REPLY = "/comments-product-add-reply";
+export const ON_ADD_REPLY = "/comments-menu-add-reply";
 
-export const ON_ADD_COMMENT = "/comments-product-add-comment";
+export const ON_ADD_COMMENT = "/comments-menu-add-comment";

@@ -17,7 +17,7 @@ const INIT_STATE = {
   error: {},
 };
 
-const clients = (state = INIT_STATE, action) => {
+const client = (state = INIT_STATE, action) => {
   switch (action.type) {
     case GET_CLIENTS_SUCCESS:
       return {
@@ -90,4 +90,4 @@ const clients = (state = INIT_STATE, action) => {
   }
 };
 
-export default clients;
+export default client;

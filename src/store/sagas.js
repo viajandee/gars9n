@@ -6,6 +6,8 @@ import LayoutSaga from "./layout/saga";
 import dashboardSaga from "./dashboard/saga";
 import entitiesSaga from "./entities/saga";
 import clientSaga from "./client/saga";
+import menusSaga from "./menus/saga";
+import mailsSaga from "./mails/saga";
 
 export default function* rootSaga() {
   yield all([
@@ -15,5 +17,7 @@ export default function* rootSaga() {
     fork(dashboardSaga),
     fork(entitiesSaga),
     fork(clientSaga),
+    fork(menusSaga),
+    fork(mailsSaga),
   ]);
 }

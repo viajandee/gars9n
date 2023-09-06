@@ -1,23 +1,35 @@
-import { Container, Row, Col, Card, CardBody, NavItem, NavLink, TabContent, TabPane, Form, Input, Label } from "reactstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  CardBody,
+  NavItem,
+  NavLink,
+  TabContent,
+  TabPane,
+  Form,
+  Input,
+  Label,
+} from "reactstrap";
 import { useState } from "react";
 import classnames from "classnames";
 
-import Breadcrumbs from 'components/Breadcrumb';
-import { Link } from 'react-router-dom';
+import Breadcrumbs from "../../components/Breadcrumbs";
+import { Link } from "react-router-dom";
 
 const UserCreate = () => {
+  document.title = "Create New User | Gars9n - Digital Menu & Ordering System";
 
-  document.title="Create New User | Gars9n - Digital Menu & Ordering System";
-
-  const [activeTab, setactiveTab] = useState(1)
-  const [passedSteps, setPassedSteps] = useState([1])
+  const [activeTab, setactiveTab] = useState(1);
+  const [passedSteps, setPassedSteps] = useState([1]);
 
   function toggleTab(tab) {
     if (activeTab !== tab) {
-      var modifiedSteps = [...passedSteps, tab]
+      var modifiedSteps = [...passedSteps, tab];
       if (tab >= 1 && tab <= 4) {
-        setactiveTab(tab)
-        setPassedSteps(modifiedSteps)
+        setactiveTab(tab);
+        setPassedSteps(modifiedSteps);
       }
     }
   }
@@ -37,54 +49,46 @@ const UserCreate = () => {
                     <div className='steps clearfix'>
                       <ul>
                         <NavItem
-                          className={classnames({ current: activeTab === 1 })}
-                        >
+                          className={classnames({ current: activeTab === 1 })}>
                           <NavLink
                             className={classnames({ current: activeTab === 1 })}
                             onClick={() => {
-                              setactiveTab(1)
+                              setactiveTab(1);
                             }}
-                            disabled={!(passedSteps || []).includes(1)}
-                          >
+                            disabled={!(passedSteps || []).includes(1)}>
                             <span className='number'>1.</span> User Details
                           </NavLink>
                         </NavItem>
                         <NavItem
-                          className={classnames({ current: activeTab === 2 })}
-                        >
+                          className={classnames({ current: activeTab === 2 })}>
                           <NavLink
                             className={classnames({ current: activeTab === 2 })}
                             onClick={() => {
-                              setactiveTab(2)
+                              setactiveTab(2);
                             }}
-                            disabled={!(passedSteps || []).includes(2)}
-                          >
+                            disabled={!(passedSteps || []).includes(2)}>
                             <span className='number'>2.</span> User Permissions
                           </NavLink>
                         </NavItem>
                         <NavItem
-                          className={classnames({ current: activeTab === 3 })}
-                        >
+                          className={classnames({ current: activeTab === 3 })}>
                           <NavLink
                             className={classnames({ current: activeTab === 3 })}
                             onClick={() => {
-                              setactiveTab(3)
+                              setactiveTab(3);
                             }}
-                            disabled={!(passedSteps || []).includes(3)}
-                          >
+                            disabled={!(passedSteps || []).includes(3)}>
                             <span className='number'>3.</span> Avatar
                           </NavLink>
                         </NavItem>
                         <NavItem
-                          className={classnames({ current: activeTab === 4 })}
-                        >
+                          className={classnames({ current: activeTab === 4 })}>
                           <NavLink
                             className={classnames({ current: activeTab === 4 })}
                             onClick={() => {
-                              setactiveTab(4)
+                              setactiveTab(4);
                             }}
-                            disabled={!(passedSteps || []).includes(4)}
-                          >
+                            disabled={!(passedSteps || []).includes(4)}>
                             <span className='number'>4.</span> Confirm Details
                           </NavLink>
                         </NavItem>
@@ -168,7 +172,9 @@ const UserCreate = () => {
                               <Row>
                                 <Col lg='6'>
                                   <div className='mb-3'>
-                                    <h5 className='font-size-14 mb-4'>User Permissions</h5>
+                                    <h5 className='font-size-14 mb-4'>
+                                      User Permissions
+                                    </h5>
                                     <div className='form-check mb-3'>
                                       <input
                                         className='form-check-input'
@@ -180,8 +186,7 @@ const UserCreate = () => {
                                       />
                                       <label
                                         className='form-check-label'
-                                        htmlFor='userRadio'
-                                      >
+                                        htmlFor='userRadio'>
                                         User
                                       </label>
                                     </div>
@@ -195,8 +200,7 @@ const UserCreate = () => {
                                       />
                                       <label
                                         className='form-check-label'
-                                        htmlFor='superUserRadio'
-                                      >
+                                        htmlFor='superUserRadio'>
                                         Superuser
                                       </label>
                                     </div>
@@ -210,8 +214,7 @@ const UserCreate = () => {
                                       />
                                       <label
                                         className='form-check-label'
-                                        htmlFor='adminRadio'
-                                      >
+                                        htmlFor='adminRadio'>
                                         Administrator
                                       </label>
                                     </div>
@@ -228,26 +231,24 @@ const UserCreate = () => {
                         <li
                           className={
                             activeTab === 1 ? "previous disabled" : "previous"
-                          }
-                        >
+                          }>
                           <Link
                             to='#'
                             onClick={() => {
-                              toggleTab(activeTab - 1)
-                            }}
-                          >
+                              toggleTab(activeTab - 1);
+                            }}>
                             Previous
                           </Link>
                         </li>
                         <li
-                          className={activeTab === 4 ? "next disabled" : "next"}
-                        >
+                          className={
+                            activeTab === 4 ? "next disabled" : "next"
+                          }>
                           <Link
                             to='#'
                             onClick={() => {
-                              toggleTab(activeTab + 1)
-                            }}
-                          >
+                              toggleTab(activeTab + 1);
+                            }}>
                             Next
                           </Link>
                         </li>
@@ -261,7 +262,7 @@ const UserCreate = () => {
         </Container>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default UserCreate
+export default UserCreate;

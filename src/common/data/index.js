@@ -1,4 +1,26 @@
-import { clients } from "./DataClients";
+import { clients, clientProfile } from "./DataClients";
 import { store, storeProfile } from "./DataStores";
+import { foodsData, recentFoods } from "./DataMenus";
+import {
+  inboxmails,
+  starredmails,
+  importantmails,
+  draftmails,
+  sentmails,
+  trashmails,
+} from "./mails";
 
-export { clients, store, storeProfile };
+export {
+  clients,
+  clientProfile,
+  store,
+  storeProfile,
+  foodsData,
+  recentFoods,
+  inboxmails,
+  importantmails,
+  draftmails,
+  sentmails,
+  trashmails,
+  starredmails,
+};

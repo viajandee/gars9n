@@ -1,14 +1,25 @@
-import { Container, Row, Col, Card, CardBody, Form, Input, Label, Alert, FormFeedback, Spinner } from "reactstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  CardBody,
+  Form,
+  Input,
+  Label,
+  Alert,
+  FormFeedback,
+  Spinner,
+} from "reactstrap";
 import { useEffect } from "react";
 
-import Breadcrumbs from '../../components/Breadcrumb';
-import { useSelector, useDispatch } from 'react-redux';
-import { useFormik } from 'formik';
+import Breadcrumbs from "../../components/Breadcrumbs";
+import { useSelector, useDispatch } from "react-redux";
+import { useFormik } from "formik";
 import * as Yup from "yup";
-import { registerAdmin, apiError } from '../../store/actions';
+import { registerAdmin, apiError } from "../../store/actions";
 
-const AdminCreate = props => {
-
+const AdminCreate = (props) => {
   document.title = "Create New Admin | Gars9n - Digital Menu & Ordering System";
 
   const dispatch = useDispatch();
@@ -17,31 +28,33 @@ const AdminCreate = props => {
     enableReinitialize: true,
 
     initialValues: {
-      firstName: '',
-      lastName: '',
-      title: '',
-      company: '',
-      email: '',
-      phone: '',
-      password: '',
-      repassword: '',
+      firstName: "",
+      lastName: "",
+      title: "",
+      company: "",
+      email: "",
+      phone: "",
+      password: "",
+      repassword: "",
     },
     validationSchema: Yup.object({
-      firstName: Yup.string().required('Please Enter First Name'),
-      lastName: Yup.string().required('Please Enter Last Name'),
-      title: Yup.string().required('Please Enter Title'),
-      company: Yup.string().required('Please Enter Company Name'),
-      email: Yup.string().required('Please Enter Email'),
-      phone: Yup.string().required('Please Enter Phone'),
-      password: Yup.string().required('Please Enter Password'),
-      repassword: Yup.string().required('Please Enter Password Again').oneOf([Yup.ref('password'), null], 'Passwords must match'),
+      firstName: Yup.string().required("Please Enter First Name"),
+      lastName: Yup.string().required("Please Enter Last Name"),
+      title: Yup.string().required("Please Enter Title"),
+      company: Yup.string().required("Please Enter Company Name"),
+      email: Yup.string().required("Please Enter Email"),
+      phone: Yup.string().required("Please Enter Phone"),
+      password: Yup.string().required("Please Enter Password"),
+      repassword: Yup.string()
+        .required("Please Enter Password Again")
+        .oneOf([Yup.ref("password"), null], "Passwords must match"),
     }),
     onSubmit: (values) => {
       dispatch(registerAdmin(values));
-    }
+    },
   });
 
-  const { admin, registrationError, loading } = useSelector(state => ({
+  const { admin, registrationError, loading } = useSelector((state) => ({
     admin: state.Account.admin,
     registrationError: state.Account.registrationError,
     loading: state.Account.loading,
@@ -67,12 +80,9 @@ const AdminCreate = props => {
                       e.preventDefault();
                       validation.handleSubmit();
                       return false;
-                    }}
-                  >
+                    }}>
                     {admin && admin ? (
-                      <Alert color='success'>
-                        Admin added successfully!
-                      </Alert>
+                      <Alert color='success'>Admin added successfully!</Alert>
                     ) : null}
 
                     {registrationError && registrationError ? (
@@ -83,43 +93,51 @@ const AdminCreate = props => {
                     <Row>
                       <Col lg='6'>
                         <div className='mb-3'>
-                          <Label className='form-label'>
-                            First name
-                          </Label>
+                          <Label className='form-label'>First name</Label>
                           <Input
                             type='text'
                             className='form-control'
                             id='firstName'
                             onChange={validation.handleChange}
                             onBlur={validation.handleBlur}
-                            value={validation.values.firstName || ''}
+                            value={validation.values.firstName || ""}
                             invalid={
-                              validation.touched.firstName && validation.errors.firstName ? true : false
+                              validation.touched.firstName &&
+                              validation.errors.firstName
+                                ? true
+                                : false
                             }
                           />
-                          {validation.touched.firstName && validation.errors.firstName ? (
-                            <FormFeedback type='invalid'>{validation.errors.firstName}</FormFeedback>
+                          {validation.touched.firstName &&
+                          validation.errors.firstName ? (
+                            <FormFeedback type='invalid'>
+                              {validation.errors.firstName}
+                            </FormFeedback>
                           ) : null}
                         </div>
                       </Col>
                       <Col lg='6'>
                         <div className='mb-3'>
-                          <Label className='form-label'>
-                            Last name
-                          </Label>
+                          <Label className='form-label'>Last name</Label>
                           <Input
                             type='text'
                             className='form-control'
                             id='lastName'
                             onChange={validation.handleChange}
                             onBlur={validation.handleBlur}
-                            value={validation.values.lastName || ''}
+                            value={validation.values.lastName || ""}
                             invalid={
-                              validation.touched.lastName && validation.errors.lastName ? true : false
+                              validation.touched.lastName &&
+                              validation.errors.lastName
+                                ? true
+                                : false
                             }
                           />
-                          {validation.touched.lastName && validation.errors.lastName ? (
-                            <FormFeedback type='invalid'>{validation.errors.lastName}</FormFeedback>
+                          {validation.touched.lastName &&
+                          validation.errors.lastName ? (
+                            <FormFeedback type='invalid'>
+                              {validation.errors.lastName}
+                            </FormFeedback>
                           ) : null}
                         </div>
                       </Col>
@@ -127,43 +145,51 @@ const AdminCreate = props => {
                     <Row>
                       <Col lg='6'>
                         <div className='mb-3'>
-                          <Label className='form-label'>
-                            Title
-                          </Label>
+                          <Label className='form-label'>Title</Label>
                           <Input
                             type='text'
                             className='form-control'
                             id='title'
                             onChange={validation.handleChange}
                             onBlur={validation.handleBlur}
-                            value={validation.values.title || ''}
+                            value={validation.values.title || ""}
                             invalid={
-                              validation.touched.title && validation.errors.title ? true : false
+                              validation.touched.title &&
+                              validation.errors.title
+                                ? true
+                                : false
                             }
                           />
-                          {validation.touched.title && validation.errors.title ? (
-                            <FormFeedback type='invalid'>{validation.errors.title}</FormFeedback>
+                          {validation.touched.title &&
+                          validation.errors.title ? (
+                            <FormFeedback type='invalid'>
+                              {validation.errors.title}
+                            </FormFeedback>
                           ) : null}
                         </div>
                       </Col>
                       <Col lg='6'>
                         <div className='mb-3'>
-                          <Label className='form-label'>
-                            Company Name
-                          </Label>
+                          <Label className='form-label'>Company Name</Label>
                           <Input
                             type='text'
                             className='form-control'
                             id='company'
                             onChange={validation.handleChange}
                             onBlur={validation.handleBlur}
-                            value={validation.values.company || ''}
+                            value={validation.values.company || ""}
                             invalid={
-                              validation.touched.company && validation.errors.company ? true : false
+                              validation.touched.company &&
+                              validation.errors.company
+                                ? true
+                                : false
                             }
                           />
-                          {validation.touched.company && validation.errors.company ? (
-                            <FormFeedback type='invalid'>{validation.errors.company}</FormFeedback>
+                          {validation.touched.company &&
+                          validation.errors.company ? (
+                            <FormFeedback type='invalid'>
+                              {validation.errors.company}
+                            </FormFeedback>
                           ) : null}
                         </div>
                       </Col>
@@ -171,43 +197,51 @@ const AdminCreate = props => {
                     <Row>
                       <Col lg='6'>
                         <div className='mb-3'>
-                          <Label className='form-label'>
-                            Email
-                          </Label>
+                          <Label className='form-label'>Email</Label>
                           <Input
                             type='email'
                             className='form-control'
                             id='email'
                             onChange={validation.handleChange}
                             onBlur={validation.handleBlur}
-                            value={validation.values.email || ''}
+                            value={validation.values.email || ""}
                             invalid={
-                              validation.touched.email && validation.errors.email ? true : false
+                              validation.touched.email &&
+                              validation.errors.email
+                                ? true
+                                : false
                             }
                           />
-                          {validation.touched.email && validation.errors.email ? (
-                            <FormFeedback type='invalid'>{validation.errors.email}</FormFeedback>
+                          {validation.touched.email &&
+                          validation.errors.email ? (
+                            <FormFeedback type='invalid'>
+                              {validation.errors.email}
+                            </FormFeedback>
                           ) : null}
                         </div>
                       </Col>
                       <Col lg='6'>
                         <div className='mb-3'>
-                          <Label className='form-label'>
-                            Phone number
-                          </Label>
+                          <Label className='form-label'>Phone number</Label>
                           <Input
                             type='text'
                             className='form-control'
                             id='phone'
                             onChange={validation.handleChange}
                             onBlur={validation.handleBlur}
-                            value={validation.values.phone || ''}
+                            value={validation.values.phone || ""}
                             invalid={
-                              validation.touched.phone && validation.errors.phone ? true : false
+                              validation.touched.phone &&
+                              validation.errors.phone
+                                ? true
+                                : false
                             }
                           />
-                          {validation.touched.phone && validation.errors.phone ? (
-                            <FormFeedback type='invalid'>{validation.errors.phone}</FormFeedback>
+                          {validation.touched.phone &&
+                          validation.errors.phone ? (
+                            <FormFeedback type='invalid'>
+                              {validation.errors.phone}
+                            </FormFeedback>
                           ) : null}
                         </div>
                       </Col>
@@ -215,43 +249,51 @@ const AdminCreate = props => {
                     <Row>
                       <Col lg='6'>
                         <div className='mb-3'>
-                          <Label className='form-label'>
-                            Password
-                          </Label>
+                          <Label className='form-label'>Password</Label>
                           <Input
                             type='password'
                             className='form-control'
                             id='password'
                             onChange={validation.handleChange}
                             onBlur={validation.handleBlur}
-                            value={validation.values.password || ''}
+                            value={validation.values.password || ""}
                             invalid={
-                              validation.touched.password && validation.errors.password ? true : false
+                              validation.touched.password &&
+                              validation.errors.password
+                                ? true
+                                : false
                             }
                           />
-                          {validation.touched.password && validation.errors.password ? (
-                            <FormFeedback type='invalid'>{validation.errors.password}</FormFeedback>
+                          {validation.touched.password &&
+                          validation.errors.password ? (
+                            <FormFeedback type='invalid'>
+                              {validation.errors.password}
+                            </FormFeedback>
                           ) : null}
                         </div>
                       </Col>
                       <Col lg='6'>
                         <div className='mb-3'>
-                          <Label className='form-label'>
-                            Repeat Password
-                          </Label>
+                          <Label className='form-label'>Repeat Password</Label>
                           <Input
                             type='password'
                             className='form-control'
                             id='repassword'
                             onChange={validation.handleChange}
                             onBlur={validation.handleBlur}
-                            value={validation.values.repassword || ''}
+                            value={validation.values.repassword || ""}
                             invalid={
-                              validation.touched.repassword && validation.errors.repassword ? true : false
+                              validation.touched.repassword &&
+                              validation.errors.repassword
+                                ? true
+                                : false
                             }
                           />
-                          {validation.touched.repassword && validation.errors.repassword ? (
-                            <FormFeedback type='invalid'>{validation.errors.repassword}</FormFeedback>
+                          {validation.touched.repassword &&
+                          validation.errors.repassword ? (
+                            <FormFeedback type='invalid'>
+                              {validation.errors.repassword}
+                            </FormFeedback>
                           ) : null}
                         </div>
                       </Col>

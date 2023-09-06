@@ -1,9 +1,10 @@
 import { Container } from "reactstrap";
 
-import Breadcrumb from "../../components/Breadcrumb";
+import Breadcrumb from "../../components/Breadcrumbs";
 import CardUser from "./card-user";
 
-const Dashboard = () => {document.title = "Dashboard | Gars9n - Digital Menu & Ordering System";
+const Dashboard = () => {
+  document.title = "Dashboard | Gars9n - Digital Menu & Ordering System";
 
   return (
     <>

@@ -14,7 +14,7 @@ import product13 from "./Pro-17.png";
 
 export { product1, product2, product3, product4, product5, product6, product7, product8, product9, product10, product11, product12, product13 }
 
-export const productImages = {
+export const foodImages = {
   product1: product1,
   product2: product2,
   product3: product3,

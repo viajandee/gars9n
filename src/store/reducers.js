@@ -6,6 +6,8 @@ import Dashboard from "./dashboard/reducer";
 import Account from "./settings/admins/reducer";
 import entities from "./entities/reducer";
 import client from "./client/reducer";
+import menus from "./menus/reducer";
+import mails from "./mails/reducer";
 
 const rootReducer = combineReducers({
   Layout,
@@ -14,6 +16,8 @@ const rootReducer = combineReducers({
   Account,
   entities,
   client,
+  menus,
+  mails,
 });
 
 export default rootReducer;

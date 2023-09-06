@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Link, withRouter } from "react-router-dom";
-import TableContainer from "Common/TableContainer";
-import { ModalHeader } from "reactstrap";
 import {
   Card,
   CardBody,
@@ -15,12 +13,14 @@ import {
   Form,
   FormFeedback,
   UncontrolledTooltip,
+  ModalHeader,
 } from "reactstrap";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { Name, Email, Tags, Projects } from "./ClientListCol";
-import Breadcrumb from "components/Breadcrumb";
-import DeleteModal from "Common/DeleteModal";
+import Breadcrumbs from "../Breadcrumbs";
+import DeleteModal from "../../Common/DeleteModal";
+import TableContainer from "../../Common/TableContainer";
 import {
   getClients as onGetClients,
   addNewClient as onAddNewClient,
@@ -42,7 +42,7 @@ const ClientsList = () => {
     initialValues: {
       name: (client && client.name) || "",
       designation: (client && client.designation) || "",
-      tags: (client && client.tags) || [],
+      tags: (client && client.tags) || "",
       email: (client && client.email) || "",
       projects: (client && client.projects) || "",
     },
@@ -64,7 +64,7 @@ const ClientsList = () => {
           projects: values.projects,
         };
 
-        // update Client
+        // update client
         dispatch(onUpdateClient(updateClient));
         validation.resetForm();
         setIsEdit(false);
@@ -77,7 +77,7 @@ const ClientsList = () => {
           tags: values["tags"],
           projects: values["projects"],
         };
-        // save new Client
+        // save new client
         dispatch(onAddNewClient(newClient));
         validation.resetForm();
       }
@@ -85,7 +85,6 @@ const ClientsList = () => {
     },
   });
 
-  // useSlector
   const { clients } = useSelector((state) => ({
     clients: state.client.clients,
   }));
@@ -97,55 +96,12 @@ const ClientsList = () => {
   const columns = useMemo(
     () => [
       {
-        id: 1,
-        Headers: "#",
+        Header: "#",
         Cell: () => {
           return <input type='checkbox' />;
         },
       },
       {
-        id: 2,
-        Header: "Name",
-        accessor: "name",
-        filterable: true,
-        Cell: (cellProps) => {
-          return <Name {...cellProps} />;
-        },
-      },
-      {
-        id: 3,
-        Header: "Email",
-        accessor: "email",
-        filterable: true,
-        Cell: (cellProps) => {
-          return <Email {...cellProps} />;
-        },
-      },
-      {
-        id: 4,
-        Header: "Tags",
-        accessor: "tags",
-        filterable: true,
-        Cell: (cellProps) => {
-          return <Tags {...cellProps} />;
-        },
-      },
-      {
-        id: 5,
-        Header: "Projects",
-        accessor: "projects",
-        filterable: true,
-        Cell: (cellProps) => {
-          return (
-            <>
-              {" "}
-              <Projects {...cellProps} />{" "}
-            </>
-          );
-        },
-      },
-      {
-        id: 6,
         Header: "Img",
         disableFilters: true,
         filterable: true,
@@ -170,37 +126,68 @@ const ClientsList = () => {
         ),
       },
       {
-        id: 7,
+        Header: "Name",
+        accessor: "name",
+        filterable: true,
+        Cell: (cellProps) => {
+          return <Name {...cellProps} />;
+        },
+      },
+      {
+        Header: "Email",
+        accessor: "email",
+        filterable: true,
+        Cell: (cellProps) => {
+          return <Email {...cellProps} />;
+        },
+      },
+      {
+        Header: "Tags",
+        accessor: "tags",
+        filterable: true,
+        Cell: (cellProps) => {
+          return <Tags {...cellProps} />;
+        },
+      },
+      {
+        Header: "Projects",
+        accessor: "projects",
+        filterable: true,
+        Cell: (cellProps) => {
+          return (
+            <>
+              {" "}
+              <Projects {...cellProps} />{" "}
+            </>
+          );
+        },
+      },
+      {
         Header: "Action",
         Cell: (cellProps) => {
-          const client = cellProps.row.original;
           return (
             <div className='d-flex gap-3'>
               <Link
                 to='#'
                 className='text-success'
-                onClick={() => handleClientClick(client)}>
-                <i
-                  className='mdi mdi-pencil font-size-18'
-                  id={`edittooltip${client.id}`}
-                />
-                <UncontrolledTooltip
-                  placement='top'
-                  target={`edittooltip${client.id}`}>
+                onClick={() => {
+                  const userData = cellProps.row.original;
+                  handleClientClick(userData);
+                }}>
+                <i className='mdi mdi-pencil font-size-18' id='edittooltip' />
+                <UncontrolledTooltip placement='top' target='edittooltip'>
                   Edit
                 </UncontrolledTooltip>
               </Link>
               <Link
                 to='#'
                 className='text-danger'
-                onClick={() => onClickDelete(client)}>
-                <i
-                  className='mdi mdi-delete font-size-18'
-                  id={`deletetooltip${client.id}`}
-                />
-                <UncontrolledTooltip
-                  placement='top'
-                  target={`deletetooltip${client.id}`}>
+                onClick={() => {
+                  const userData = cellProps.row.original;
+                  onClickDelete(userData);
+                }}>
+                <i className='mdi mdi-delete font-size-18' id='deletetooltip' />
+                <UncontrolledTooltip placement='top' target='deletetooltip'>
                   Delete
                 </UncontrolledTooltip>
               </Link>
@@ -213,38 +200,38 @@ const ClientsList = () => {
   );
 
   useEffect(() => {
-    if (client && !client.length) {
+    if (clients && !clients.length) {
       dispatch(onGetClients());
       setIsEdit(false);
     }
-  }, [dispatch, client]);
+  }, [dispatch, clients]);
 
   useEffect(() => {
-    setClient(client);
+    setClient(clients);
     setIsEdit(false);
-  }, [client]);
+  }, [clients]);
 
   useEffect(() => {
-    if (!isEmpty(client) && !!isEdit) {
-      setClient(client);
+    if (!isEmpty(clients) && !!isEdit) {
+      setClient(clients);
       setIsEdit(false);
     }
-  }, [client]);
+  }, [clients]);
 
   const toggle = () => {
     setModal(!modal);
   };
 
   const handleClientClick = (arg) => {
-    const client = arg;
+    const clientData = arg;
 
     setClient({
-      id: client.id,
-      name: client.name,
-      designation: client.designation,
-      email: client.email,
-      tags: client.tags,
-      projects: client.projects,
+      id: clientData.id,
+      name: clientData.name,
+      designation: clientData.designation,
+      email: clientData.email,
+      tags: clientData.tags,
+      projects: clientData.projects,
     });
     setIsEdit(true);
 
@@ -264,17 +251,21 @@ const ClientsList = () => {
     }
   };
 
+  // DELETE CLIENTS
   const [deleteModal, setDeleteModal] = useState(false);
 
-  const onClickDelete = (clients) => {
-    setClient(clients);
+  const onClickDelete = (client) => {
+    setClient(client);
     setDeleteModal(true);
   };
 
   const handleDeleteClient = () => {
-    dispatch(onDeleteClient(client));
-    onPaginationPageChange("");
-    setDeleteModal(false);
+    if (client.id) {
+      dispatch(onDeleteClient(client.id));
+      setDeleteModal(false);
+      onPaginationPageChange(1);
+      setClient(null);
+    }
   };
 
   const handleClientClicks = () => {
@@ -282,6 +273,8 @@ const ClientsList = () => {
     setIsEdit(false);
     toggle();
   };
+
+  const keyField = "id";
 
   return (
     <React.Fragment>
@@ -292,7 +285,7 @@ const ClientsList = () => {
       />
       <div className='page-content'>
         <Container fluid>
-          <Breadcrumb title='Clients' BreadcrumbItem='Clients List' />
+          <Breadcrumbs title='Clients' BreadcrumbItem='Client List' />
           <Row>
             <Col lg='12'>
               <Card>
@@ -306,6 +299,7 @@ const ClientsList = () => {
                     customPageSize={10}
                     className='custom-header-css'
                   />
+
                   <Modal isOpen={modal} toggle={toggle}>
                     <ModalHeader toggle={toggle} tag='h4'>
                       {!!isEdit ? "Edit Client" : "Add Client"}
@@ -330,12 +324,93 @@ const ClientsList = () => {
                                 invalid={
                                   validation.touched.name &&
                                   validation.errors.name
+                                    ? true
+                                    : false
                                 }
                               />
                               {validation.touched.name &&
                               validation.errors.name ? (
                                 <FormFeedback type='invalid'>
                                   {validation.errors.name}
+                                </FormFeedback>
+                              ) : null}
+                            </div>
+                            <div className='mb-3'>
+                              <Label className='form-label'>Designation</Label>
+                              <Input
+                                name='designation'
+                                label='Designation'
+                                type='text'
+                                onChange={validation.handleChange}
+                                onBlur={validation.handleBlur}
+                                value={validation.values.designation || ""}
+                                invalid={
+                                  validation.touched.designation &&
+                                  validation.errors.designation
+                                    ? true
+                                    : false
+                                }
+                              />
+                              {validation.touched.designation &&
+                              validation.errors.designation ? (
+                                <FormFeedback type='invalid'>
+                                  {validation.errors.designation}
+                                </FormFeedback>
+                              ) : null}
+                            </div>
+                            <div className='mb-3'>
+                              <Label className='form-label'>Email</Label>
+                              <Input
+                                name='email'
+                                label='Email'
+                                type='email'
+                                onChange={validation.handleChange}
+                                onBlur={validation.handleBlur}
+                                value={validation.values.email || ""}
+                                invalid={
+                                  validation.touched.email &&
+                                  validation.errors.email
+                                    ? true
+                                    : false
+                                }
+                              />
+                              {validation.touched.email &&
+                              validation.errors.email ? (
+                                <FormFeedback type='invalid'>
+                                  {validation.errors.email}
+                                </FormFeedback>
+                              ) : null}
+                            </div>
+                            <div className='mb-3'>
+                              <Label className='form-label'>Option</Label>
+                              <Input
+                                type='select'
+                                name='tags'
+                                className='form-select'
+                                multiple={true}
+                                onChange={validation.handleChange}
+                                onBlur={validation.handleBlur}
+                                value={validation.values.tags || []}
+                                invalid={
+                                  validation.touched.tags &&
+                                  validation.errors.tags
+                                    ? true
+                                    : false
+                                }>
+                                <option>Photoshop</option>
+                                <option>illustrator</option>
+                                <option>Html</option>
+                                <option>Php</option>
+                                <option>Java</option>
+                                <option>Python</option>
+                                <option>UI/UX Designer</option>
+                                <option>Ruby</option>
+                                <option>Css</option>
+                              </Input>
+                              {validation.touched.tags &&
+                              validation.errors.tags ? (
+                                <FormFeedback type='invalid'>
+                                  {validation.errors.tags}
                                 </FormFeedback>
                               ) : null}
                             </div>
@@ -351,6 +426,8 @@ const ClientsList = () => {
                                 invalid={
                                   validation.touched.projects &&
                                   validation.errors.projects
+                                    ? true
+                                    : false
                                 }
                               />
                               {validation.touched.projects &&

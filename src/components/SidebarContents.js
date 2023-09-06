@@ -93,34 +93,86 @@ const SidebarContent = (props) => {
             <li>
               <Link to='/#'>
                 <i className='bx bx-home'></i>
-                <span>{props.t("Dashboard")}</span>
+                <span>{props.t("Home")}</span>
               </Link>
             </li>
             <li className='menu-title'>{props.t("Manage")} </li>
+
             <li>
               <Link to='/clients-list'>
                 <i className='bx bx-user-circle'></i>
                 <span>{props.t("Clients")}</span>
               </Link>
+            </li>
+
+            <li>
               <Link to='/stores-grid'>
-                <i className='bx bx-store'></i>
+                <i className='bx bx-user-circle'></i>
                 <span>{props.t("Stores")}</span>
               </Link>
-              <Link to='/menus'>
-                <i className='bx bx-food-menu'></i>
-                <span>{props.t("Menus")}</span>
+            </li>
+
+            <li>
+              <Link to='/menus' className='has-arrow'>
+                <i className='bx bx-store'></i>
+                <span>{props.t("Food Menus")}</span>
               </Link>
+              <ul className='sub-menu'>
+                <li>
+                  <Link to='/menu-food-list'>{props.t("Foods List")}</Link>
+                </li>
+                <li>
+                  <Link to='/menu-food-detail/1'>{props.t("Food Detail")}</Link>
+                </li>
+                <li>
+                  <Link to='/menu-add-food'>{props.t("Add Food")}</Link>
+                </li>
+              </ul>
             </li>
             <li className='menu-title'>{props.t("Utilities")} </li>
             <li>
-              <Link to='/Email'>
+              <Link to='/#' className='has-arrow '>
                 <i className='bx bx-envelope'></i>
                 <span>{props.t("Email")}</span>
               </Link>
+              <ul className='sub-menu'>
+                <li>
+                  <Link to='/email-inbox'>{props.t("Inbox")}</Link>
+                </li>
+                <li>
+                  <Link to='/email-read'>{props.t("Read Email")} </Link>
+                </li>
+                <li>
+                  <Link to='/#'>
+                    <span
+                      className='badge rounded-pill badge-soft-success float-end'
+                      key='t-new'>
+                      {props.t("New")}
+                    </span>
+                    <span key='t-email-templates'>{props.t("Templates")}</span>
+                  </Link>
+                  <ul className='sub-menu'>
+                    <li>
+                      <Link to='/email-template-basic'>
+                        {props.t("Basic Action")}
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to='/email-template-alert'>
+                        {props.t("Alert Email")}{" "}
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li>
               <Link to='/generator'>
                 <i className='bx bx-area'></i>
                 <span>{props.t("QR Code Generator")}</span>
               </Link>
+            </li>
+            <li>
               <Link to='/reports'>
                 <i className='bx bx-line-chart'></i>
                 <span>{props.t("Reports")}</span>
