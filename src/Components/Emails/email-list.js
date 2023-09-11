@@ -21,7 +21,7 @@ const MailsList = () => {
     mails: state.mails.mails,
   }));
 
-  // State for managing selected mail items and dropdown menus
+  // eslint-disable-next-line no-unused-vars
   const [mailList, setMailList] = useState([]);
   const [folderMenu, setFolderMenu] = useState(false);
   const [tagMenu, setTagMenu] = useState(false);

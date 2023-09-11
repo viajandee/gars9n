@@ -10,8 +10,8 @@ import { authProtectedRoutes, publicRoutes } from "./routes";
 import Authmiddleware from "./routes/route";
 
 import { initFirebaseBackend } from "./helpers/firebase_helper";
-import VerticalLayout from "./components";
-import NonAuthLayout from "./components";
+import VerticalLayout from "./Components";
+import NonAuthLayout from "./Components";
 
 import "./assets/scss/theme.scss";
 

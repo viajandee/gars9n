@@ -10,7 +10,7 @@ import {
   usePagination,
 } from "react-table";
 import { Table, Row, Col, Button, Input } from "reactstrap";
-import { Filter, DefaultColumnFilter } from "../Common/filter";
+import { Filter, DefaultColumnFilter } from "./filter";
 
 function GlobalFilter({
   preGlobalFilteredRows,

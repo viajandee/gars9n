@@ -13,7 +13,7 @@ import {
 } from "reactstrap";
 import { useEffect } from "react";
 
-import Breadcrumbs from "../../components/Breadcrumbs";
+import Breadcrumbs from "../../Components/Breadcrumbs";
 import { useSelector, useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup";

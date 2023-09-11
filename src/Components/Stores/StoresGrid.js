@@ -33,7 +33,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import Breadcrumbs from "../Breadcrumbs";
-import DeleteModal from "Common/DeleteModal";
+import DeleteModal from "CommonTable/DeleteModal";
 
 const StoresGrid = () => {
   document.title = "Stores | Gars9n - Digital Menu & Ordering System";

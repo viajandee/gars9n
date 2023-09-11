@@ -254,36 +254,11 @@ const EmailBasicTemplte = () => {
                                         fontSize: "14px",
                                         verticalAlign: "top",
                                         margin: "0px",
-                                        padding: "0 0 20px",
-                                      }}
-                                      valign='top'>
-                                      <b>Skote</b>
-                                      <p>Support Team</p>
-                                    </td>
-                                  </tr>
-
-                                  <tr
-                                    style={{
-                                      fontFamily:
-                                        "'Helvetica Neue',Helvetica,Arial,sans-serif",
-                                      boxSizing: "border-box",
-                                      fontSize: "14px",
-                                      margin: "0px",
-                                    }}>
-                                    <td
-                                      className='content-block'
-                                      style={{
-                                        fontFamily:
-                                          "'Helvetica Neue',Helvetica,Arial,sans-serif",
-                                        boxSizing: "border-box",
-                                        fontSize: "14px",
-                                        verticalAlign: "top",
-                                        margin: "0px",
                                         padding: "0",
                                         textAlign: "center",
                                       }}
                                       valign='top'>
-                                      © {new Date().getFullYear()} Skote
+                                      © {new Date().getFullYear()} Garson
                                     </td>
                                   </tr>
                                 </tbody>

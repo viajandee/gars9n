@@ -8,18 +8,18 @@ import UserCreate from "pages/Users/users-create";
 import UserAdmin from "pages/Settings/admins-create";
 import Pages404 from "pages/Utility/pages-404";
 // STORES
-import StoresGrid from "components/Stores/StoresGrid";
+import StoresGrid from "Components/Stores/StoresGrid";
 // CLIENTS
-import ClientsList from "components/Client/ClientsList";
+import ClientsList from "Components/Client/ClientsList";
 // MENUS
-import MenuFoodList from "../components/Menus/MenuFoodList/index";
-import FoodListDetail from "../components/Menus/MenuFoodList/FoodListDetail";
-import MenuAddFoods from "../components/Menus/AddFood";
+import MenuFoodList from "../Components/Menus/MenuFoodList/index";
+import FoodListDetail from "../Components/Menus/MenuFoodList/FoodListDetail";
+import MenuAddFoods from "../Components/Menus/AddFood";
 // EMAILS
-import EmailInbox from "../components/Emails/email-inbox";
-import EmailRead from "../components/Emails/email-read";
-import EmailBasicTemplete from "../components/Emails/email-basic-template";
-import EmailAlertTemplete from "../components/Emails/email-template-alert";
+import EmailInbox from "../Components/Emails/email-inbox";
+import EmailRead from "../Components/Emails/email-read";
+import EmailBasicTemplete from "../Components/Emails/email-basic-template";
+import EmailAlertTemplete from "../Components/Emails/email-template-alert";
 
 const authProtectedRoutes = [
   { path: "/dashboard", component: Dashboard },

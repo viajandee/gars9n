@@ -19,8 +19,8 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 import { Name, Email, Tags, Projects } from "./ClientListCol";
 import Breadcrumbs from "../Breadcrumbs";
-import DeleteModal from "../../Common/DeleteModal";
-import TableContainer from "../../Common/TableContainer";
+import DeleteModal from "../../CommonTable/DeleteModal";
+import TableContainer from "../../CommonTable/TableContainer";
 import {
   getClients as onGetClients,
   addNewClient as onAddNewClient,

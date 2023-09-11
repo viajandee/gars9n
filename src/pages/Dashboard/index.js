@@ -1,6 +1,6 @@
 import { Container } from "reactstrap";
 
-import Breadcrumb from "../../components/Breadcrumbs";
+import Breadcrumb from "../../Components/Breadcrumbs";
 import CardUser from "./card-user";
 
 const Dashboard = () => {

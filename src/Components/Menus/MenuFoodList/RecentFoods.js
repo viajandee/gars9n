@@ -12,14 +12,14 @@ const RecentFoods = ({ recentFoods }) => {
         <div>
           <h5 className='mb-3'>Recent food :</h5>
           <Row>
-            {map(recentFoods, (food, key) => (
-              <Col xl='4' sm='6' key={"__food__" + key}>
+            {map(recentFoods, (menu, key) => (
+              <Col xl='4' sm='6' key={"__menu__" + key}>
                 <Card>
                   <CardBody>
                     <Row className='align-items-center'>
                       <Col md='4'>
                         <img
-                          src={images[food.img]}
+                          src={images[menu.img]}
                           alt=''
                           className='img-fluid mx-auto d-block'
                         />
@@ -27,8 +27,10 @@ const RecentFoods = ({ recentFoods }) => {
                       <Col md='8'>
                         <div className='text-center text-md-start pt-3 pt-md-0'>
                           <h5 className='text-truncate'>
-                            <Link to='#' className='text-dark'>
-                              {food.name}
+                            <Link
+                              to={`/menu-food-detail/${menu.id}`}
+                              className='text-dark'>
+                              {menu.name}
                             </Link>
                           </h5>
                         </div>

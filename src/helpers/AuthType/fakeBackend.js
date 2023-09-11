@@ -14,7 +14,7 @@ import {
   draftmails,
   sentmails,
   trashmails,
-} from "../../common/data";
+} from "../../Common/Data";
 
 let clients = [
   {
@@ -228,7 +228,6 @@ const fakeBackend = () => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         if (foodsData) {
-          // Passing fake JSON data as response
           const { params } = config;
           const menus = foodsData.find(
             (menu) => menu.id.toString() === params.id.toString()

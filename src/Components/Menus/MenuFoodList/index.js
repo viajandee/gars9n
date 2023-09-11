@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Link, withRouter } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { getMenus } from "../../../store/menus/actions";
+import { getMenus } from "store/menus/actions";
 import { isEmpty, map } from "lodash";
 import {
   Card,
@@ -23,17 +23,18 @@ import {
 import Breadcrumbs from "../../Breadcrumbs";
 import classnames from "classnames";
 import { foodImages } from "../../../assets/images/product";
-import { foodsData } from "../../../common/data/DataMenus";
+import { foodsData } from "../../../Common/Data/DataMenus";
 
 const FoodsList = (props) => {
   document.title = "Foods List | Gars9n - Digital Menu & Ordering System";
 
   const dispatch = useDispatch();
 
-  const { food } = useSelector((state) => ({
-    food: state.menus.food,
+  const { menu } = useSelector((state) => ({
+    menu: state.menus.menu,
   }));
 
+  // eslint-disable-next-line no-unused-vars
   const [FilterList, setFilterList] = useState([
     { id: 1, name: "KFC" },
     { id: 2, name: "McDonald's" },
@@ -44,15 +45,12 @@ const FoodsList = (props) => {
   const [foodList, setFoodList] = useState([]);
   const [activeTab, setActiveTab] = useState("1");
   const [page, setPage] = useState(1);
+  // eslint-disable-next-line no-unused-vars
   const [totalPage, setTotalPage] = useState(5);
 
   const onChangeCategory = (category) => {
-    setFoodList(foodsData.filter((food) => food.category === category));
+    setFoodList(foodsData.filter((menu) => menu.category === category));
   };
-
-  useEffect(() => {
-    setFoodList(foodsData);
-  }, []);
 
   const toggleTab = (tab) => {
     if (activeTab !== tab) {
@@ -61,12 +59,16 @@ const FoodsList = (props) => {
   };
 
   useEffect(() => {
+    setFoodList(foodsData);
+  }, [foodsData]);
+
+  useEffect(() => {
     dispatch(getMenus());
   }, [dispatch]);
 
   useEffect(() => {
-    if (!isEmpty(food)) setFoodList(food);
-  }, [food]);
+    if (!isEmpty(foodList)) setFoodList(menu);
+  }, [menu]);
 
   const handlePageClick = (page) => {
     setPage(page);
@@ -86,13 +88,13 @@ const FoodsList = (props) => {
                   <div>
                     <h5 className='font-size-14 mb-3'>Food List</h5>
                     <ul className='list-unstyled product-list'>
-                      {FilterList.map((food, key) => (
+                      {FilterList.map((menu, key) => (
                         <li key={"_li_" + key}>
                           <Link
-                            to={food.link}
-                            onClick={() => onChangeCategory(food.name)}>
+                            to={menu.link}
+                            onClick={() => onChangeCategory(menu.name)}>
                             <i className='mdi mdi-chevron-right me-1' />
-                            {food.name}
+                            {menu.name}
                           </Link>
                         </li>
                       ))}
@@ -152,19 +154,19 @@ const FoodsList = (props) => {
               </Row>
               {/*=== Search & Icon Name ===*/}
 
-              {/* Images Food >>>NEW<<< */}
+              {/* Images Food */}
               <Row>
                 {!isEmpty(foodList) &&
-                  foodList.map((food, key) => (
-                    <Col xl='4' sm='6' key={key}>
+                  foodList.map((menu, key) => (
+                    <Col xl='4' sm='6' key={"_col_" + key}>
                       <Card
                         onClick={() =>
-                          history.push(`/menu-food-detail/${food.id}`)
+                          history.push(`/menu-food-detail/${menu.id}`)
                         }>
                         <CardBody>
                           <div className='food-img position-relative'>
                             <img
-                              src={foodImages[food.image]}
+                              src={foodImages[menu.image]}
                               alt=''
                               className='img-fluid mx-auto d-block'
                             />
@@ -172,9 +174,9 @@ const FoodsList = (props) => {
                           <div className='mt-4 text-center'>
                             <h5 className='mb-3 text-truncate'>
                               <Link
-                                to={"/menu-food-detail" + food.id}
+                                to={"/menu-food-detail" + menu.id}
                                 className='text-dark'>
-                                {food.name}{" "}
+                                {menu.name}
                               </Link>
                             </h5>
                           </div>
@@ -224,7 +226,7 @@ const FoodsList = (props) => {
 };
 
 FoodsList.propTypes = {
-  food: PropTypes.array,
+  menus: PropTypes.array,
   history: PropTypes.object,
   getMenus: PropTypes.func,
 };

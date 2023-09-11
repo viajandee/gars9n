@@ -8,7 +8,7 @@ import {
   draftmails,
   sentmails,
   trashmails,
-} from "./mails";
+} from "./Mails";
 
 export {
   clients,

@@ -15,7 +15,7 @@ import {
 import { useState } from "react";
 import classnames from "classnames";
 
-import Breadcrumbs from "../../components/Breadcrumbs";
+import Breadcrumbs from "../../Components/Breadcrumbs";
 import { Link } from "react-router-dom";
 
 const UserCreate = () => {

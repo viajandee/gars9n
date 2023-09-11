@@ -1,6 +1,5 @@
 import React from "react";
 import { Row, Col, Container } from "reactstrap";
-import { Link } from "react-router-dom";
 import Breadcrumb from "../Breadcrumbs";
 
 const EmailAlertTemplte = (props) => {

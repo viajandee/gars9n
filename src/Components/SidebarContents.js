@@ -119,7 +119,7 @@ const SidebarContent = (props) => {
               </Link>
               <ul className='sub-menu'>
                 <li>
-                  <Link to='/menu-food-list'>{props.t("Foods List")}</Link>
+                  <Link to='/menu-food-list'>{props.t("Food List")}</Link>
                 </li>
                 <li>
                   <Link to='/menu-food-detail/1'>{props.t("Food Detail")}</Link>
