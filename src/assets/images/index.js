@@ -14,6 +14,7 @@ import img5 from "./product/img-5.png";
 import img6 from "./product/img-6.png";
 import img7 from "./product/img-7.png";
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   avatar1,
   avatar2,

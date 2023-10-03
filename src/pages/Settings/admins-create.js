@@ -71,7 +71,7 @@ const AdminCreate = (props) => {
           <Breadcrumbs title='Users & Access' BreadcrumbItem='New Admin' />
 
           <Row>
-            <Col lg='12'>
+            <Col sm='12'>
               <Card>
                 <CardBody>
                   <h4 className='card-title mb-4'>Create New Admin</h4>
@@ -91,7 +91,7 @@ const AdminCreate = (props) => {
 
                     {loading ? <Spinner color='primary' /> : null}
                     <Row>
-                      <Col lg='6'>
+                      <Col sm='6'>
                         <div className='mb-3'>
                           <Label className='form-label'>First name</Label>
                           <Input
@@ -116,7 +116,7 @@ const AdminCreate = (props) => {
                           ) : null}
                         </div>
                       </Col>
-                      <Col lg='6'>
+                      <Col sm='6'>
                         <div className='mb-3'>
                           <Label className='form-label'>Last name</Label>
                           <Input
@@ -143,7 +143,7 @@ const AdminCreate = (props) => {
                       </Col>
                     </Row>
                     <Row>
-                      <Col lg='6'>
+                      <Col sm='6'>
                         <div className='mb-3'>
                           <Label className='form-label'>Title</Label>
                           <Input
@@ -168,7 +168,7 @@ const AdminCreate = (props) => {
                           ) : null}
                         </div>
                       </Col>
-                      <Col lg='6'>
+                      <Col sm='6'>
                         <div className='mb-3'>
                           <Label className='form-label'>Company Name</Label>
                           <Input
@@ -195,7 +195,7 @@ const AdminCreate = (props) => {
                       </Col>
                     </Row>
                     <Row>
-                      <Col lg='6'>
+                      <Col sm='6'>
                         <div className='mb-3'>
                           <Label className='form-label'>Email</Label>
                           <Input
@@ -220,7 +220,7 @@ const AdminCreate = (props) => {
                           ) : null}
                         </div>
                       </Col>
-                      <Col lg='6'>
+                      <Col sm='6'>
                         <div className='mb-3'>
                           <Label className='form-label'>Phone number</Label>
                           <Input
@@ -247,7 +247,7 @@ const AdminCreate = (props) => {
                       </Col>
                     </Row>
                     <Row>
-                      <Col lg='6'>
+                      <Col sm='6'>
                         <div className='mb-3'>
                           <Label className='form-label'>Password</Label>
                           <Input
@@ -272,7 +272,7 @@ const AdminCreate = (props) => {
                           ) : null}
                         </div>
                       </Col>
-                      <Col lg='6'>
+                      <Col sm='6'>
                         <div className='mb-3'>
                           <Label className='form-label'>Repeat Password</Label>
                           <Input

@@ -1,7 +1,8 @@
 import { Container } from "reactstrap";
 
-import Breadcrumb from "../../Components/Breadcrumbs";
+import Breadcrumbs from "../../Components/Breadcrumbs";
 import CardUser from "./card-user";
+import DashboardImage from "./Dashboard-image";
 
 const Dashboard = () => {
   document.title = "Dashboard | Gars9n - Digital Menu & Ordering System";
@@ -10,8 +11,9 @@ const Dashboard = () => {
     <>
       <div className='page-content'>
         <Container fluid>
-          <Breadcrumb title='Home' BreadcrumbItem='Dashboard' />
+          <Breadcrumbs title='Home' BreadcrumbItem='Dashboard' />
           <CardUser />
+          <DashboardImage />
         </Container>
       </div>
     </>

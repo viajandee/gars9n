@@ -146,7 +146,13 @@ const EmailSideBar = () => {
           <ModalBody>
             <form>
               <div className='mb-3'>
-                <Input type='email' className='form-control' placeholder='To' />
+                <Input
+                  type='email'
+                  className='form-control'
+                  placeholder='To'
+                  pattern='.*@.*'
+                  required
+                />
               </div>
 
               <div className='mb-3'>

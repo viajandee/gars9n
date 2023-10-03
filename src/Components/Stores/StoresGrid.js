@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardBody,
@@ -8,11 +8,11 @@ import {
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
+  FormFeedback,
   DropdownItem,
   Input,
   Label,
   Form,
-  FormFeedback,
   Modal,
   ModalHeader,
   ModalBody,
@@ -46,50 +46,75 @@ const StoresGrid = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [modal, setModal] = useState(false);
 
-  // ADD BUTTON
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [newStoreName, setNewStoreName] = useState("");
-  const [store, setStore] = useState([]);
+  const [store, setStore] = useState("");
+  const [newLocation, setNewLocation] = useState("");
   const dispatch = useDispatch();
 
   const validation = useFormik({
     enableReinitialize: true,
     initialValues: {
       name: (store && store.name) || "",
+      location: (store && store.location) || "",
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Please Enter Store Name"),
+      location: Yup.string().required("Please Enter Location"),
     }),
     onSubmit: (values) => {
       if (isEdit) {
-        handleUpdateStore();
-      } else {
-        const newStore = {
-          name: values.name,
+        const updateStore = {
+          id: store.id,
+          img: values.img,
+          name: values.storename,
+          location: values.location,
         };
-        dispatch(onAddNewStore(newStore));
+
+        dispatch(onUpdateStore(updateStore));
+      } else {
+        // eslint-disable-next-line no-unused-vars
+        const newStore = {
+          id: Math.floor(Math.random() * (30 - 20)) + 20,
+          name: values["name"],
+          location: values["location"],
+        };
       }
-      setIsEdit(false);
       toggle();
     },
   });
 
-  const toggle = () => {
-    setModal(!modal);
+  // Add Store
+  const openModal = () => {
+    setModalIsOpen(true);
+  };
+  const addNewStore = () => {
+    if (newStoreName && newLocation) {
+      const newStore = {
+        id: stores.length + 1,
+        name: newStoreName,
+        location: newLocation,
+      };
+      dispatch(onAddNewStore(newStore));
+      setModalIsOpen(false);
+      setNewStoreName("");
+      setNewLocation("");
+      setIsEdit(false);
+    }
   };
 
-  var node = useRef();
+  // Update Store
+  const handleStoreClick = (arg) => {
+    const store = arg;
 
-  const onPaginationPageChange = (page) => {
-    if (
-      node &&
-      node.current &&
-      node.current.props &&
-      node.current.props.pagination &&
-      node.current.props.pagination.options
-    ) {
-      node.current.props.pagination.options.onPageChange(page);
-    }
+    setStore({
+      id: store.id,
+      img: store.img,
+      name: store.name,
+      location: store.location,
+    });
+    setIsEdit(true);
+    toggle();
   };
 
   // Delete store
@@ -102,31 +127,7 @@ const StoresGrid = () => {
     if (store.id) {
       dispatch(onDeleteStore(store.id));
       setDeleteModal(false);
-      onPaginationPageChange(1);
     }
-  };
-
-  // Edit Store
-  const handleStoreClick = (arg) => {
-    const store = arg;
-
-    setStore({
-      name: store.name,
-    });
-    setIsEdit(true);
-
-    toggle();
-  };
-
-  const handleUpdateStore = () => {
-    const updatedStore = {
-      id: store.id,
-      name: validation.values.name,
-    };
-
-    dispatch(onUpdateStore(updatedStore));
-    setIsEdit(false);
-    toggle();
   };
 
   // getStores
@@ -147,6 +148,7 @@ const StoresGrid = () => {
       setStore(stores);
       setIsEdit(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stores]);
 
   useEffect(() => {
@@ -155,23 +157,18 @@ const StoresGrid = () => {
     }
   }, [dispatch, stores]);
 
-  const keyField = "id";
-
-  // ADD BUTTON
-  const openModal = () => {
-    setModalIsOpen(true);
-  };
-  const addNewStore = () => {
-    if (newStoreName) {
-      const newStore = {
-        id: stores.length + 1,
-        name: newStoreName,
-      };
-      dispatch(onAddNewStore(newStore));
-      setModalIsOpen(false);
-      setNewStoreName("");
+  const toggle = () => {
+    if (modal) {
+      setModal(false);
+      setStore(null);
+    } else {
+      setModal(true);
+      setIsEdit(true);
     }
   };
+
+  // eslint-disable-next-line no-unused-vars
+  const keyField = "id";
 
   return (
     <React.Fragment>
@@ -183,7 +180,7 @@ const StoresGrid = () => {
       <div className='page-content'>
         <Container fluid>
           <Breadcrumbs title='Stores' BreadcrumbItem='Stores Grid' />
-          {/* ADD BUTTON */}
+          {/* Add Store */}
           <Row>
             <Col xs='12'>
               <div className='text-sm-end'>
@@ -203,11 +200,19 @@ const StoresGrid = () => {
               Add Store
             </ModalHeader>
             <ModalBody>
+              <Label className='form-label'>Store Name</Label>
               <Input
                 type='text'
-                placeholder='Store Name'
                 value={newStoreName}
                 onChange={(e) => setNewStoreName(e.target.value)}
+              />
+            </ModalBody>
+            <ModalBody>
+              <Label className='form-label'>Location</Label>
+              <Input
+                type='text'
+                value={newLocation}
+                onChange={(e) => setNewLocation(e.target.value)}
               />
             </ModalBody>
             <ModalFooter>
@@ -222,7 +227,6 @@ const StoresGrid = () => {
               </Button>
             </ModalFooter>
           </Modal>
-          {/*=== ADD BUTTON ===*/}
 
           <Row>
             {map(stores, (store, key) => (
@@ -252,11 +256,14 @@ const StoresGrid = () => {
                       </div>
                     )}
 
-                    <h5 className='font-size-15 mb-1'>
-                      <Link to='#' className='text-dark'>
-                        {store.name}
-                      </Link>
-                    </h5>
+                    <div>
+                      <h5 className='font-size-15 mb-1'>
+                        <Link className='text-dark'>{store.name}</Link>
+                      </h5>
+                    </div>
+                    <div className='font-size-13 text-muted'>
+                      {store.location}
+                    </div>
 
                     <div>
                       {map(
@@ -327,7 +334,6 @@ const StoresGrid = () => {
                           </DropdownToggle>
                           <DropdownMenu className='dropdown-menu-end'>
                             <DropdownItem
-                              href='#Edit'
                               onClick={() => handleStoreClick(store)}>
                               <i className='mdi mdi-pencil font-size-16 text-success me-1' />{" "}
                               Edit
@@ -350,7 +356,7 @@ const StoresGrid = () => {
 
           <Modal isOpen={modal} toggle={toggle}>
             <ModalHeader toggle={toggle} tag='h4'>
-              {!!isEdit ? "Edit Store" : "Add Store"}
+              {!!isEdit ? "Edit Store" : null}
             </ModalHeader>
             <ModalBody>
               <Form
@@ -362,7 +368,7 @@ const StoresGrid = () => {
                 <Row form>
                   <Col className='col-12'>
                     <div className='mb-3'>
-                      <Label className='form-label'>Store Name</Label>
+                      <Label className='form-label'>New Store Name</Label>
                       <Input
                         name='storename'
                         type='text'
@@ -383,6 +389,29 @@ const StoresGrid = () => {
                         </FormFeedback>
                       ) : null}
                     </div>
+
+                    <div className='mb-3'>
+                      <Label className='form-label'>New Location</Label>
+                      <Input
+                        name='location'
+                        type='text'
+                        onChange={validation.handleChange}
+                        onBlur={validation.handleBlur}
+                        value={validation.values.location || ""}
+                        invalid={
+                          validation.touched.location &&
+                          validation.errors.location
+                            ? true
+                            : false
+                        }
+                      />
+                      {validation.touched.location &&
+                      validation.errors.location ? (
+                        <FormFeedback type='invalid'>
+                          {validation.errors.location}
+                        </FormFeedback>
+                      ) : null}
+                    </div>
                   </Col>
                 </Row>
                 <Row>
@@ -390,7 +419,7 @@ const StoresGrid = () => {
                     <div className='text-end'>
                       <button
                         type='submit'
-                        className='btn btn-success save-customer'>
+                        className='btn btn-success save-user'>
                         Save
                       </button>
                     </div>

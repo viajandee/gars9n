@@ -31,6 +31,7 @@ const SidebarContent = (props) => {
       }
     };
     initMenu();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.location.pathname]);
 
   useEffect(() => {
@@ -115,7 +116,7 @@ const SidebarContent = (props) => {
             <li>
               <Link to='/menus' className='has-arrow'>
                 <i className='bx bx-store'></i>
-                <span>{props.t("Food Menus")}</span>
+                <span>{props.t("Food Menu")}</span>
               </Link>
               <ul className='sub-menu'>
                 <li>

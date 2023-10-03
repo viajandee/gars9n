@@ -41,7 +41,7 @@ const UserCreate = () => {
           <Breadcrumbs title='Users & Access' BreadcrumbItem='New User' />
 
           <Row>
-            <Col lg='12'>
+            <Col sm='12'>
               <Card>
                 <CardBody>
                   <h4 className='card-title mb-4'>Create New User</h4>
@@ -99,7 +99,7 @@ const UserCreate = () => {
                         <TabPane tabId={1}>
                           <Form>
                             <Row>
-                              <Col lg='6'>
+                              <Col sm='6'>
                                 <div className='mb-3'>
                                   <Label for='basicpill-firstname-input1'>
                                     First name
@@ -111,7 +111,7 @@ const UserCreate = () => {
                                   />
                                 </div>
                               </Col>
-                              <Col lg='6'>
+                              <Col sm='6'>
                                 <div className='mb-3'>
                                   <Label for='basicpill-lastname-input1'>
                                     Last name
@@ -125,7 +125,7 @@ const UserCreate = () => {
                               </Col>
                             </Row>
                             <Row>
-                              <Col lg='12'>
+                              <Col sm='12'>
                                 <div className='mb-3'>
                                   <Label for='basicpill-title-input1'>
                                     Title
@@ -139,7 +139,7 @@ const UserCreate = () => {
                               </Col>
                             </Row>
                             <Row>
-                              <Col lg='6'>
+                              <Col sm='6'>
                                 <div className='mb-3'>
                                   <Label for='basicpill-email-input4'>
                                     Email
@@ -151,7 +151,7 @@ const UserCreate = () => {
                                   />
                                 </div>
                               </Col>
-                              <Col lg='6'>
+                              <Col sm='6'>
                                 <div className='mb-3'>
                                   <Label for='basicpill-phoneno-input3'>
                                     Phone number
@@ -170,7 +170,7 @@ const UserCreate = () => {
                           <div>
                             <Form>
                               <Row>
-                                <Col lg='6'>
+                                <Col sm='6'>
                                   <div className='mb-3'>
                                     <h5 className='font-size-14 mb-4'>
                                       User Permissions

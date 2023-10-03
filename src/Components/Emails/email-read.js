@@ -1,6 +1,20 @@
-import React from "react";
+/* eslint-disable jsx-a11y/img-redundant-alt */
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Container, Row, Col, CardBody, Card } from "reactstrap";
+import {
+  Container,
+  Row,
+  Col,
+  CardBody,
+  Card,
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Input,
+} from "reactstrap";
+import { Editor } from "react-draft-wysiwyg";
 import Breadcrumb from "../Breadcrumbs";
 import EmailSideBar from "./email-sidebar";
 import EmailToolbar from "./email-toolbar";
@@ -9,8 +23,17 @@ import img4 from "../../assets/images/small/img-4.jpg";
 import img5 from "../../assets/images/small/img-5.jpg";
 
 const EmailRead = () => {
-  // Set document title
   document.title = "Inbox | Gars9n - React Admin & Dashboard Template";
+
+  // Replay Button
+  const [modal, setModal] = useState(false);
+  const toggleModal = () => {
+    setModal(!modal);
+  };
+
+  const handleReplyClick = () => {
+    toggleModal();
+  };
 
   return (
     <>
@@ -89,10 +112,74 @@ const EmailRead = () => {
                         </Card>
                       </Col>
                     </Row>
-                    <Link to='#' className='btn btn-outline-success mt-2'>
+                    <Link
+                      to='#'
+                      className='btn btn-outline-success mt-2'
+                      onClick={handleReplyClick}>
                       <i className='mdi mdi-reply' />
                       Reply
                     </Link>
+                    <Modal
+                      isOpen={modal}
+                      role='dialog'
+                      autoFocus={true}
+                      centered={true}
+                      className='exampleModal'
+                      tabIndex='-1'
+                      toggle={toggleModal}>
+                      <div className='modal-content'>
+                        <ModalHeader toggle={toggleModal}>Reply</ModalHeader>
+                        <ModalBody>
+                          <form>
+                            <div className='mb-3'>
+                              <Input
+                                name='From'
+                                type='email'
+                                className='form-control'
+                                placeholder='From'
+                                pattern='.*@.*'
+                                required
+                              />
+                            </div>
+
+                            <div className='mb-3'>
+                              <Input
+                                name='To'
+                                type='email'
+                                className='form-control'
+                                placeholder='To'
+                                pattern='.*@.*'
+                                required
+                              />
+                            </div>
+
+                            <div className='mb-3'>
+                              <Input
+                                type='text'
+                                className='form-control'
+                                placeholder='Subject'
+                              />
+                            </div>
+                            <Editor
+                              toolbarClassName='toolbarClassName'
+                              wrapperClassName='wrapperClassName'
+                              editorClassName='editorClassName'
+                            />
+                          </form>
+                        </ModalBody>
+                        <ModalFooter>
+                          <Button
+                            type='button'
+                            color='secondary'
+                            onClick={toggleModal}>
+                            Close
+                          </Button>
+                          <Button type='button' color='primary'>
+                            Send <i className='fab fa-telegram-plane ms-1'></i>
+                          </Button>
+                        </ModalFooter>
+                      </div>
+                    </Modal>
                   </CardBody>
                 </Card>
               </div>

@@ -88,3 +88,4 @@ export const deleteStoreFail = (error) => ({
   type: DELETE_STORE_FAIL,
   payload: error,
 });
+

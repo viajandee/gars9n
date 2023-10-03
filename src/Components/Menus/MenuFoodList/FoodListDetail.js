@@ -58,7 +58,7 @@ const FoodListDetail = (props) => {
     <React.Fragment>
       <div className='page-content'>
         <Container fluid>
-          <Breadcrumbs title='Food Menus' BreadcrumbItem='Food Detail' />
+          <Breadcrumbs title='Food Menu' BreadcrumbItem='Food Detail' />
 
           <Row>
             <Col>

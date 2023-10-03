@@ -1,6 +1,8 @@
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
+import { getFirestore } from "firebase/firestore";
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyApOYXLJ1jFQVu_g_qlJJLBV2mr88InXgA",
@@ -9,10 +11,11 @@ const firebaseConfig = {
   storageBucket: "gars9n-080523.appspot.com",
   messagingSenderId: "442460433343",
   appId: "1:442460433343:web:91280b7fed3939e7e24f0a",
-  measurementId: "G-6V81GWF6Z7"
+  measurementId: "G-6V81GWF6Z7",
 };
 
-firebase.initializeApp(firebaseConfig);
+const app = firebase.initializeApp(firebaseConfig);
 
+export const db = getFirestore(app);
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();

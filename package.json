@@ -11,6 +11,7 @@
     "axios": "^1.4.0",
     "bootstrap": "^5.2.3",
     "classnames": "^2.3.2",
+    "draft-js": "^0.11.7",
     "dropzone": "^6.0.0-beta.2",
     "firebase": "^9.22.0",
     "formik": "^2.4.3",

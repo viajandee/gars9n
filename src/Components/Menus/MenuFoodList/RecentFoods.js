@@ -8,7 +8,7 @@ import images from "assets/images";
 const RecentFoods = ({ recentFoods }) => {
   return (
     <Row className='mt-3'>
-      <Col lg={12}>
+      <Col sm={12}>
         <div>
           <h5 className='mb-3'>Recent food :</h5>
           <Row>

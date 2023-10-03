@@ -7,7 +7,7 @@ const DeleteModal = ({ show, onDeleteClick, onCloseClick }) => {
     <Modal isOpen={show} toggle={onCloseClick} centered={true}>
       <ModalBody className='py-3 px-5'>
         <Row>
-          <Col lg={12}>
+          <Col sm={12}>
             <div className='text-center'>
               <i
                 className='mdi mdi-alert-circle-outline'

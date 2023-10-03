@@ -287,7 +287,7 @@ const ClientsList = () => {
         <Container fluid>
           <Breadcrumbs title='Clients' BreadcrumbItem='Client List' />
           <Row>
-            <Col lg='12'>
+            <Col sm='12'>
               <Card>
                 <CardBody>
                   <TableContainer

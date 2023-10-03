@@ -13,15 +13,12 @@ import {
   Form,
   Input,
   Nav,
-  NavItem,
-  NavLink,
   Pagination,
   PaginationItem,
   PaginationLink,
   Row,
 } from "reactstrap";
 import Breadcrumbs from "../../Breadcrumbs";
-import classnames from "classnames";
 import { foodImages } from "../../../assets/images/product";
 import { foodsData } from "../../../Common/Data/DataMenus";
 
@@ -43,7 +40,6 @@ const FoodsList = (props) => {
   ]);
   const { history } = props;
   const [foodList, setFoodList] = useState([]);
-  const [activeTab, setActiveTab] = useState("1");
   const [page, setPage] = useState(1);
   // eslint-disable-next-line no-unused-vars
   const [totalPage, setTotalPage] = useState(5);
@@ -52,14 +48,9 @@ const FoodsList = (props) => {
     setFoodList(foodsData.filter((menu) => menu.category === category));
   };
 
-  const toggleTab = (tab) => {
-    if (activeTab !== tab) {
-      setActiveTab(tab);
-    }
-  };
-
   useEffect(() => {
     setFoodList(foodsData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [foodsData]);
 
   useEffect(() => {
@@ -68,6 +59,7 @@ const FoodsList = (props) => {
 
   useEffect(() => {
     if (!isEmpty(foodList)) setFoodList(menu);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [menu]);
 
   const handlePageClick = (page) => {
@@ -78,13 +70,13 @@ const FoodsList = (props) => {
     <React.Fragment>
       <div className='page-content'>
         <Container fluid>
-          <Breadcrumbs title='Food Menus' BreadcrumbItem='Food List' />
+          <Breadcrumbs title='Food Menu' BreadcrumbItem='Food List' />
           <Row>
             {/* Filter Icon */}
-            <Col lg='3'>
+            <Col sm='3'>
               <Card>
                 <CardBody>
-                  <CardTitle className='mb-4'>Filter</CardTitle>
+                  <CardTitle className='mb-4'>Filters</CardTitle>
                   <div>
                     <h5 className='font-size-14 mb-3'>Food List</h5>
                     <ul className='list-unstyled product-list'>
@@ -106,7 +98,7 @@ const FoodsList = (props) => {
             {/*=== Filter Icon ===*/}
 
             {/* Search & Icon Name */}
-            <Col lg='9'>
+            <Col sm='9'>
               <Row className='mb-3'>
                 <Col xl='4' sm='6'>
                   <div className='mt-2'>
@@ -125,30 +117,7 @@ const FoodsList = (props) => {
                         <i className='bx bx-search-alt search-icon' />
                       </div>
                     </div>
-                    <Nav className='product-view-nav' pills>
-                      <NavItem>
-                        <NavLink
-                          className={classnames({
-                            active: activeTab === "1",
-                          })}
-                          onClick={() => {
-                            toggleTab("1");
-                          }}>
-                          <i className='bx bx-grid-alt' />
-                        </NavLink>
-                      </NavItem>
-                      <NavItem>
-                        <NavLink
-                          className={classnames({
-                            active: activeTab === "2",
-                          })}
-                          onClick={() => {
-                            toggleTab("2");
-                          }}>
-                          <i className='bx bx-list-ul' />
-                        </NavLink>
-                      </NavItem>
-                    </Nav>
+                    <Nav className='product-view-nav' pills></Nav>
                   </Form>
                 </Col>
               </Row>
@@ -189,7 +158,7 @@ const FoodsList = (props) => {
 
               {/* Pagination */}
               <Row>
-                <Col lg='12'>
+                <Col sm='12'>
                   <Pagination className='pagination pagination-rounded justify-content-center mb-2'>
                     <PaginationItem disabled={page === 1}>
                       <PaginationLink

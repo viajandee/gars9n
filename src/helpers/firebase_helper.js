@@ -3,6 +3,47 @@ import firebase from "firebase/compat/app";
 // Add the Firebase products that you want to use
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
+import { db } from "../firebase";
+import {
+  collection,
+  getDocs,
+  getDoc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
+
+const storeCollecionRef = collection(db, "stores");
+class StoreDataService {
+  // Add Stores
+  addStores = (newStore) => {
+    return addDoc(storeCollecionRef, newStore);
+  };
+
+  // Update Stores
+  updateStores = (id, updatedBook) => {
+    const storeDoc = doc(db, "stores", id);
+    return updateDoc(storeDoc, updatedBook);
+  };
+
+  // Delete Stores
+  deleteStore = (id) => {
+    const storeDoc = doc(db, "stores", id);
+    return deleteDoc(storeDoc);
+  };
+
+  // Get All Stores
+  getAllStore = () => {
+    return getDocs(storeCollecionRef);
+  };
+
+  // Get Stores
+  getStore = (id) => {
+    const storeDoc = doc(db, "stores", id);
+    return getDoc(storeDoc);
+  };
+}
 
 const onAuthStateChanged = () => {
   return new Promise((resolve, reject) => {
@@ -283,4 +324,9 @@ const getFirebaseBackend = () => {
   return _fireBaseBackend;
 };
 
-export { initFirebaseBackend, getFirebaseBackend, onAuthStateChanged };
+export {
+  initFirebaseBackend,
+  getFirebaseBackend,
+  onAuthStateChanged,
+  StoreDataService,
+};

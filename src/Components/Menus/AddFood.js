@@ -59,7 +59,7 @@ const AddFood = () => {
     <React.Fragment>
       <div className='page-content'>
         <Container fluid>
-          <Breadcrumbs title='Food Menus' BreadcrumbItem='Add Food' />
+          <Breadcrumbs title='Food Menu' BreadcrumbItem='Add Food' />
           <Row>
             <Col xs='12'>
               <Card>
@@ -134,9 +134,7 @@ const AddFood = () => {
                           />
                         </div>
                         <div className='mb-3'>
-                          <Label htmlFor='fooddesc'>
-                            Food Description
-                          </Label>
+                          <Label htmlFor='fooddesc'>Food Description</Label>
                           <textarea
                             className='form-control mb-3'
                             id='fooddesc'
