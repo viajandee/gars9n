@@ -337,10 +337,7 @@ const StoresGrid = () => {
             })}
           </Row>
 
-          {/* <Modal isOpen={modal} toggle={toggle}>  */}
-          {/* <ModalHeader toggle={toggle} tag='h4'>
-              {isEdit ? "Edit Store" : "Add Store"}
-            </ModalHeader>  */}
+         
           <Modal isOpen={modal} toggle={() => setModal(false)}>
             <ModalHeader toggle={() => setModal(false)}>
               {isEdit ? "Edit Store" : "Add Store"}
