@@ -89,6 +89,7 @@ const ClientsList = () => {
     clients: state.client.clients,
   }));
 
+  // eslint-disable-next-line no-unused-vars
   const [clientList, setClientList] = useState([]);
   const [modal, setModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -196,6 +197,7 @@ const ClientsList = () => {
         },
       },
     ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
@@ -216,6 +218,7 @@ const ClientsList = () => {
       setClient(clients);
       setIsEdit(false);
     }
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clients]);
 
   const toggle = () => {
@@ -274,6 +277,7 @@ const ClientsList = () => {
     toggle();
   };
 
+  // eslint-disable-next-line no-unused-vars
   const keyField = "id";
 
   return (
@@ -327,6 +331,7 @@ const ClientsList = () => {
                                     ? true
                                     : false
                                 }
+                                required
                               />
                               {validation.touched.name &&
                               validation.errors.name ? (
@@ -350,6 +355,7 @@ const ClientsList = () => {
                                     ? true
                                     : false
                                 }
+                                required
                               />
                               {validation.touched.designation &&
                               validation.errors.designation ? (
@@ -373,6 +379,7 @@ const ClientsList = () => {
                                     ? true
                                     : false
                                 }
+                                required
                               />
                               {validation.touched.email &&
                               validation.errors.email ? (
@@ -429,6 +436,7 @@ const ClientsList = () => {
                                     ? true
                                     : false
                                 }
+                                required
                               />
                               {validation.touched.projects &&
                               validation.errors.projects ? (

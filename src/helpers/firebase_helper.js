@@ -14,32 +14,55 @@ import {
   doc,
 } from "firebase/firestore";
 
-const storeCollecionRef = collection(db, "stores");
+const storesCollecionRef = collection(db, "stores");
 class StoreDataService {
   // Add Stores
-  addStores = (newStore) => {
-    return addDoc(storeCollecionRef, newStore);
+  addStoreFirebase = (newStore) => {
+    return addDoc(storesCollecionRef, newStore);
   };
 
   // Update Stores
-  updateStores = (id, updatedBook) => {
-    const storeDoc = doc(db, "stores", id);
-    return updateDoc(storeDoc, updatedBook);
+  updateStoreFirebase = async (id, updatedStore) => {
+    // console.log("Received id:", id);
+    // console.log("Received updatedStore:", updatedStore);
+    if (
+      typeof id === "string" &&
+      updatedStore &&
+      typeof updatedStore === "object"
+    ) {
+      if (id && updatedStore) {
+        const storeDoc = doc(db, "stores", id);
+        try {
+          await updateDoc(storeDoc, updatedStore);
+          // console.log("Store updated successfully!", id);
+        } catch (error) {
+          console.log("Error updating store:", error);
+        }
+      } else {
+        console.error(
+          "Invalid data provided for store update. ID:",
+          id,
+          "Updated Store:",
+          updatedStore
+        );
+        return Promise.reject("Invalid data");
+      }
+    }
   };
 
   // Delete Stores
-  deleteStore = (id) => {
+  deleteStoreFirebase = (id) => {
     const storeDoc = doc(db, "stores", id);
     return deleteDoc(storeDoc);
   };
 
   // Get All Stores
-  getAllStore = () => {
-    return getDocs(storeCollecionRef);
+  getAllStoreFirebase = () => {
+    return getDocs(storesCollecionRef);
   };
 
   // Get Stores
-  getStore = (id) => {
+  getStoreFirebase = (id) => {
     const storeDoc = doc(db, "stores", id);
     return getDoc(storeDoc);
   };
@@ -324,9 +347,6 @@ const getFirebaseBackend = () => {
   return _fireBaseBackend;
 };
 
-export {
-  initFirebaseBackend,
-  getFirebaseBackend,
-  onAuthStateChanged,
-  StoreDataService,
-};
+export { initFirebaseBackend, getFirebaseBackend, onAuthStateChanged };
+// eslint-disable-next-line import/no-anonymous-default-export
+export default new StoreDataService();

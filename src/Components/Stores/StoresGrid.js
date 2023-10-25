@@ -22,153 +22,153 @@ import {
   ModalFooter,
 } from "reactstrap";
 import { Link, withRouter } from "react-router-dom";
-import { map, size, isEmpty } from "lodash";
-import {
-  getStores as onGetStores,
-  addNewStore as onAddNewStore,
-  updateStore as onUpdateStore,
-  deleteStore as onDeleteStore,
-} from "../../store/entities/actions";
+import { map } from "lodash";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useDispatch, useSelector } from "react-redux";
 import Breadcrumbs from "../Breadcrumbs";
 import DeleteModal from "CommonTable/DeleteModal";
+import StoreDataService from "../../helpers/firebase_helper";
+import { doc } from "firebase/firestore";
 
 const StoresGrid = () => {
   document.title = "Stores | Gars9n - Digital Menu & Ordering System";
 
-  const { stores } = useSelector((state) => ({
-    stores: state.entities.stores,
-  }));
-
   const [deleteModal, setDeleteModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [modal, setModal] = useState(false);
-
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [newStoreName, setNewStoreName] = useState("");
-  const [store, setStore] = useState("");
   const [newLocation, setNewLocation] = useState("");
-  const dispatch = useDispatch();
+  const [shouldReload, setShouldReload] = useState(false);
 
+  // Update Store
   const validation = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name: (store && store.name) || "",
-      location: (store && store.location) || "",
+      id: "",
+      name: "",
+      location: "",
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Please Enter Store Name"),
       location: Yup.string().required("Please Enter Location"),
     }),
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
+      // console.log("Updating store with id:", values.id);
+      // console.log("New name:", values.name);
+      // console.log("New location:", values.location);
+
+      // if (!values.id || !values.name || !values.location) {
+      //   console.error("Invalid data provided for store update");
+      //   return;
+      // }
+
       if (isEdit) {
-        const updateStore = {
-          id: store.id,
-          img: values.img,
-          name: values.storename,
+        const updatedStore = {
+          name: values.name,
           location: values.location,
         };
 
-        dispatch(onUpdateStore(updateStore));
-      } else {
-        // eslint-disable-next-line no-unused-vars
-        const newStore = {
-          id: Math.floor(Math.random() * (30 - 20)) + 20,
-          name: values["name"],
-          location: values["location"],
-        };
+        try {
+          await StoreDataService.updateStoreFirebase(values.id, updatedStore);
+          // console.log("Store updated successfully!", values.id, "and updatedStore:", updatedStore);
+          setShouldReload(true);
+          setModal(false);
+          toggle();
+        } catch (error) {
+          console.log("Error updated store:", error);
+        }
       }
-      toggle();
     },
   });
 
-  // Add Store
-  const openModal = () => {
-    setModalIsOpen(true);
-  };
-  const addNewStore = () => {
-    if (newStoreName && newLocation) {
-      const newStore = {
-        id: stores.length + 1,
-        name: newStoreName,
-        location: newLocation,
-      };
-      dispatch(onAddNewStore(newStore));
-      setModalIsOpen(false);
-      setNewStoreName("");
-      setNewLocation("");
-      setIsEdit(false);
+  // Get Store
+  const getStore = async (id) => {
+    try {
+      const storeDoc = await StoreDataService.getStoreFirebase(id);
+      const storeData = storeDoc.data();
+      // console.log("get store succses by id:", id);
+      // console.log("get store succses by storeData:", storeData);
+
+      validation.setValues({
+        id: id,
+        name: storeData.name,
+        location: storeData.location,
+      });
+
+      setShouldReload(true);
+      setModal(true);
+      setIsEdit(true);
+    } catch (error) {
+      console.log("or error 2: ", error);
     }
   };
 
-  // Update Store
-  const handleStoreClick = (arg) => {
-    const store = arg;
+  // Add Store
+  const addStore = async (e) => {
+    e.preventDefault();
+    if (newStoreName && newLocation) {
+      const newStore = {
+        name: newStoreName,
+        location: newLocation,
+      };
 
-    setStore({
-      id: store.id,
-      img: store.img,
-      name: store.name,
-      location: store.location,
-    });
-    setIsEdit(true);
-    toggle();
+      try {
+        await StoreDataService.addStoreFirebase(newStore);
+        setShouldReload(true);
+        console.log("New store added successfully!");
+      } catch (error) {
+        console.log("Error adding store:", error);
+      }
+
+      setModalIsOpen(false);
+      setNewStoreName("");
+      setNewLocation("");
+    }
   };
+  const openModal = () => {
+    setModalIsOpen(true);
+  };
+
+  // Refresh the page by AJAX
+  useEffect(() => {
+    if (shouldReload) {
+      getStores();
+      setShouldReload(false);
+    }
+  }, [shouldReload]);
 
   // Delete store
-  const onClickDelete = (store) => {
-    setStore(store);
-    setDeleteModal(true);
+  const deleteStore = async (id) => {
+    await StoreDataService.deleteStoreFirebase(id);
+    getStores();
   };
-
   const handleDeleteStore = () => {
-    if (store.id) {
-      dispatch(onDeleteStore(store.id));
+    if (doc.id) {
       setDeleteModal(false);
     }
   };
 
-  // getStores
-  useEffect(() => {
-    if (stores && !stores.length) {
-      dispatch(onGetStores());
-      setIsEdit(false);
-    }
-  }, [dispatch, stores]);
+  // Get Stores
+  const [stores, setStores] = useState([]);
 
   useEffect(() => {
-    setStore(stores);
-    setIsEdit(false);
-  }, [stores]);
+    getStores();
+  }, []);
 
-  useEffect(() => {
-    if (!isEmpty(stores) && !!isEdit) {
-      setStore(stores);
-      setIsEdit(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stores]);
-
-  useEffect(() => {
-    if (stores && !stores.length) {
-      dispatch(onGetStores());
-    }
-  }, [dispatch, stores]);
+  const getStores = async () => {
+    const data = await StoreDataService.getAllStoreFirebase();
+    setStores(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  };
 
   const toggle = () => {
     if (modal) {
       setModal(false);
-      setStore(null);
     } else {
       setModal(true);
       setIsEdit(true);
     }
   };
-
-  // eslint-disable-next-line no-unused-vars
-  const keyField = "id";
 
   return (
     <React.Fragment>
@@ -177,6 +177,7 @@ const StoresGrid = () => {
         onDeleteClick={handleDeleteStore}
         onCloseClick={() => setDeleteModal(false)}
       />
+
       <div className='page-content'>
         <Container fluid>
           <Breadcrumbs title='Stores' BreadcrumbItem='Stores Grid' />
@@ -216,7 +217,7 @@ const StoresGrid = () => {
               />
             </ModalBody>
             <ModalFooter>
-              <Button color='success' onClick={addNewStore}>
+              <Button color='success' onClick={addStore}>
                 Save
               </Button>{" "}
               <Button
@@ -229,134 +230,120 @@ const StoresGrid = () => {
           </Modal>
 
           <Row>
-            {map(stores, (store, key) => (
-              <Col xl='4' sm='6' key={"_store_" + key}>
-                <Card className='text-center'>
-                  <CardBody>
-                    {!store.img ? (
-                      <div className='avatar-sm mx-auto mb-4'>
-                        <span
-                          className={
-                            "avatar-title rounded-circle bg-soft bg-" +
-                            store.color +
-                            " text-" +
-                            store.color +
-                            " font-size-16"
-                          }>
-                          {store.name.charAt(0)}
-                        </span>
-                      </div>
-                    ) : (
-                      <div className='mb-4'>
-                        <img
-                          className='rounded-circle avatar-sm'
-                          src={store.img}
-                          alt=''
-                        />
-                      </div>
-                    )}
-
-                    <div>
-                      <h5 className='font-size-15 mb-1'>
-                        <Link className='text-dark'>{store.name}</Link>
-                      </h5>
-                    </div>
-                    <div className='font-size-13 text-muted'>
-                      {store.location}
-                    </div>
-
-                    <div>
-                      {map(
-                        store.tags,
-                        (tag, index) =>
-                          index < 2 && (
-                            <Link
-                              to='#'
-                              className='badge bg-primary font-size-11 m-1'
-                              key={"_skill_" + store.id + index}>
-                              {tag}
-                            </Link>
-                          )
+            {map(stores, (doc) => {
+              return (
+                <Col xl='4' sm='6' key={doc.id}>
+                  <Card className='text-center'>
+                    <CardBody>
+                      {!doc.img ? (
+                        <div className='avatar-sm mx-auto mb-4'>
+                          <span
+                            style={{ textTransform: "uppercase" }}
+                            className={
+                              "avatar-title rounded-circle bg-soft bg-" +
+                              doc.color +
+                              " text-" +
+                              doc.color +
+                              " font-size-16"
+                            }>
+                            {doc.name.charAt(0)}
+                          </span>
+                        </div>
+                      ) : (
+                        <div className='mb-4'>
+                          <img
+                            className='rounded-circle avatar-sm'
+                            src={doc.img}
+                            alt=''
+                          />
+                        </div>
                       )}
-                      {size(store.tags) > 2 && (
-                        <Link
-                          to='#'
-                          className='badge bg-primary font-size-11 m-1'
-                          key={"_skill_" + store.id}>
-                          {size(store.tags) - 1} + more
-                        </Link>
-                      )}
-                    </div>
-                  </CardBody>
-                  <CardFooter className='bg-transparent border-top'>
-                    <div className='contact-links d-flex font-size-20'>
-                      <div className='flex-fill'>
-                        <Link to='#' id={"message" + store.id}>
-                          <i className='bx bx-message-square-dots' />
-                          <UncontrolledTooltip
-                            placement='top'
-                            target={"message" + store.id}>
-                            Message
-                          </UncontrolledTooltip>
-                        </Link>
-                      </div>
 
-                      <div className='flex-fill'>
-                        <Link to='#' id={"project" + store.id}>
-                          <i className='bx bx-pie-chart-alt' />
-                          <UncontrolledTooltip
-                            placement='top'
-                            target={"project" + store.id}>
-                            Projects
-                          </UncontrolledTooltip>
-                        </Link>
+                      <div>
+                        <h5
+                          className='font-size-15 mb-1'
+                          style={{ textTransform: "uppercase" }}>
+                          {doc.name}
+                        </h5>
                       </div>
+                      <div
+                        className='font-size-13 text-muted'
+                        style={{ textTransform: "capitalize" }}>
+                        {doc.location}
+                      </div>
+                    </CardBody>
+                    <CardFooter className='bg-transparent border-top'>
+                      <div className='contact-links d-flex font-size-20'>
+                        <div className='flex-fill'>
+                          <Link to='#' id={"message" + doc.id}>
+                            <i className='bx bx-message-square-dots' />
+                            <UncontrolledTooltip
+                              placement='top'
+                              target={"message" + doc.id}>
+                              Message
+                            </UncontrolledTooltip>
+                          </Link>
+                        </div>
 
-                      <div className='flex-fill'>
-                        <Link to='#' id={"profile" + store.id}>
-                          <i className='bx bx-user-circle' />
-                          <UncontrolledTooltip
-                            placement='top'
-                            target={"profile" + store.id}>
-                            Profile
-                          </UncontrolledTooltip>
-                        </Link>
-                      </div>
+                        <div className='flex-fill'>
+                          <Link to='#' id={"project" + doc.id}>
+                            <i className='bx bx-pie-chart-alt' />
+                            <UncontrolledTooltip
+                              placement='top'
+                              target={"project" + doc.id}>
+                              Projects
+                            </UncontrolledTooltip>
+                          </Link>
+                        </div>
 
-                      {/* EDIT & DELETE */}
-                      <div className='flex-fill'>
-                        <UncontrolledDropdown>
-                          <DropdownToggle
-                            href='#'
-                            className='card-drop'
-                            tag='i'>
-                            <i className='mdi mdi-dots-horizontal font-size-18' />
-                          </DropdownToggle>
-                          <DropdownMenu className='dropdown-menu-end'>
-                            <DropdownItem
-                              onClick={() => handleStoreClick(store)}>
-                              <i className='mdi mdi-pencil font-size-16 text-success me-1' />{" "}
-                              Edit
-                            </DropdownItem>
-                            <DropdownItem
-                              href='#Delete'
-                              onClick={() => onClickDelete(store)}>
-                              <i className='mdi mdi-trash-can font-size-16 text-danger me-1' />{" "}
-                              Delete
-                            </DropdownItem>
-                          </DropdownMenu>
-                        </UncontrolledDropdown>
+                        <div className='flex-fill'>
+                          <Link to='#' id={"profile" + doc.id}>
+                            <i className='bx bx-user-circle' />
+                            <UncontrolledTooltip
+                              placement='top'
+                              target={"profile" + doc.id}>
+                              Profile
+                            </UncontrolledTooltip>
+                          </Link>
+                        </div>
+
+                        {/* EDIT & DELETE */}
+                        <div className='flex-fill'>
+                          <UncontrolledDropdown>
+                            <DropdownToggle
+                              href='#'
+                              className='card-drop'
+                              tag='i'>
+                              <i className='mdi mdi-dots-horizontal font-size-18' />
+                            </DropdownToggle>
+                            <DropdownMenu className='dropdown-menu-end'>
+                              <DropdownItem onClick={(e) => getStore(doc.id)}>
+                                <i className='mdi mdi-pencil font-size-16 text-success me-1' />{" "}
+                                Edit
+                              </DropdownItem>
+                              <DropdownItem
+                                onClick={(e) => deleteStore(doc.id)}>
+                                <i className='mdi mdi-trash-can font-size-16 text-danger me-1' />{" "}
+                                Delete
+                              </DropdownItem>
+                            </DropdownMenu>
+                          </UncontrolledDropdown>
+                        </div>
                       </div>
-                    </div>
-                  </CardFooter>
-                </Card>
-              </Col>
-            ))}
+                    </CardFooter>
+                  </Card>
+                </Col>
+              );
+            })}
           </Row>
 
-          <Modal isOpen={modal} toggle={toggle}>
-            <ModalHeader toggle={toggle} tag='h4'>
-              {!!isEdit ? "Edit Store" : null}
+          {/* <Modal isOpen={modal} toggle={toggle}>  */}
+          {/* <ModalHeader toggle={toggle} tag='h4'>
+              {isEdit ? "Edit Store" : "Add Store"}
+            </ModalHeader>  */}
+          <Modal isOpen={modal} toggle={() => setModal(false)}>
+            <ModalHeader toggle={() => setModal(false)}>
+              {isEdit ? "Edit Store" : "Add Store"}
             </ModalHeader>
             <ModalBody>
               <Form
@@ -368,36 +355,35 @@ const StoresGrid = () => {
                 <Row form>
                   <Col className='col-12'>
                     <div className='mb-3'>
-                      <Label className='form-label'>New Store Name</Label>
+                      <Label className='form-label'>Store Name</Label>
                       <Input
-                        name='storename'
+                        id='name'
+                        name='name'
                         type='text'
                         onChange={validation.handleChange}
                         onBlur={validation.handleBlur}
-                        value={validation.values.storename || ""}
+                        value={validation.values.name}
                         invalid={
-                          validation.touched.storename &&
-                          validation.errors.storename
+                          validation.touched.name && validation.errors.name
                             ? true
                             : false
                         }
                       />
-                      {validation.touched.storename &&
-                      validation.errors.storename ? (
+                      {validation.touched.name && validation.errors.name ? (
                         <FormFeedback type='invalid'>
-                          {validation.errors.storename}
+                          {validation.errors.name}
                         </FormFeedback>
                       ) : null}
                     </div>
 
                     <div className='mb-3'>
-                      <Label className='form-label'>New Location</Label>
+                      <Label className='form-label'>Location</Label>
                       <Input
                         name='location'
                         type='text'
                         onChange={validation.handleChange}
                         onBlur={validation.handleBlur}
-                        value={validation.values.location || ""}
+                        value={validation.values.location}
                         invalid={
                           validation.touched.location &&
                           validation.errors.location
