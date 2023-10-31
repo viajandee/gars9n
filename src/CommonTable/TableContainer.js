@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import {
   useTable,
   useGlobalFilter,
-  useAsyncDebounce,
+  // useAsyncDebounce,
   useSortBy,
   useFilters,
   useExpanded,
@@ -12,43 +12,43 @@ import {
 import { Table, Row, Col, Button, Input } from "reactstrap";
 import { Filter, DefaultColumnFilter } from "./filter";
 
-function GlobalFilter({
-  preGlobalFilteredRows,
-  globalFilter,
-  setGlobalFilter,
-}) {
-  const count = preGlobalFilteredRows.length;
-  const [value, setValue] = React.useState(globalFilter);
-  const onChange = useAsyncDebounce((value) => {
-    setGlobalFilter(value || undefined);
-  }, 200);
+// function GlobalFilter({
+//   preGlobalFilteredRows,
+//   globalFilter,
+//   setGlobalFilter,
+// }) {
+//   const count = preGlobalFilteredRows.length;
+//   const [value, setValue] = React.useState(globalFilter);
+//   const onChange = useAsyncDebounce((value) => {
+//     setGlobalFilter(value || undefined);
+//   }, 200);
 
-  return (
-    <Col sm={4}>
-      <div className='search-box me-2 mb-2 d-inline-block'>
-        <div className='position-relative'>
-          <label htmlFor='search-bar-0' className='search-label'>
-            <span id='search-bar-0-label' className='sr-only'>
-              Search this table
-            </span>
-            <input
-              onChange={(e) => {
-                setValue(e.target.value);
-                onChange(e.target.value);
-              }}
-              id='search-bar-0'
-              type='text'
-              className='form-control'
-              placeholder={`${count} records...`}
-              value={value || ""}
-            />
-          </label>
-          <i className='bx bx-search-alt search-icon'></i>
-        </div>
-      </div>
-    </Col>
-  );
-}
+// return (
+// <Col sm={4}>
+//   <div className='search-box me-2 mb-2 d-inline-block'>
+//     <div className='position-relative'>
+//       <label htmlFor='search-bar-0' className='search-label'>
+//         <span id='search-bar-0-label' className='sr-only'>
+//           Search this table
+//         </span>
+//         <input
+//           onChange={(e) => {
+//             setValue(e.target.value);
+//             onChange(e.target.value);
+//           }}
+//           id='search-bar-0'
+//           type='text'
+//           className='form-control'
+//           placeholder={`${count} records...`}
+//           value={value || ""}
+//         />
+//       </label>
+//       <i className='bx bx-search-alt search-icon'></i>
+//     </div>
+//   </div>
+// </Col>
+// );
+// }
 
 const TableContainer = ({
   columns,
@@ -77,11 +77,14 @@ const TableContainer = ({
     gotoPage,
     nextPage,
     previousPage,
-    setPageSize,
-    state,
-    preGlobalFilteredRows,
-    setGlobalFilter,
-    state: { pageIndex, pageSize },
+    // setPageSize,
+    // state,
+    // preGlobalFilteredRows,
+    // setGlobalFilter,
+    state: {
+      pageIndex,
+      //  pageSize
+    },
   } = useTable(
     {
       columns,
@@ -108,18 +111,21 @@ const TableContainer = ({
     return column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : "";
   };
 
-  const onChangeInSelect = (event) => {
-    setPageSize(Number(event.target.value));
-  };
+  // const onChangeInSelect = (event) => {
+  //   setPageSize(Number(event.target.value));
+  // };
 
   const onChangeInInput = (event) => {
     const page = event.target.value ? Number(event.target.value) - 1 : 0;
     gotoPage(page);
   };
+
+
+
   return (
     <Fragment>
       <Row className='mb-2'>
-        <Col md={customPageSizeOptions ? 2 : 1}>
+        {/* <Col md={customPageSizeOptions ? 2 : 1}>
           <select
             className='form-select'
             value={pageSize}
@@ -130,14 +136,14 @@ const TableContainer = ({
               </option>
             ))}
           </select>
-        </Col>
-        {isGlobalFilter && (
+        </Col> */}
+        {/* {isGlobalFilter && (
           <GlobalFilter
             preGlobalFilteredRows={preGlobalFilteredRows}
             globalFilter={state.globalFilter}
             setGlobalFilter={setGlobalFilter}
           />
-        )}
+        )} */}
         {isAddOptions && (
           <Col sm='7'>
             <div className='text-sm-end'>
@@ -152,8 +158,9 @@ const TableContainer = ({
             </div>
           </Col>
         )}
-        {isAddUserList && (
-          <Col sm='7'>
+        {/* TODO: Add Client */}
+        {/* {isAddUserList && (
+          <Col sm='12'>
             <div className='text-sm-end'>
               <Button
                 type='button'
@@ -161,11 +168,11 @@ const TableContainer = ({
                 className='btn mb-2 me-2'
                 onClick={handleUserClick}>
                 <i className='mdi mdi-plus-circle-outline me-1' />
-                Create New Client
+                Add New Client
               </Button>
             </div>
           </Col>
-        )}
+        )} */}
         {isAddCustList && (
           <Col sm='7'>
             <div className='text-sm-end'>

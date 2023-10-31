@@ -15,7 +15,7 @@ import {
 } from "firebase/firestore";
 
 const storesCollecionRef = collection(db, "stores");
-class StoreDataService {
+export class StoreDataService {
   // Add Stores
   addStoreFirebase = (newStore) => {
     return addDoc(storesCollecionRef, newStore);
@@ -57,14 +57,68 @@ class StoreDataService {
   };
 
   // Get All Stores
-  getAllStoreFirebase = () => {
+  getAllStoresFirebase = () => {
     return getDocs(storesCollecionRef);
   };
 
-  // Get Stores
+  // Get Store
   getStoreFirebase = (id) => {
     const storeDoc = doc(db, "stores", id);
     return getDoc(storeDoc);
+  };
+}
+
+const clientsCollectionRef = collection(db, "clients");
+export class ClientDataService {
+  // Add Clients
+  addClientFirebase = (newClient) => {
+    return addDoc(clientsCollectionRef, newClient);
+  };
+
+  // Upadte Clients
+  updateClientFirebase = async (id, updatedClient) => {
+    console.log("Received id:", id);
+    console.log("Received updatedClient:", updatedClient);
+    if (
+      typeof id === "string" &&
+      updatedClient &&
+      typeof updatedClient === "object"
+    ) {
+      if (id && updatedClient) {
+        const clientDoc = doc(db, "clients", id);
+        try {
+          await updateDoc(clientDoc, updatedClient);
+          console.log("Client updated successfully!", id);
+        } catch (error) {
+          console.log("Error updateing client", error);
+        }
+      } else {
+        console.error(
+          "Invalid data provided for client update. ID:",
+          id,
+          "updated Client:",
+          updatedClient
+        );
+        return Promise.reject("Invalid data");
+      }
+    }
+  };
+
+  // Delete Clients
+  deleteClientFirebase = (id) => {
+    const clientDoc = doc(db, "clients", id);
+    return deleteDoc(clientDoc);
+  };
+
+  // Get All Clients
+  getAllClientsFirebase = () => {
+    return getDocs(clientsCollectionRef);
+  };
+
+  // Get Client
+  getClientFirebase = (id) => {
+    const clientDoc = doc(db, "clients", id);
+    return getDoc(clientDoc);
   };
 }
 
@@ -316,10 +370,9 @@ class FirebaseAuthBackend {
   //   return JSON.parse(localStorage.getItem("authUser"));
   // };
 
-  /**
-   * Handle the error
-   * @param {*} error
-   */
+  /* Handle the error
+   * @param {*} error*/
+
   _handleError(error) {
     // var errorCode = error.code;
     var errorMessage = error.message;
@@ -340,13 +393,9 @@ const initFirebaseBackend = (config) => {
   return _fireBaseBackend;
 };
 
-/**
- * Returns the firebase backend
- */
+/* Returns the firebase backend*/
 const getFirebaseBackend = () => {
   return _fireBaseBackend;
 };
 
 export { initFirebaseBackend, getFirebaseBackend, onAuthStateChanged };
-// eslint-disable-next-line import/no-anonymous-default-export
-export default new StoreDataService();

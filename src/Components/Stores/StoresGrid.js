@@ -27,7 +27,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Breadcrumbs from "../Breadcrumbs";
 import DeleteModal from "CommonTable/DeleteModal";
-import StoreDataService from "../../helpers/firebase_helper";
+import { StoreDataService } from "../../helpers/firebase_helper";
 import { doc } from "firebase/firestore";
 
 const StoresGrid = () => {
@@ -40,6 +40,9 @@ const StoresGrid = () => {
   const [newStoreName, setNewStoreName] = useState("");
   const [newLocation, setNewLocation] = useState("");
   const [shouldReload, setShouldReload] = useState(false);
+
+  // for firstore
+  const storeDataService = new StoreDataService();
 
   // Update Store
   const validation = useFormik({
@@ -70,7 +73,7 @@ const StoresGrid = () => {
         };
 
         try {
-          await StoreDataService.updateStoreFirebase(values.id, updatedStore);
+          await storeDataService.updateStoreFirebase(values.id, updatedStore);
           // console.log("Store updated successfully!", values.id, "and updatedStore:", updatedStore);
           setShouldReload(true);
           setModal(false);
@@ -85,7 +88,8 @@ const StoresGrid = () => {
   // Get Store
   const getStore = async (id) => {
     try {
-      const storeDoc = await StoreDataService.getStoreFirebase(id);
+      const storeDoc = 
+      await storeDataService.getStoreFirebase(id);
       const storeData = storeDoc.data();
       // console.log("get store succses by id:", id);
       // console.log("get store succses by storeData:", storeData);
@@ -114,7 +118,7 @@ const StoresGrid = () => {
       };
 
       try {
-        await StoreDataService.addStoreFirebase(newStore);
+        await storeDataService.addStoreFirebase(newStore);
         setShouldReload(true);
         console.log("New store added successfully!");
       } catch (error) {
@@ -136,11 +140,12 @@ const StoresGrid = () => {
       getStores();
       setShouldReload(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shouldReload]);
 
   // Delete store
   const deleteStore = async (id) => {
-    await StoreDataService.deleteStoreFirebase(id);
+    await storeDataService.deleteStoreFirebase(id);
     getStores();
   };
   const handleDeleteStore = () => {
@@ -154,10 +159,11 @@ const StoresGrid = () => {
 
   useEffect(() => {
     getStores();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getStores = async () => {
-    const data = await StoreDataService.getAllStoreFirebase();
+    const data = await storeDataService.getAllStoresFirebase();
     setStores(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   };
 
@@ -183,7 +189,7 @@ const StoresGrid = () => {
           <Breadcrumbs title='Stores' BreadcrumbItem='Stores Grid' />
           {/* Add Store */}
           <Row>
-            <Col xs='12'>
+            <Col sm='12'>
               <div className='text-sm-end'>
                 <Button
                   type='button'
@@ -221,7 +227,6 @@ const StoresGrid = () => {
                 Save
               </Button>{" "}
               <Button
-                outline
                 color='danger'
                 onClick={() => setModalIsOpen(false)}>
                 Cancel
@@ -337,7 +342,6 @@ const StoresGrid = () => {
             })}
           </Row>
 
-         
           <Modal isOpen={modal} toggle={() => setModal(false)}>
             <ModalHeader toggle={() => setModal(false)}>
               {isEdit ? "Edit Store" : "Add Store"}
