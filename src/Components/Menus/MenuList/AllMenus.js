@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getMenus } from "store/menus/actions";
@@ -23,7 +23,7 @@ import { foodImages } from "../../../assets/images/product";
 import { foodsData } from "../../../Common/Data/DataMenus";
 
 const FoodsList = (props) => {
-  document.title = "Foods List | Gars9n - Digital Menu & Ordering System";
+  document.title = "All Menus | Gars9n - Digital Menu & Ordering System";
 
   const dispatch = useDispatch();
 
@@ -70,7 +70,7 @@ const FoodsList = (props) => {
     <React.Fragment>
       <div className='page-content'>
         <Container fluid>
-          <Breadcrumbs title='Food Menu' BreadcrumbItem='Food List' />
+          <Breadcrumbs title='Menus' BreadcrumbItem='All Menus' />
           <Row>
             {/* Filter Icon */}
             <Col sm='3'>
@@ -78,7 +78,7 @@ const FoodsList = (props) => {
                 <CardBody>
                   <CardTitle className='mb-4'>Filters</CardTitle>
                   <div>
-                    <h5 className='font-size-14 mb-3'>Food List</h5>
+                    <h5 className='font-size-14 mb-3'>Category :</h5>
                     <ul className='list-unstyled product-list'>
                       {FilterList.map((menu, key) => (
                         <li key={"_li_" + key}>
@@ -102,7 +102,7 @@ const FoodsList = (props) => {
               <Row className='mb-3'>
                 <Col xl='4' sm='6'>
                   <div className='mt-2'>
-                    <h5>Food</h5>
+                    <h5>Menu List</h5>
                   </div>
                 </Col>
                 <Col lg='8' sm='6'>
@@ -123,14 +123,14 @@ const FoodsList = (props) => {
               </Row>
               {/*=== Search & Icon Name ===*/}
 
-              {/* Images Food */}
+              {/* Images Food & menu page*/}
               <Row>
                 {!isEmpty(foodList) &&
                   foodList.map((menu, key) => (
                     <Col xl='4' sm='6' key={"_col_" + key}>
                       <Card
                         onClick={() =>
-                          history.push(`/menu-food-detail/${menu.id}`)
+                          history.push(`/all-menus/menu/${menu.id}`)
                         }>
                         <CardBody>
                           <div className='food-img position-relative'>
@@ -143,7 +143,7 @@ const FoodsList = (props) => {
                           <div className='mt-4 text-center'>
                             <h5 className='mb-3 text-truncate'>
                               <Link
-                                to={"/menu-food-detail" + menu.id}
+                                to={"/all-menus/menu" + menu.id}
                                 className='text-dark'>
                                 {menu.name}
                               </Link>

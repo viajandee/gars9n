@@ -66,6 +66,34 @@ export class StoreDataService {
     const storeDoc = doc(db, "stores", id);
     return getDoc(storeDoc);
   };
+
+  // Maps
+  async geocode(location) {
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+          location
+        )}&key=AIzaSyAelqFKluixvanU-Rwz1P4-bZrePAgLQz4`
+      );
+
+      if (!response.ok) {
+        throw new Error("Error fetching location details");
+      }
+
+      const data = await response.json();
+
+      if (data.results && data.results.length > 0) {
+        const { lat, lng } = data.results[0].geometry.location;
+        return { lat, lng };
+      } else {
+        console.log("Location not found");
+        return null;
+      }
+    } catch (error) {
+      console.log("Error fetching location:", error);
+      return null;
+    }
+  }
 }
 
 const clientsCollectionRef = collection(db, "clients");
@@ -77,8 +105,8 @@ export class ClientDataService {
 
   // Upadte Clients
   updateClientFirebase = async (id, updatedClient) => {
-    console.log("Received id:", id);
-    console.log("Received updatedClient:", updatedClient);
+    // console.log("Received id:", id);
+    // console.log("Received updatedClient:", updatedClient);
     if (
       typeof id === "string" &&
       updatedClient &&
@@ -88,9 +116,9 @@ export class ClientDataService {
         const clientDoc = doc(db, "clients", id);
         try {
           await updateDoc(clientDoc, updatedClient);
-          console.log("Client updated successfully!", id);
+          // console.log("Client updated successfully!", id);
         } catch (error) {
-          console.log("Error updateing client", error);
+          console.log("Error updating client", error);
         }
       } else {
         console.error(
@@ -119,6 +147,61 @@ export class ClientDataService {
   getClientFirebase = (id) => {
     const clientDoc = doc(db, "clients", id);
     return getDoc(clientDoc);
+  };
+}
+
+const menuCollectionRef = collection(db, "menu");
+
+export class MenuDataService {
+  // Add Food
+  addFoodFirebase = (newFood) => {
+    return addDoc(menuCollectionRef, newFood);
+  };
+
+  // Update Food
+  updateFoodFirebase = async (id, updatedFood) => {
+    console.log("Received id:", id);
+    console.log("Received updatedFood:", updatedFood);
+    if (
+      typeof id === "string" &&
+      updatedFood &&
+      typeof updatedFood === "object"
+    ) {
+      if (id && updatedFood) {
+        const menuDoc = doc(db, "menu", id);
+        try {
+          await updateDoc(menuDoc, updatedFood);
+          console.log("food updated successfully", id);
+        } catch (error) {
+          console.log("error updating food", error);
+        }
+      } else {
+        console.error(
+          "Invalid data provided for Food update. ID:",
+          id,
+          "Update Food:",
+          updatedFood
+        );
+        return Promise.reject("Invalid data");
+      }
+    }
+  };
+
+  // Delete Food
+  deleteFoodFirebase = (id) => {
+    const menuDoc = doc(db, "menu", id);
+    return deleteDoc(menuDoc);
+  };
+
+  // Get All Food
+  getAllFoodFirebase = () => {
+    return getDocs(menuCollectionRef);
+  };
+
+  // Get Food
+  getFoodFirebase = (id) => {
+    const menuDoc = doc(db, "menu", id);
+    return getDoc(menuDoc);
   };
 }
 

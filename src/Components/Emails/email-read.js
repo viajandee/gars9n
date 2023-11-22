@@ -114,7 +114,8 @@ const EmailRead = () => {
                     </Row>
                     <Link
                       to='#'
-                      className='btn btn-outline-success mt-2'
+                      style={{ borderRadius: "7px" }}
+                      className='btn btn-success mt-2'
                       onClick={handleReplyClick}>
                       <i className='mdi mdi-reply' />
                       Reply
@@ -169,13 +170,17 @@ const EmailRead = () => {
                         </ModalBody>
                         <ModalFooter>
                           <Button
+                            style={{ borderRadius: "7px" }}
                             type='button'
-                            color='secondary'
+                            color='success'>
+                            Send <i className='fab fa-telegram-plane ms-1'></i>
+                          </Button>
+                          <Button
+                            style={{ borderRadius: "7px" }}
+                            type='button'
+                            color='outline-danger'
                             onClick={toggleModal}>
                             Close
-                          </Button>
-                          <Button type='button' color='primary'>
-                            Send <i className='fab fa-telegram-plane ms-1'></i>
                           </Button>
                         </ModalFooter>
                       </div>

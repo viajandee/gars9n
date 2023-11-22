@@ -19,10 +19,9 @@ import { getMenuDetail as onGetMenuDetail } from "store/menus/actions";
 import { useSelector, useDispatch } from "react-redux";
 import classnames from "classnames";
 import Breadcrumbs from "../../Breadcrumbs";
-import RecentFoods from "./RecentFoods";
 
-const FoodListDetail = (props) => {
-  document.title = "Food Detail | Gars9n - Digital Menu & Ordering System";
+const FoodDetails = (props) => {
+  document.title = "Menu | Gars9n - Digital Menu & Ordering System";
 
   const dispatch = useDispatch([]);
 
@@ -58,7 +57,7 @@ const FoodListDetail = (props) => {
     <React.Fragment>
       <div className='page-content'>
         <Container fluid>
-          <Breadcrumbs title='Food Menu' BreadcrumbItem='Food Detail' />
+          <Breadcrumbs title='Menus' BreadcrumbItem='Menu' />
 
           <Row>
             <Col>
@@ -226,18 +225,16 @@ const FoodListDetail = (props) => {
               </Card>
             </Col>
           </Row>
-
-          <RecentFoods recentFoods={menu.recentFoods} />
         </Container>
       </div>
     </React.Fragment>
   );
 };
 
-FoodListDetail.propTypes = {
+FoodDetails.propTypes = {
   menus: PropTypes.object,
   match: PropTypes.any,
   onGetMenuDetail: PropTypes.func,
 };
 
-export default FoodListDetail;
+export default FoodDetails;

@@ -29,7 +29,7 @@ import {
 import { doc } from "firebase/firestore";
 
 const ClientsList = () => {
-  document.title = "Clients List | Gars9n - React Admin & Dashboard Template";
+  document.title = "Clients | Gars9n - React Admin & Dashboard Template";
 
   // eslint-disable-next-line no-unused-vars
   const [clientList, setClientList] = useState([]);
@@ -43,7 +43,7 @@ const ClientsList = () => {
   const [newPhone, setNewPhone] = useState([]);
   const [stores, setStores] = useState([]);
   const [clients, setClients] = useState([]);
-  const [newStoreName, setNewStoreName] = useState("");
+  const [storeName, setStoreName] = useState("");
 
   //firestore
   const clientDataService = new ClientDataService();
@@ -100,19 +100,19 @@ const ClientsList = () => {
           name: values.name,
           email: values.email,
           phone: values.phone,
-          store: newStoreName,
+          store: storeName,
         };
         try {
           await clientDataService.updateClientFirebase(
             values.id,
             updatedClient
           );
-          console.log(
-            "Store updated successfully!",
-            values.id,
-            "and updatedClient:",
-            updatedClient
-          );
+          // console.log(
+          //   "Store updated successfully!",
+          //   values.id,
+          //   "and updatedClient:",
+          //   updatedClient
+          // );
           setShouldReload(true);
           setModal(false);
           toggle();
@@ -128,8 +128,8 @@ const ClientsList = () => {
     try {
       const clientDoc = await clientDataService.getClientFirebase(id);
       const clientData = clientDoc.data();
-      console.log("get client succses by id:", id);
-      console.log("get store succses by storeData:", clientData);
+      // console.log("get client succses by id:", id);
+      // console.log("get store succses by storeData:", clientData);
 
       validation.setValues({
         id: id,
@@ -148,18 +148,18 @@ const ClientsList = () => {
   //Add Client
   const addClient = async (e) => {
     e.preventDefault();
-    if (newName && newEmail && newPhone && newStoreName) {
+    if (newName && newEmail && newPhone && storeName) {
       const newClient = {
         name: newName,
         email: newEmail,
         phone: newPhone,
-        store: newStoreName,
+        store: storeName,
       };
 
       try {
         await clientDataService.addClientFirebase(newClient);
         setShouldReload(true);
-        console.log("new client added successfully", newClient);
+        // console.log("new client added successfully", newClient);
       } catch (error) {
         console.log("error adding client", error);
       }
@@ -167,7 +167,7 @@ const ClientsList = () => {
       setNewName("");
       setNewEmail("");
       setNewPhone([]);
-      setNewStoreName("");
+      setStoreName("");
     }
   };
   const openModal = () => {
@@ -240,7 +240,7 @@ const ClientsList = () => {
   const columns = useMemo(
     () => [
       {
-        Header: "Img",
+        Header: "ID",
         disableFilters: true,
         filterable: true,
         accessor: (cellProps) => (
@@ -249,7 +249,11 @@ const ClientsList = () => {
               <div className='avatar-xs'>
                 <span
                   className='avatar-title rounded-circle'
-                  style={{ textTransform: "capitalize" }}>
+                  style={{
+                    textTransform: "capitalize",
+                    textAlign: "center",
+                    marginTop: "6px",
+                  }}>
                   {cellProps.name.charAt(0)}
                 </span>
               </div>
@@ -266,12 +270,20 @@ const ClientsList = () => {
         ),
       },
       {
-        Header: "Name",
+        Header: "Client Name",
         accessor: "name",
         filterable: true,
+
         Cell: (cellProps) => {
           return (
-            <div style={{ textTransform: "capitalize" }}>{cellProps.value}</div>
+            <div
+              style={{
+                textTransform: "capitalize",
+                textAlign: "center",
+                marginTop: "12px",
+              }}>
+              {cellProps.value}
+            </div>
           );
         },
       },
@@ -280,15 +292,32 @@ const ClientsList = () => {
         accessor: "email",
         filterable: true,
         Cell: (cellProps) => {
-          return <div>{cellProps.value}</div>;
+          return (
+            <div
+              style={{
+                textAlign: "start",
+                marginTop: "12px",
+              }}>
+              {cellProps.value}
+            </div>
+          );
         },
       },
       {
-        Header: "Phone",
+        Header: "Phone Number",
         accessor: "phone",
         filterable: true,
         Cell: (cellProps) => {
-          return <>{cellProps.value}</>;
+          return (
+            <div
+              style={{
+                textTransform: "capitalize",
+                textAlign: "center",
+                marginTop: "12px",
+              }}>
+              {cellProps.value}
+            </div>
+          );
         },
       },
       {
@@ -297,16 +326,28 @@ const ClientsList = () => {
         filterable: true,
         Cell: (cellProps) => {
           return (
-            <div style={{ textTransform: "capitalize" }}>{cellProps.value}</div>
+            <div
+              style={{
+                textTransform: "capitalize",
+                textAlign: "center",
+                marginTop: "12px",
+              }}>
+              {cellProps.value}
+            </div>
           );
         },
       },
 
       {
-        Header: "Action",
+        Header: "Edit & Delete",
         Cell: (cellProps) => {
           return (
-            <div className='d-flex gap-3'>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-evenly",
+                marginTop: "12px",
+              }}>
               <div
                 className='text-success'
                 onClick={() => {
@@ -356,7 +397,7 @@ const ClientsList = () => {
                 <Button
                   type='button'
                   color='primary'
-                  className='btn mb-2 me-2'
+                  className='btn-rounded mb-2 me-2'
                   onClick={openModal}>
                   <i className='mdi mdi-plus-circle-outline me-1' />
                   Add New Client
@@ -369,45 +410,61 @@ const ClientsList = () => {
               Add Client
             </ModalHeader>
             <ModalBody>
-              <Label className='form-label'>Name</Label>
+              <Label className='form-label'>Client Name</Label>{" "}
+              <span className='required-indicator' style={{ color: "red" }}>
+                *
+              </span>
               <Input
                 name='name'
+                placeholder=''
                 type='text'
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
-                required
+                required='required'
               />
             </ModalBody>
             <ModalBody>
-              <Label className='form-label'>Email</Label>
+              <Label className='form-label'>Email</Label>{" "}
+              <span className='required-indicator' style={{ color: "red" }}>
+                *
+              </span>
               <Input
                 name='email'
+                placeholder='ex.@example.com'
                 label='Email'
                 type='email'
                 value={newEmail}
                 onChange={(e) => setNewEmail(e.target.value)}
-                required
+                required='@'
+                title='Please enter a valid email address with @'
               />
             </ModalBody>
             <ModalBody>
-              <Label className='form-label'>Phone</Label>
+              <Label className='form-label'>Phone Number</Label>{" "}
+              <span className='required-indicator' style={{ color: "red" }}>
+                *
+              </span>
               <Input
                 name='phone'
+                placeholder='(000)-0000-0000'
                 label='Phone'
-                type='number'
                 value={newPhone}
                 onChange={(e) => setNewPhone(e.target.value)}
-                required
+                required='required'
               />
             </ModalBody>
             <ModalBody>
-              <Label className='form-label'>Store Name</Label>
+              <Label className='form-label'>Store Name</Label>{" "}
+              <span className='required-indicator' style={{ color: "red" }}>
+                *
+              </span>
               <Input
+                required='required'
                 style={{ textTransform: "capitalize" }}
                 type='select'
-                value={newStoreName}
-                onChange={(e) => setNewStoreName(e.target.value)}>
-                <option value=''></option>
+                value={storeName}
+                onChange={(e) => setStoreName(e.target.value)}>
+                <option value=''>Select Store</option>
                 {stores.map((doc) => (
                   <option key={doc.id} value={doc.name}>
                     {doc.name}
@@ -416,10 +473,16 @@ const ClientsList = () => {
               </Input>
             </ModalBody>
             <ModalFooter>
-              <Button color='success' onClick={addClient}>
+              <Button
+                className='btn-rounded'
+                color='success'
+                onClick={addClient}>
                 Save
               </Button>{" "}
-              <Button color='danger' onClick={() => setModalIsOpen(false)}>
+              <Button
+                className='btn-rounded'
+                color='outline-danger'
+                onClick={() => setModalIsOpen(false)}>
                 Cancel
               </Button>
             </ModalFooter>
@@ -436,7 +499,7 @@ const ClientsList = () => {
                     isAddUserList={true}
                     handleUserClick={handleClientClicks}
                     customPageSize={10}
-                    className='custom-header-css'
+                    className='custom-header-css text-center'
                   />
 
                   <Modal isOpen={modal} toggle={toggle}>
@@ -453,9 +516,10 @@ const ClientsList = () => {
                         <Row form>
                           <Col xs={12}>
                             <div className='mb-3'>
-                              <Label className='form-label'>Name</Label>
+                              <Label className='form-label'></Label>
                               <Input
                                 name='name'
+                                placeholder='Client Name'
                                 type='text'
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
@@ -466,7 +530,6 @@ const ClientsList = () => {
                                     ? true
                                     : false
                                 }
-                                required
                               />
                               {validation.touched.name &&
                               validation.errors.name ? (
@@ -477,9 +540,10 @@ const ClientsList = () => {
                             </div>
 
                             <div className='mb-3'>
-                              <Label className='form-label'>Email</Label>
+                              <Label className='form-label'></Label>
                               <Input
                                 name='email'
+                                placeholder='Email'
                                 label='Email'
                                 type='email'
                                 onChange={validation.handleChange}
@@ -491,16 +555,16 @@ const ClientsList = () => {
                                     ? true
                                     : false
                                 }
-                                required
                               />
                             </div>
 
                             <div className='mb-3'>
-                              <Label className='form-label'>Phone</Label>
+                              <Label className='form-label'></Label>
                               <Input
+                                required='required'
                                 name='phone'
+                                placeholder='Client Phone'
                                 label='Phone'
-                                type='number'
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.phone || ""}
@@ -510,7 +574,6 @@ const ClientsList = () => {
                                     ? true
                                     : false
                                 }
-                                required
                               />
                               {validation.touched.phone &&
                               validation.errors.phone ? (
@@ -520,17 +583,16 @@ const ClientsList = () => {
                               ) : null}
                             </div>
                             <div className='mb-3'>
-                              <Label className='form-label'>Store Name</Label>
+                              <Label className='form-label'></Label>
                               <Input
+                                required='required'
                                 style={{ textTransform: "capitalize" }}
                                 name='store'
                                 label='select'
                                 type='select'
-                                onChange={(e) =>
-                                  setNewStoreName(e.target.value)
-                                }
-                                value={newStoreName}>
-                                <option value=''></option>
+                                onChange={(e) => setStoreName(e.target.value)}
+                                value={storeName}>
+                                <option value=''>Select Store</option>
                                 {stores.map((doc) => (
                                   <option key={doc.id} value={doc.name}>
                                     {doc.name}
@@ -550,6 +612,7 @@ const ClientsList = () => {
                           <Col>
                             <div className='text-end'>
                               <button
+                                style={{ borderRadius: "20px" }}
                                 type='submit'
                                 className='btn btn-success save-client'>
                                 Save

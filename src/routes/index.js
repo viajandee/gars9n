@@ -9,12 +9,14 @@ import UserAdmin from "pages/Settings/admins-create";
 import Pages404 from "pages/Utility/pages-404";
 // STORES
 import StoresGrid from "Components/Stores/StoresGrid";
+import StoreDetails from "Components/Stores/StoreDetails";
+import AccountInfo from "Components/Stores/Account_Info";
 // CLIENTS
 import ClientsList from "Components/Client/ClientsList";
 // MENUS
-import MenuFoodList from "../Components/Menus/MenuFoodList/index";
-import FoodListDetail from "../Components/Menus/MenuFoodList/FoodListDetail";
-import MenuAddFoods from "../Components/Menus/AddFood";
+import MenuList from "../Components/Menus/MenuList/AllMenus";
+import Menu from "../Components/Menus/MenuList/Menu";
+import AddMenu from "../Components/Menus/AddMenu";
 // EMAILS
 import EmailInbox from "../Components/Emails/email-inbox";
 import EmailRead from "../Components/Emails/email-read";
@@ -28,12 +30,14 @@ const authProtectedRoutes = [
   { path: "/add-admin", component: UserAdmin },
   // STORES
   { path: "/stores-grid", component: StoresGrid },
+  { path: "/stores-grid/store-details/:id", component: StoreDetails },
+  { path: "/stores-grid/account-info/:id", component: AccountInfo },
   // CLIENTS
   { path: "/clients-list", component: ClientsList },
   // MENUS
-  { path: "/menu-food-list", component: MenuFoodList },
-  { path: "/menu-food-detail/:id", component: FoodListDetail },
-  { path: "/menu-add-food", component: MenuAddFoods },
+  { path: "/all-menus", component: MenuList },
+  { path: "/all-menus/menu/:id", component: Menu },
+  { path: "/add-menu", component: AddMenu },
   // EMAILS
   { path: "/email-inbox", component: EmailInbox },
   { path: "/email-read", component: EmailRead },

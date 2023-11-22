@@ -12,6 +12,7 @@ function DashboardImage() {
     fontSize: "30px",
     fontWeight: "bold",
     color: "#fff",
+    textTransform: "capitalize",
   };
 
   return (
@@ -28,8 +29,8 @@ function DashboardImage() {
               }}
             />
             <CardText style={textStyle}>
-              <p>Enjoy your food & drink, </p>
-              <p>With Garson App.</p>
+              <p>get the right deal with,</p>
+              <p>Garson App.</p>
             </CardText>
           </Card>
         </Col>

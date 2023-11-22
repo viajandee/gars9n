@@ -84,6 +84,7 @@ const EmailInbox = (props) => {
               {/* Render Email SideBar */}
               <Card className='email-leftbar'>
                 <Button
+                  className='btn-rounded'
                   type='button'
                   color='danger'
                   onClick={() => {
@@ -143,7 +144,7 @@ const EmailInbox = (props) => {
                       </NavLink>
                     </NavItem>
 
-                    <NavItem>
+                    <NavItem >
                       <NavLink
                         className={classnames({
                           active: activeTab === "5",

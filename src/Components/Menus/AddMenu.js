@@ -15,13 +15,11 @@ import {
 } from "reactstrap";
 import Select from "react-select";
 import Dropzone from "react-dropzone";
-
-//Import Breadcrumb
 import Breadcrumbs from "../Breadcrumbs";
 
 const AddFood = () => {
   //meta title
-  document.title = "Add Foods | Gars9n - Digital Menu & Ordering System";
+  document.title = "Add Menu | Gars9n - Digital Menu & Ordering System";
 
   const [selectedFiles, setselectedFiles] = useState([]);
 
@@ -59,7 +57,7 @@ const AddFood = () => {
     <React.Fragment>
       <div className='page-content'>
         <Container fluid>
-          <Breadcrumbs title='Food Menu' BreadcrumbItem='Add Food' />
+          <Breadcrumbs title='Menus' BreadcrumbItem='Add Menu' />
           <Row>
             <Col xs='12'>
               <Card>
@@ -73,7 +71,7 @@ const AddFood = () => {
                     <Row>
                       <Col sm='6'>
                         <div className='mb-3'>
-                          <Label htmlFor='foodname'>Food Name</Label>
+                          <Label htmlFor='name'>Name</Label>
                           <Input
                             id='foodname'
                             name='foodname'
@@ -134,7 +132,7 @@ const AddFood = () => {
                           />
                         </div>
                         <div className='mb-3'>
-                          <Label htmlFor='fooddesc'>Food Description</Label>
+                          <Label htmlFor='fooddesc'>Description</Label>
                           <textarea
                             className='form-control mb-3'
                             id='fooddesc'
@@ -144,10 +142,18 @@ const AddFood = () => {
                       </Col>
                     </Row>
                     <div className='d-flex flex-wrap gap-2'>
-                      <Button type='submit' color='primary' className='btn '>
-                        Save Changes
+                      <Button
+                        style={{ borderRadius: "7px" }}
+                        type='submit'
+                        color='success'
+                        className='btn '>
+                        Save
                       </Button>
-                      <Button type='submit' color='secondary' className=' '>
+                      <Button
+                        style={{ borderRadius: "7px" }}
+                        type='submit'
+                        color='outline-danger'
+                        className=' '>
                         Cancel
                       </Button>
                     </div>
@@ -157,7 +163,7 @@ const AddFood = () => {
 
               <Card>
                 <CardBody>
-                  <CardTitle className='mb-3'>Food Images</CardTitle>
+                  <CardTitle className='mb-3'>Menu Images</CardTitle>
                   <Form>
                     <Dropzone
                       onDrop={(acceptedFiles) => {
@@ -260,10 +266,16 @@ const AddFood = () => {
                       </Col>
                     </Row>
                     <div className='d-flex flex-wrap gap-2'>
-                      <Button type='submit' color='primary'>
-                        Save Changes
+                      <Button
+                        style={{ borderRadius: "7px" }}
+                        type='submit'
+                        color='success'>
+                        Save
                       </Button>
-                      <Button type='submit' color='secondary'>
+                      <Button
+                        style={{ borderRadius: "7px" }}
+                        type='submit'
+                        color='outline-danger'>
                         Cancel
                       </Button>
                     </div>

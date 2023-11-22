@@ -73,18 +73,12 @@ const TableContainer = ({
     canPreviousPage,
     canNextPage,
     pageOptions,
-    pageCount,
+
     gotoPage,
     nextPage,
     previousPage,
-    // setPageSize,
-    // state,
-    // preGlobalFilteredRows,
-    // setGlobalFilter,
-    state: {
-      pageIndex,
-      //  pageSize
-    },
+
+    state: { pageIndex },
   } = useTable(
     {
       columns,
@@ -111,39 +105,14 @@ const TableContainer = ({
     return column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : "";
   };
 
-  // const onChangeInSelect = (event) => {
-  //   setPageSize(Number(event.target.value));
-  // };
-
   const onChangeInInput = (event) => {
     const page = event.target.value ? Number(event.target.value) - 1 : 0;
     gotoPage(page);
   };
 
-
-
   return (
     <Fragment>
       <Row className='mb-2'>
-        {/* <Col md={customPageSizeOptions ? 2 : 1}>
-          <select
-            className='form-select'
-            value={pageSize}
-            onChange={onChangeInSelect}>
-            {[10, 20, 30, 40, 50].map((pageSize) => (
-              <option key={pageSize} value={pageSize}>
-                Show {pageSize}
-              </option>
-            ))}
-          </select>
-        </Col> */}
-        {/* {isGlobalFilter && (
-          <GlobalFilter
-            preGlobalFilteredRows={preGlobalFilteredRows}
-            globalFilter={state.globalFilter}
-            setGlobalFilter={setGlobalFilter}
-          />
-        )} */}
         {isAddOptions && (
           <Col sm='7'>
             <div className='text-sm-end'>
@@ -158,21 +127,7 @@ const TableContainer = ({
             </div>
           </Col>
         )}
-        {/* TODO: Add Client */}
-        {/* {isAddUserList && (
-          <Col sm='12'>
-            <div className='text-sm-end'>
-              <Button
-                type='button'
-                color='primary'
-                className='btn mb-2 me-2'
-                onClick={handleUserClick}>
-                <i className='mdi mdi-plus-circle-outline me-1' />
-                Add New Client
-              </Button>
-            </div>
-          </Col>
-        )} */}
+
         {isAddCustList && (
           <Col sm='7'>
             <div className='text-sm-end'>
@@ -228,34 +183,28 @@ const TableContainer = ({
         </Table>
       </div>
 
-      <Row className='justify-content-md-end justify-content-center align-items-center'>
+      <Row className='justify-content-md-center justify-content-center align-items-center'>
         <Col className='col-md-auto'>
           <div className='d-flex gap-1'>
             <Button
-              color='primary'
-              onClick={() => gotoPage(0)}
-              disabled={!canPreviousPage}>
-              {"<<"}
-            </Button>
-            <Button
-              color='primary'
+              color='outline-primary'
               onClick={previousPage}
               disabled={!canPreviousPage}>
               {"<"}
             </Button>
           </div>
         </Col>
+
         <Col className='col-md-auto d-none d-md-block'>
           Page{" "}
           <strong>
             {pageIndex + 1} of {pageOptions.length}
           </strong>
         </Col>
+
         <Col className='col-md-auto'>
-          <Input
-            type='number'
+          <div
             min={1}
-            style={{ width: 70 }}
             max={pageOptions.length}
             defaultValue={pageIndex + 1}
             onChange={onChangeInInput}
@@ -264,14 +213,11 @@ const TableContainer = ({
 
         <Col className='col-md-auto'>
           <div className='d-flex gap-1'>
-            <Button color='primary' onClick={nextPage} disabled={!canNextPage}>
-              {">"}
-            </Button>
             <Button
-              color='primary'
-              onClick={() => gotoPage(pageCount - 1)}
+              color='outline-primary'
+              onClick={nextPage}
               disabled={!canNextPage}>
-              {">>"}
+              {">"}
             </Button>
           </div>
         </Col>

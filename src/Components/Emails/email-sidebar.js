@@ -23,6 +23,7 @@ const EmailSideBar = () => {
     <>
       <Card className='email-leftbar'>
         <Button
+          className='btn-rounded'
           type='button'
           color='danger'
           onClick={() => setModal(!modal)}

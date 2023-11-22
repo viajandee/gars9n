@@ -37,9 +37,12 @@ const StoresGrid = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [modal, setModal] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [newStoreName, setNewStoreName] = useState("");
-  const [newLocation, setNewLocation] = useState("");
   const [shouldReload, setShouldReload] = useState(false);
+  const [stores, setStores] = useState([]);
+  const [storeName, setStoreName] = useState("");
+  const [location, setLocation] = useState("");
+  const [phone, setPhone] = useState([]);
+  const [storeWebSite, setStoreWebSite] = useState("");
 
   // for firstore
   const storeDataService = new StoreDataService();
@@ -51,30 +54,54 @@ const StoresGrid = () => {
       id: "",
       name: "",
       location: "",
+      phone: "",
+      webSite: "",
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Please Enter Store Name"),
       location: Yup.string().required("Please Enter Location"),
+      phone: Yup.number().required("Please Enter phone number"),
+      webSite: Yup.string().required("Please Enter webSite"),
     }),
     onSubmit: async (values) => {
-      // console.log("Updating store with id:", values.id);
-      // console.log("New name:", values.name);
-      // console.log("New location:", values.location);
+      console.log("Updating store with id:", values.id);
+      console.log("New name:", values.name);
+      console.log("New location:", values.location);
+      console.log("phone:", values.phone);
+      console.log("website:", values.webSite);
 
-      // if (!values.id || !values.name || !values.location) {
-      //   console.error("Invalid data provided for store update");
-      //   return;
-      // }
+      if (
+        !values.id ||
+        !values.name ||
+        !values.location ||
+        !values.phone ||
+        !values.webSite
+      ) {
+        console.error("Invalid data provided for store update");
+        return;
+      }
 
       if (isEdit) {
+        // Maps
+        const { lat, lng } = await storeDataService.geocode(values.location);
+
         const updatedStore = {
           name: values.name,
           location: values.location,
+          phone: values.phone,
+          webSite: values.webSite,
+          latitude: lat,
+          longitude: lng,
         };
 
         try {
           await storeDataService.updateStoreFirebase(values.id, updatedStore);
-          // console.log("Store updated successfully!", values.id, "and updatedStore:", updatedStore);
+          console.log(
+            "Store updated successfully!",
+            values.id,
+            "and updatedStore:",
+            updatedStore
+          );
           setShouldReload(true);
           setModal(false);
           toggle();
@@ -88,36 +115,45 @@ const StoresGrid = () => {
   // Get Store
   const getStore = async (id) => {
     try {
-      const storeDoc = 
-      await storeDataService.getStoreFirebase(id);
+      const storeDoc = await storeDataService.getStoreFirebase(id);
+
       const storeData = storeDoc.data();
-      // console.log("get store succses by id:", id);
-      // console.log("get store succses by storeData:", storeData);
+      console.log("get store succses by id:", id);
+      console.log("get store succses by storeData:", storeData);
 
       validation.setValues({
         id: id,
         name: storeData.name,
         location: storeData.location,
+        phone: storeData.phone,
+        webSite: storeData.webSite,
       });
 
       setShouldReload(true);
       setModal(true);
       setIsEdit(true);
     } catch (error) {
-      console.log("or error 2: ", error);
+      console.log("get store error:", error);
     }
   };
 
   // Add Store
   const addStore = async (e) => {
     e.preventDefault();
-    if (newStoreName && newLocation) {
-      const newStore = {
-        name: newStoreName,
-        location: newLocation,
-      };
-
+    if (storeName && location && phone && storeWebSite) {
       try {
+        const { lat, lng } = await storeDataService.geocode(location);
+
+        const newStore = {
+          name: storeName,
+          location: location,
+          phone: phone,
+          webSite: storeWebSite,
+          latitude: lat,
+          longitude: lng,
+        };
+        // console.log("Latitude:", lat, "Longitude:", lng);
+
         await storeDataService.addStoreFirebase(newStore);
         setShouldReload(true);
         console.log("New store added successfully!");
@@ -126,10 +162,13 @@ const StoresGrid = () => {
       }
 
       setModalIsOpen(false);
-      setNewStoreName("");
-      setNewLocation("");
+      setStoreName("");
+      setLocation("");
+      setPhone([]);
+      setStoreWebSite("");
     }
   };
+
   const openModal = () => {
     setModalIsOpen(true);
   };
@@ -140,7 +179,7 @@ const StoresGrid = () => {
       getStores();
       setShouldReload(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shouldReload]);
 
   // Delete store
@@ -155,11 +194,9 @@ const StoresGrid = () => {
   };
 
   // Get Stores
-  const [stores, setStores] = useState([]);
-
   useEffect(() => {
     getStores();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getStores = async () => {
@@ -187,17 +224,16 @@ const StoresGrid = () => {
       <div className='page-content'>
         <Container fluid>
           <Breadcrumbs title='Stores' BreadcrumbItem='Stores Grid' />
-          {/* Add Store */}
           <Row>
             <Col sm='12'>
               <div className='text-sm-end'>
                 <Button
                   type='button'
                   color='primary'
-                  className='btn mb-2 me-2'
+                  className='btn-rounded mb-2 me-2'
                   onClick={openModal}>
                   <i className='mdi mdi-plus-circle-outline me-1' />
-                  Add New Stores
+                  Add New Store
                 </Button>
               </div>
             </Col>
@@ -207,27 +243,56 @@ const StoresGrid = () => {
               Add Store
             </ModalHeader>
             <ModalBody>
-              <Label className='form-label'>Store Name</Label>
+              <Label className='form-label'>Store Name</Label>{" "}
+              <span className='required-indicator' style={{ color: "red" }}>
+                *
+              </span>
               <Input
                 type='text'
-                value={newStoreName}
-                onChange={(e) => setNewStoreName(e.target.value)}
+                value={storeName}
+                onChange={(e) => setStoreName(e.target.value)}
               />
             </ModalBody>
             <ModalBody>
-              <Label className='form-label'>Location</Label>
+              <Label className='form-label'>Store Location</Label>{" "}
+              <span className='required-indicator' style={{ color: "red" }}>
+                *
+              </span>
+              <Input
+                placeholder=''
+                type='text'
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+              />
+            </ModalBody>
+            <ModalBody>
+              <Label className='form-label'>Store Phone</Label>{" "}
+              <span className='required-indicator' style={{ color: "red" }}>
+                *
+              </span>
+              <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
+            </ModalBody>
+            <ModalBody>
+              <Label className='form-label'>WebSite/Store Email</Label>{" "}
+              <span className='required-indicator' style={{ color: "red" }}>
+                *
+              </span>
               <Input
                 type='text'
-                value={newLocation}
-                onChange={(e) => setNewLocation(e.target.value)}
+                value={storeWebSite}
+                onChange={(e) => setStoreWebSite(e.target.value)}
               />
             </ModalBody>
             <ModalFooter>
-              <Button color='success' onClick={addStore}>
+              <Button
+                className='btn-rounded'
+                color='success'
+                onClick={addStore}>
                 Save
               </Button>{" "}
               <Button
-                color='danger'
+                className='btn-rounded'
+                color='outline-danger'
                 onClick={() => setModalIsOpen(false)}>
                 Cancel
               </Button>
@@ -268,46 +333,60 @@ const StoresGrid = () => {
                         <h5
                           className='font-size-15 mb-1'
                           style={{ textTransform: "uppercase" }}>
-                          {doc.name}
+                          <Link to='#' className='text-dark'>
+                            {doc.name}
+                          </Link>
                         </h5>
                       </div>
+
                       <div
                         className='font-size-13 text-muted'
                         style={{ textTransform: "capitalize" }}>
                         {doc.location}
                       </div>
                     </CardBody>
+
                     <CardFooter className='bg-transparent border-top'>
                       <div className='contact-links d-flex font-size-20'>
                         <div className='flex-fill'>
-                          <Link to='#' id={"message" + doc.id}>
-                            <i className='bx bx-message-square-dots' />
+                          <Link
+                            to={"/stores-grid/account-info/" + doc.id}
+                            id={"detail" + doc.id}>
+                            <i className='bx bxs-user-detail' />
                             <UncontrolledTooltip
+                              onClick={() =>
+                                getStore(`/stores-grid/account-info/${doc.id}`)
+                              }
                               placement='top'
-                              target={"message" + doc.id}>
-                              Message
+                              target={"detail" + doc.id}>
+                              Account Info
                             </UncontrolledTooltip>
                           </Link>
                         </div>
 
                         <div className='flex-fill'>
-                          <Link to='#' id={"project" + doc.id}>
-                            <i className='bx bx-pie-chart-alt' />
+                          <Link
+                            to={"/stores-grid/store-details/" + doc.id}
+                            id={"profile" + doc.id}>
+                            <i className='bx bx-store' />
                             <UncontrolledTooltip
-                              placement='top'
-                              target={"project" + doc.id}>
-                              Projects
-                            </UncontrolledTooltip>
-                          </Link>
-                        </div>
-
-                        <div className='flex-fill'>
-                          <Link to='#' id={"profile" + doc.id}>
-                            <i className='bx bx-user-circle' />
-                            <UncontrolledTooltip
+                              onClick={() =>
+                                getStore(`/stores-grid/store-details/${doc.id}`)
+                              }
                               placement='top'
                               target={"profile" + doc.id}>
-                              Profile
+                              Store Details
+                            </UncontrolledTooltip>
+                          </Link>
+                        </div>
+
+                        <div className='flex-fill'>
+                          <Link to='#' id={"menu" + doc.id}>
+                            <i className='bx bx-food-menu' />
+                            <UncontrolledTooltip
+                              placement='top'
+                              target={"menu" + doc.id}>
+                              Store Menu
                             </UncontrolledTooltip>
                           </Link>
                         </div>
@@ -356,9 +435,10 @@ const StoresGrid = () => {
                 <Row form>
                   <Col className='col-12'>
                     <div className='mb-3'>
-                      <Label className='form-label'>Store Name</Label>
+                      <Label className='form-label'></Label>
                       <Input
                         id='name'
+                        placeholder='Store Name'
                         name='name'
                         type='text'
                         onChange={validation.handleChange}
@@ -378,9 +458,10 @@ const StoresGrid = () => {
                     </div>
 
                     <div className='mb-3'>
-                      <Label className='form-label'>Location</Label>
+                      <Label className='form-label'></Label>
                       <Input
                         name='location'
+                        placeholder='Location'
                         type='text'
                         onChange={validation.handleChange}
                         onBlur={validation.handleBlur}
@@ -399,12 +480,59 @@ const StoresGrid = () => {
                         </FormFeedback>
                       ) : null}
                     </div>
+
+                    <div className='mb-3'>
+                      <Label className='form-label'></Label>
+                      <Input
+                        placeholder='Store Phone'
+                        name='phone'
+                        type='number'
+                        onChange={validation.handleChange}
+                        onBlur={validation.handleBlur}
+                        value={validation.values.phone || ""}
+                        invalid={
+                          validation.touched.phone && validation.errors.phone
+                            ? true
+                            : false
+                        }
+                      />
+                      {validation.touched.phone && validation.errors.phone ? (
+                        <FormFeedback type='invalid'>
+                          {validation.errors.phone}
+                        </FormFeedback>
+                      ) : null}
+                    </div>
+
+                    <div className='mb-3'>
+                      <Label className='form-label'></Label>
+                      <Input
+                        placeholder='WebSite'
+                        name='webSite'
+                        type='text'
+                        onChange={validation.handleChange}
+                        onBlur={validation.handleBlur}
+                        value={validation.values.webSite}
+                        invalid={
+                          validation.touched.webSite &&
+                          validation.errors.webSite
+                            ? true
+                            : false
+                        }
+                      />
+                      {validation.touched.webSite &&
+                      validation.errors.webSite ? (
+                        <FormFeedback type='invalid'>
+                          {validation.errors.webSite}
+                        </FormFeedback>
+                      ) : null}
+                    </div>
                   </Col>
                 </Row>
                 <Row>
                   <Col>
                     <div className='text-end'>
                       <button
+                        style={{ borderRadius: "20px" }}
                         type='submit'
                         className='btn btn-success save-user'>
                         Save
@@ -415,18 +543,6 @@ const StoresGrid = () => {
               </Form>
             </ModalBody>
           </Modal>
-
-          {/* lOAD MORE */}
-          <Row>
-            <Col xs='12'>
-              <div className='text-center my-3'>
-                <Link to='#' className='text-success'>
-                  <i className='bx bx-loader bx-spin font-size-18 align-middle me-2' />
-                  Load more
-                </Link>
-              </div>
-            </Col>
-          </Row>
         </Container>
       </div>
     </React.Fragment>

@@ -50,7 +50,11 @@ const CardUser = () => {
                     </div>
                     <div className='flex-grow-1 align-self-center'>
                       <div className='text-muted'>
-                        <p className='mb-2'>Welcome to Gars9n Dashboard</p>
+                        <p
+                          style={{ textTransform: "capitalize" }}
+                          className='mb-2'>
+                          Welcome to Gars9n Dashboard
+                        </p>
                         <h5 className='mb-1'>
                           {user ? user.firstName : ""}{" "}
                           {user ? user.lastName : ""}
@@ -76,7 +80,7 @@ const CardUser = () => {
                       <Col xs='4'>
                         <div>
                           <p className='text-muted text-truncate mb-2'>
-                            Total Branches
+                            Stores
                           </p>
                           <h5 className='mb-0'>
                             {clients ? clients.count : "0"}
@@ -85,9 +89,7 @@ const CardUser = () => {
                       </Col>
                       <Col xs='4'>
                         <div>
-                          <p className='text-muted text-truncate mb-2'>
-                            Total Tables
-                          </p>
+                          <p className='text-muted text-truncate mb-2'>Menus</p>
                           <h5 className='mb-0'>
                             {clients ? clients.count : "0"}
                           </h5>
@@ -102,13 +104,16 @@ const CardUser = () => {
                       isOpen={settingsMenu}
                       toggle={toggleSettings}
                       className='float-end'>
-                      <DropdownToggle tag='button' className='btn btn-primary'>
+                      <DropdownToggle
+                        style={{ borderRadius: "20px" }}
+                        tag='button'
+                        className='btn btn-outline-info'>
                         <i className='bx bxs-zap align-middle me-1' /> Quick
                         Actions
                       </DropdownToggle>
                       <DropdownMenu className='dropdown-menu-end'>
                         <DropdownItem href='#'>New Client</DropdownItem>
-                        <DropdownItem href='#'>New Branch</DropdownItem>
+                        <DropdownItem href='#'>New Stores</DropdownItem>
                         <DropdownItem href='#'>New Menu</DropdownItem>
                       </DropdownMenu>
                     </Dropdown>

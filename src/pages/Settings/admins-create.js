@@ -93,9 +93,10 @@ const AdminCreate = (props) => {
                     <Row>
                       <Col sm='6'>
                         <div className='mb-3'>
-                          <Label className='form-label'>First name</Label>
+                          <Label className='form-label'></Label>
                           <Input
                             type='text'
+                            placeholder="First Name"
                             className='form-control'
                             id='firstName'
                             onChange={validation.handleChange}
@@ -118,9 +119,10 @@ const AdminCreate = (props) => {
                       </Col>
                       <Col sm='6'>
                         <div className='mb-3'>
-                          <Label className='form-label'>Last name</Label>
+                          <Label className='form-label'></Label>
                           <Input
                             type='text'
+                            placeholder="Last Name"
                             className='form-control'
                             id='lastName'
                             onChange={validation.handleChange}
@@ -145,9 +147,10 @@ const AdminCreate = (props) => {
                     <Row>
                       <Col sm='6'>
                         <div className='mb-3'>
-                          <Label className='form-label'>Title</Label>
+                          <Label className='form-label'></Label>
                           <Input
                             type='text'
+                            placeholder="Address"
                             className='form-control'
                             id='title'
                             onChange={validation.handleChange}
@@ -170,9 +173,10 @@ const AdminCreate = (props) => {
                       </Col>
                       <Col sm='6'>
                         <div className='mb-3'>
-                          <Label className='form-label'>Company Name</Label>
+                          <Label className='form-label'></Label>
                           <Input
                             type='text'
+                            placeholder="Company Name"
                             className='form-control'
                             id='company'
                             onChange={validation.handleChange}
@@ -197,9 +201,10 @@ const AdminCreate = (props) => {
                     <Row>
                       <Col sm='6'>
                         <div className='mb-3'>
-                          <Label className='form-label'>Email</Label>
+                          <Label className='form-label'></Label>
                           <Input
                             type='email'
+                            placeholder="Email"
                             className='form-control'
                             id='email'
                             onChange={validation.handleChange}
@@ -222,9 +227,10 @@ const AdminCreate = (props) => {
                       </Col>
                       <Col sm='6'>
                         <div className='mb-3'>
-                          <Label className='form-label'>Phone number</Label>
+                          <Label className='form-label'></Label>
                           <Input
                             type='text'
+                            placeholder="Phone Number"
                             className='form-control'
                             id='phone'
                             onChange={validation.handleChange}
@@ -249,9 +255,10 @@ const AdminCreate = (props) => {
                     <Row>
                       <Col sm='6'>
                         <div className='mb-3'>
-                          <Label className='form-label'>Password</Label>
+                          <Label className='form-label'></Label>
                           <Input
                             type='password'
+                            placeholder="Password"
                             className='form-control'
                             id='password'
                             onChange={validation.handleChange}
@@ -274,9 +281,10 @@ const AdminCreate = (props) => {
                       </Col>
                       <Col sm='6'>
                         <div className='mb-3'>
-                          <Label className='form-label'>Repeat Password</Label>
+                          <Label className='form-label'></Label>
                           <Input
                             type='password'
+                            placeholder="Repeat Password"
                             className='form-control'
                             id='repassword'
                             onChange={validation.handleChange}
@@ -299,7 +307,10 @@ const AdminCreate = (props) => {
                       </Col>
                     </Row>
                     <div>
-                      <button type='submit' className='btn btn-primary w-md'>
+                      <button
+                        style={{ borderRadius: "7px" }}
+                        type='submit'
+                        className='btn btn-success w-md'>
                         Submit
                       </button>
                     </div>

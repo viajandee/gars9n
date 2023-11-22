@@ -31,7 +31,7 @@ const SidebarContent = (props) => {
       }
     };
     initMenu();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.location.pathname]);
 
   useEffect(() => {
@@ -108,25 +108,22 @@ const SidebarContent = (props) => {
 
             <li>
               <Link to='/stores-grid'>
-                <i className='bx bx-user-circle'></i>
+                <i className='bx bx-store'></i>
                 <span>{props.t("Stores")}</span>
               </Link>
             </li>
 
             <li>
               <Link to='/menus' className='has-arrow'>
-                <i className='bx bx-store'></i>
-                <span>{props.t("Food Menu")}</span>
+                <i className='bx bx-food-menu'></i>
+                <span>{props.t("Menus")}</span>
               </Link>
               <ul className='sub-menu'>
                 <li>
-                  <Link to='/menu-food-list'>{props.t("Food List")}</Link>
+                  <Link to='/all-menus'>{props.t("All Menus")}</Link>
                 </li>
                 <li>
-                  <Link to='/menu-food-detail/1'>{props.t("Food Detail")}</Link>
-                </li>
-                <li>
-                  <Link to='/menu-add-food'>{props.t("Add Food")}</Link>
+                  <Link to='/add-menu'>{props.t("Add Menu")}</Link>
                 </li>
               </ul>
             </li>
