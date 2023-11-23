@@ -20,6 +20,8 @@ import {
   Container,
   Button,
   ModalFooter,
+  FormControl,
+  InputGroup,
 } from "reactstrap";
 import { Link, withRouter } from "react-router-dom";
 import { map } from "lodash";
@@ -60,7 +62,6 @@ const StoresGrid = () => {
     validationSchema: Yup.object({
       name: Yup.string().required("Please Enter Store Name"),
       location: Yup.string().required("Please Enter Location"),
-      phone: Yup.number().required("Please Enter phone number"),
       webSite: Yup.string().required("Please Enter webSite"),
     }),
     onSubmit: async (values) => {
@@ -244,7 +245,7 @@ const StoresGrid = () => {
             </ModalHeader>
             <ModalBody>
               <Label className='form-label'>Store Name</Label>{" "}
-              <span className='required-indicator' style={{ color: "red" }}>
+              <span className='required-indicator' style={{ color: "#f46a6a" }}>
                 *
               </span>
               <Input
@@ -255,11 +256,10 @@ const StoresGrid = () => {
             </ModalBody>
             <ModalBody>
               <Label className='form-label'>Store Location</Label>{" "}
-              <span className='required-indicator' style={{ color: "red" }}>
+              <span className='required-indicator' style={{ color: "#f46a6a" }}>
                 *
               </span>
               <Input
-                placeholder=''
                 type='text'
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
@@ -267,14 +267,14 @@ const StoresGrid = () => {
             </ModalBody>
             <ModalBody>
               <Label className='form-label'>Store Phone</Label>{" "}
-              <span className='required-indicator' style={{ color: "red" }}>
+              <span className='required-indicator' style={{ color: "#f46a6a" }}>
                 *
               </span>
               <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
             </ModalBody>
             <ModalBody>
               <Label className='form-label'>WebSite/Store Email</Label>{" "}
-              <span className='required-indicator' style={{ color: "red" }}>
+              <span className='required-indicator' style={{ color: "#f46a6a" }}>
                 *
               </span>
               <Input
@@ -286,13 +286,13 @@ const StoresGrid = () => {
             <ModalFooter>
               <Button
                 className='btn-rounded'
-                color='success'
+                color='outline-success w-md'
                 onClick={addStore}>
                 Save
               </Button>{" "}
               <Button
                 className='btn-rounded'
-                color='outline-danger'
+                color='outline-danger w-md'
                 onClick={() => setModalIsOpen(false)}>
                 Cancel
               </Button>
@@ -308,7 +308,9 @@ const StoresGrid = () => {
                       {!doc.img ? (
                         <div className='avatar-sm mx-auto mb-4'>
                           <span
-                            style={{ textTransform: "uppercase" }}
+                            style={{
+                              textTransform: "uppercase",
+                            }}
                             className={
                               "avatar-title rounded-circle bg-soft bg-" +
                               doc.color +
@@ -332,8 +334,18 @@ const StoresGrid = () => {
                       <div>
                         <h5
                           className='font-size-15 mb-1'
-                          style={{ textTransform: "uppercase" }}>
-                          <Link to='#' className='text-dark'>
+                          style={{
+                            textTransform: "uppercase",
+                            fontWeight: "bold",
+                          }}>
+                          <Link
+                            to={"/stores-grid/add-account/" + doc.id}
+                            id={doc.id}
+                            className='text-white'
+                            onClick={() =>
+                              getStore(`/stores-grid/add-account/${doc.id}`)
+                            }
+                            target={doc.id}>
                             {doc.name}
                           </Link>
                         </h5>
@@ -341,7 +353,9 @@ const StoresGrid = () => {
 
                       <div
                         className='font-size-13 text-muted'
-                        style={{ textTransform: "capitalize" }}>
+                        style={{
+                          textTransform: "capitalize",
+                        }}>
                         {doc.location}
                       </div>
                     </CardBody>
@@ -349,14 +363,9 @@ const StoresGrid = () => {
                     <CardFooter className='bg-transparent border-top'>
                       <div className='contact-links d-flex font-size-20'>
                         <div className='flex-fill'>
-                          <Link
-                            to={"/stores-grid/account-info/" + doc.id}
-                            id={"detail" + doc.id}>
+                          <Link to='#' id={"detail" + doc.id}>
                             <i className='bx bxs-user-detail' />
                             <UncontrolledTooltip
-                              onClick={() =>
-                                getStore(`/stores-grid/account-info/${doc.id}`)
-                              }
                               placement='top'
                               target={"detail" + doc.id}>
                               Account Info
@@ -534,7 +543,8 @@ const StoresGrid = () => {
                       <button
                         style={{ borderRadius: "20px" }}
                         type='submit'
-                        className='btn btn-success save-user'>
+                        color=''
+                        className='btn btn-outline-success w-md save-user '>
                         Save
                       </button>
                     </div>

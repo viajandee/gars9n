@@ -10,7 +10,7 @@ import Pages404 from "pages/Utility/pages-404";
 // STORES
 import StoresGrid from "Components/Stores/StoresGrid";
 import StoreDetails from "Components/Stores/StoreDetails";
-import AccountInfo from "Components/Stores/Account_Info";
+import AddAccount from "Components/Stores/Add-Account";
 // CLIENTS
 import ClientsList from "Components/Client/ClientsList";
 // MENUS
@@ -31,7 +31,7 @@ const authProtectedRoutes = [
   // STORES
   { path: "/stores-grid", component: StoresGrid },
   { path: "/stores-grid/store-details/:id", component: StoreDetails },
-  { path: "/stores-grid/account-info/:id", component: AccountInfo },
+  { path: "/stores-grid/add-account/:id", component: AddAccount },
   // CLIENTS
   { path: "/clients-list", component: ClientsList },
   // MENUS

@@ -52,9 +52,9 @@ const GoogleMaps = () => {
   }, [shouldReload]);
 
   return (
-    <APIProvider apiKey='AIzaSyAelqFKluixvanU-Rwz1P4-bZrePAgLQz4'>
+    <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
       <div style={{ height: "100vh", width: "100%" }}>
-        <Map zoom={9} center={position} mapId='e22b8fb5b9022403'>
+        <Map zoom={9} center={position} mapId={process.env.NEXT_PUBLIC_MAP_ID}>
           <AdvancedMarker position={position} onClick={() => setStore(true)}>
             <Pin
               background={"grey"}
@@ -71,7 +71,6 @@ const GoogleMaps = () => {
                   textTransform: "capitalize",
                   color: "black",
                   fontWeight: "bold",
-                  fontFamily: "Helvetica, Arial, sans-serif",
                 }}>
                 {store.name}
               </p>

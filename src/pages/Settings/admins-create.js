@@ -308,9 +308,9 @@ const AdminCreate = (props) => {
                     </Row>
                     <div>
                       <button
-                        style={{ borderRadius: "7px" }}
+                        style={{ borderRadius: "20px" }}
                         type='submit'
-                        className='btn btn-success w-md'>
+                        className='btn btn-primary w-md'>
                         Submit
                       </button>
                     </div>

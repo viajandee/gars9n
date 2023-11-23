@@ -5,13 +5,13 @@ import pic from "../../assets/images/users/pic.jpg";
 function DashboardImage() {
   const textStyle = {
     position: "absolute",
-    top: "5%",
-    left: "5%",
+    top: "12%",
+    left: "6%",
     padding: "5px",
     borderRadius: "20px",
-    fontSize: "30px",
+    fontSize: "37px",
     fontWeight: "bold",
-    color: "#fff",
+    color: "white",
     textTransform: "capitalize",
   };
 

@@ -141,20 +141,12 @@ const AddFood = () => {
                         </div>
                       </Col>
                     </Row>
-                    <div className='d-flex flex-wrap gap-2'>
+                    <div className='text-start'>
                       <Button
-                        style={{ borderRadius: "7px" }}
                         type='submit'
-                        color='success'
-                        className='btn '>
-                        Save
-                      </Button>
-                      <Button
-                        style={{ borderRadius: "7px" }}
-                        type='submit'
-                        color='outline-danger'
-                        className=' '>
-                        Cancel
+                        className='btn-rounded '
+                        color='btn btn-primary w-md'>
+                        Submit
                       </Button>
                     </div>
                   </Form>
@@ -265,18 +257,12 @@ const AddFood = () => {
                         </div>
                       </Col>
                     </Row>
-                    <div className='d-flex flex-wrap gap-2'>
+                    <div className='text-start'>
                       <Button
-                        style={{ borderRadius: "7px" }}
+                        className='btn-rounded'
                         type='submit'
-                        color='success'>
-                        Save
-                      </Button>
-                      <Button
-                        style={{ borderRadius: "7px" }}
-                        type='submit'
-                        color='outline-danger'>
-                        Cancel
+                        color='btn btn-primary w-md'>
+                        Submit
                       </Button>
                     </div>
                   </Form>

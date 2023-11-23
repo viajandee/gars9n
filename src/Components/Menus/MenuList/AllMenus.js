@@ -102,7 +102,7 @@ const FoodsList = (props) => {
               <Row className='mb-3'>
                 <Col xl='4' sm='6'>
                   <div className='mt-2'>
-                    <h5>Menu List</h5>
+                    <CardTitle>Menu List</CardTitle>
                   </div>
                 </Col>
                 <Col lg='8' sm='6'>

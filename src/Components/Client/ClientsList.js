@@ -91,7 +91,10 @@ const ClientsList = () => {
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Please Enter Your Name"),
-      email: Yup.string().required("Please Enter Your Email"),
+      email: Yup.string()
+        .email("Must be a valid Email")
+        .max(255)
+        .required("Please Enter Your Email"),
       phone: Yup.number().required("Please Enter Your Phone Number"),
     }),
     onSubmit: async (values) => {
@@ -411,12 +414,12 @@ const ClientsList = () => {
             </ModalHeader>
             <ModalBody>
               <Label className='form-label'>Client Name</Label>{" "}
-              <span className='required-indicator' style={{ color: "red" }}>
+              <span className='required-indicator' style={{ color: "#f46a6a" }}>
                 *
               </span>
               <Input
                 name='name'
-                placeholder=''
+                placeholder='Enter Your Name'
                 type='text'
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
@@ -425,13 +428,12 @@ const ClientsList = () => {
             </ModalBody>
             <ModalBody>
               <Label className='form-label'>Email</Label>{" "}
-              <span className='required-indicator' style={{ color: "red" }}>
+              <span className='required-indicator' style={{ color: "#f46a6a" }}>
                 *
               </span>
               <Input
                 name='email'
-                placeholder='ex.@example.com'
-                label='Email'
+                placeholder='Enter Valid Email'
                 type='email'
                 value={newEmail}
                 onChange={(e) => setNewEmail(e.target.value)}
@@ -441,13 +443,14 @@ const ClientsList = () => {
             </ModalBody>
             <ModalBody>
               <Label className='form-label'>Phone Number</Label>{" "}
-              <span className='required-indicator' style={{ color: "red" }}>
+              <span className='required-indicator' style={{ color: "#f46a6a" }}>
                 *
               </span>
               <Input
                 name='phone'
-                placeholder='(000)-0000-0000'
+                placeholder='Enter Only Number'
                 label='Phone'
+                type='number'
                 value={newPhone}
                 onChange={(e) => setNewPhone(e.target.value)}
                 required='required'
@@ -455,13 +458,13 @@ const ClientsList = () => {
             </ModalBody>
             <ModalBody>
               <Label className='form-label'>Store Name</Label>{" "}
-              <span className='required-indicator' style={{ color: "red" }}>
+              <span className='required-indicator' style={{ color: "#f46a6a" }}>
                 *
               </span>
               <Input
+                type='select'
                 required='required'
                 style={{ textTransform: "capitalize" }}
-                type='select'
                 value={storeName}
                 onChange={(e) => setStoreName(e.target.value)}>
                 <option value=''>Select Store</option>
@@ -474,13 +477,13 @@ const ClientsList = () => {
             </ModalBody>
             <ModalFooter>
               <Button
-                className='btn-rounded'
-                color='success'
+                className='btn-rounded w-md'
+                color='outline-success'
                 onClick={addClient}>
                 Save
               </Button>{" "}
               <Button
-                className='btn-rounded'
+                className='btn-rounded w-md'
                 color='outline-danger'
                 onClick={() => setModalIsOpen(false)}>
                 Cancel
@@ -614,7 +617,7 @@ const ClientsList = () => {
                               <button
                                 style={{ borderRadius: "20px" }}
                                 type='submit'
-                                className='btn btn-success save-client'>
+                                className='btn btn-outline-success w-md save-client'>
                                 Save
                               </button>
                             </div>
