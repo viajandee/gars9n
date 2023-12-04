@@ -61,7 +61,7 @@ const GoogleMaps = () => {
   return (
     <APIProvider apiKey={process.env.REACT_PUBLIC_GOOGLE_MAPS_API_KEY}>
       <div style={{ height: "100vh", width: "100%" }}>
-        <Map zoom={9} center={position} mapId='e22b8fb5b9022403'>
+        <Map zoom={9} center={position} mapId={process.env.MAP_ID}>
           <AdvancedMarker position={position} onClick={() => setStore(true)}>
             <Pin borderColor={"white"} glyphColor={"white"} />
           </AdvancedMarker>
