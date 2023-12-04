@@ -28,5 +28,5 @@ package-lock.json
 .eslintcache
 debug.log
 
-# Add the following line
+# Remove the following line
 GoogleMaps.js
