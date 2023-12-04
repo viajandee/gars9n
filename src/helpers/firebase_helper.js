@@ -73,7 +73,7 @@ export class StoreDataService {
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
           location
-        )}&key=GOOGLE_MAPS_API_KEY`
+        )}&key=GOOGLE_MAPS_API_KEY` //GOOGLE_MAPS_API_KEY
       );
 
       if (!response.ok) {
