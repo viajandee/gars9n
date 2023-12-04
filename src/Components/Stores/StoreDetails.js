@@ -12,7 +12,7 @@ const StoreDetails = () => {
   // for firstore
   const storeDataService = new StoreDataService();
 
-  const [shouldReload, setShouldReload] = useState(false);
+  const [reload, setReload] = useState(false);
   // Get Store
   const [store, setStore] = useState([]);
 
@@ -22,7 +22,7 @@ const StoreDetails = () => {
       const storeData = storeDoc.data();
 
       setStore(storeData);
-      setShouldReload(true);
+      setReload(true);
     } catch (error) {
       console.log("get store error : ", error);
     }
@@ -38,18 +38,50 @@ const StoreDetails = () => {
 
   // Refresh the page by AJAX
   useEffect(() => {
-    if (shouldReload) {
+    if (reload) {
       getStore();
-      setShouldReload(false);
+      setReload(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shouldReload]);
+  }, [reload]);
+
+  // short address
+  const shortLocation = (location) => {
+    if (!location || typeof location !== "string") {
+      return <div>{store.location}</div>;
+    }
+    const parts = location.split(",");
+
+    if (parts.length > 1) {
+      const shortAddress = parts.slice(0, 2).join(", ");
+      return (
+        <div>
+          {shortAddress.length > 15
+            ? shortAddress.substring(0, 27) + "..."
+            : shortAddress}
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        {location.length > 15 ? location.substring(0, 27) + "..." : location}
+      </div>
+    );
+  };
+
+  const tdStyle = {
+    textTransform: "capitalize",
+    textAlign: "start",
+    paddingTop: "18px",
+    fontWeight: "bold",
+  };
 
   return (
     <React.Fragment>
       <div className='page-content'>
         <Container fluid>
-          <Breadcrumbs title='Store Grid' BreadcrumbItem='Store Details' />
+          <Breadcrumbs title='Stores Grid' BreadcrumbItem='Store Details' />
           <Row>
             <Col>
               <Card>
@@ -59,35 +91,43 @@ const StoreDetails = () => {
                       className='contact-links d-flex'
                       style={{ justifyContent: "space-between" }}>
                       <tr key={store}>
-                        <th className='font-size-20 text-center'>
+                        <th
+                          className='font-size-20 text-center'
+                          style={{ paddingRight: "3px" }}>
                           <i className='bx bxs-store' />
                         </th>
-                        <td style={{ textTransform: "capitalize" }}>
-                          {store.name}
-                        </td>
+                        <td style={tdStyle}>{store.name}</td>
                       </tr>
 
                       <tr>
-                        <th className='font-size-20 text-center'>
+                        <th className='font-size-20 text-center'
+                        style={{ paddingRight: "3px" }}>
                           <i className='bx bx-map' />
                         </th>
-                        <td style={{ textTransform: "capitalize" }}>
-                          {store.location}
-                        </td>
+                        <td style={tdStyle}>{shortLocation(store.location)}</td>
                       </tr>
 
                       <tr>
-                        <th className='font-size-20 text-center'>
+                        <th className='font-size-20 text-center'
+                        style={{ paddingRight: "3px" }}>
                           <i className='bx bx-phone' />
                         </th>
-                        <td>{store.phone}</td>
+                        <td style={tdStyle}>{store.phone}</td>
                       </tr>
 
                       <tr>
-                        <th className='font-size-20 text-center'>
+                        <th className='font-size-20 text-center'
+                        style={{ paddingRight: "3px" }}>
                           <i className='mdi mdi-web' />
                         </th>
-                        <td>{store.webSite}</td>
+                        <td
+                          style={{
+                            fontWeight: "bold",
+                            textAlign: "start",
+                            paddingTop: "18px",
+                          }}>
+                          {shortLocation(store.webSite)}
+                        </td>
                       </tr>
                     </tbody>
                   </Table>

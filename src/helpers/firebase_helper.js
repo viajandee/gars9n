@@ -73,7 +73,7 @@ export class StoreDataService {
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
           location
-        )}&key=API_KEY`
+        )}&key=GOOGLE_MAPS_API_KEY`
       );
 
       if (!response.ok) {
@@ -150,60 +150,6 @@ export class ClientDataService {
   };
 }
 
-const menuCollectionRef = collection(db, "menu");
-
-export class MenuDataService {
-  // Add Food
-  addFoodFirebase = (newFood) => {
-    return addDoc(menuCollectionRef, newFood);
-  };
-
-  // Update Food
-  updateFoodFirebase = async (id, updatedFood) => {
-    console.log("Received id:", id);
-    console.log("Received updatedFood:", updatedFood);
-    if (
-      typeof id === "string" &&
-      updatedFood &&
-      typeof updatedFood === "object"
-    ) {
-      if (id && updatedFood) {
-        const menuDoc = doc(db, "menu", id);
-        try {
-          await updateDoc(menuDoc, updatedFood);
-          console.log("food updated successfully", id);
-        } catch (error) {
-          console.log("error updating food", error);
-        }
-      } else {
-        console.error(
-          "Invalid data provided for Food update. ID:",
-          id,
-          "Update Food:",
-          updatedFood
-        );
-        return Promise.reject("Invalid data");
-      }
-    }
-  };
-
-  // Delete Food
-  deleteFoodFirebase = (id) => {
-    const menuDoc = doc(db, "menu", id);
-    return deleteDoc(menuDoc);
-  };
-
-  // Get All Food
-  getAllFoodFirebase = () => {
-    return getDocs(menuCollectionRef);
-  };
-
-  // Get Food
-  getFoodFirebase = (id) => {
-    const menuDoc = doc(db, "menu", id);
-    return getDoc(menuDoc);
-  };
-}
 
 const onAuthStateChanged = () => {
   return new Promise((resolve, reject) => {

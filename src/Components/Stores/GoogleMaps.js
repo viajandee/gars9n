@@ -16,7 +16,7 @@ const GoogleMaps = () => {
   // for firstore
   const storeDataService = new StoreDataService();
 
-  const [shouldReload, setShouldReload] = useState(false);
+  const [reload, setReload] = useState(false);
 
   const position =
     store.latitude && store.longitude
@@ -44,35 +44,34 @@ const GoogleMaps = () => {
 
   // Refresh the page by AJAX
   useEffect(() => {
-    if (shouldReload) {
+    if (reload) {
       getStore();
-      setShouldReload(false);
+      setReload(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shouldReload]);
+  }, [reload]);
+
+  const InfoWindowStyle = {
+    textTransform: "uppercase",
+    color: "black",
+    fontWeight: "bold",
+    textAlign: "center",
+  };
 
   return (
-    <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
+    <APIProvider apiKey={process.env.REACT_PUBLIC_GOOGLE_MAPS_API_KEY}>
       <div style={{ height: "100vh", width: "100%" }}>
-        <Map zoom={9} center={position} mapId={process.env.NEXT_PUBLIC_MAP_ID}>
+        <Map zoom={9} center={position} mapId='e22b8fb5b9022403'>
           <AdvancedMarker position={position} onClick={() => setStore(true)}>
-            <Pin
-              background={"grey"}
-              borderColor={"green"}
-              glyphColor={"purple"}
-            />
+            <Pin borderColor={"white"} glyphColor={"white"} />
           </AdvancedMarker>
           {store && (
             <InfoWindow
               position={position}
               onCloseClick={() => setStore(false)}>
-              <p
-                style={{
-                  textTransform: "capitalize",
-                  color: "black",
-                  fontWeight: "bold",
-                }}>
-                {store.name}
+              <p style={InfoWindowStyle}>{store.name}</p>
+              <p style={{ color: "black", textAlign: "center" }}>
+                {store.location}
               </p>
             </InfoWindow>
           )}

@@ -36,7 +36,7 @@ const ClientsList = () => {
   const [modal, setModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
-  const [shouldReload, setShouldReload] = useState(false);
+  const [reload, setReload] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [newName, setNewName] = useState("");
   const [newEmail, setNewEmail] = useState("");
@@ -67,7 +67,7 @@ const ClientsList = () => {
         location: storeData.location,
       });
 
-      setShouldReload(true);
+      setReload(true);
       setModal(true);
       setIsEdit(true);
     } catch (error) {
@@ -80,6 +80,7 @@ const ClientsList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  
   // update client
   const validation = useFormik({
     enableReinitialize: true,
@@ -116,7 +117,7 @@ const ClientsList = () => {
           //   "and updatedClient:",
           //   updatedClient
           // );
-          setShouldReload(true);
+          setReload(true);
           setModal(false);
           toggle();
         } catch (error) {
@@ -140,7 +141,7 @@ const ClientsList = () => {
         email: clientData.email,
         phone: clientData.phone,
       });
-      setShouldReload(true);
+      setReload(true);
       setModal(true);
       setIsEdit(true);
     } catch (error) {
@@ -161,7 +162,7 @@ const ClientsList = () => {
 
       try {
         await clientDataService.addClientFirebase(newClient);
-        setShouldReload(true);
+        setReload(true);
         // console.log("new client added successfully", newClient);
       } catch (error) {
         console.log("error adding client", error);
@@ -194,7 +195,7 @@ const ClientsList = () => {
   const deleteClient = async (id) => {
     await clientDataService.deleteClientFirebase(id);
     getClients();
-    setShouldReload(true);
+    setReload(true);
   };
   const handleDeleteClient = () => {
     if (doc.id) {
@@ -219,12 +220,12 @@ const ClientsList = () => {
 
   // Refresh the page by AJAX
   useEffect(() => {
-    if (shouldReload) {
+    if (reload) {
       getClients();
-      setShouldReload(false);
+      setReload(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shouldReload]);
+  }, [reload]);
 
   useEffect(() => {
     getClients();
@@ -398,8 +399,7 @@ const ClientsList = () => {
             <Col sm='12'>
               <div className='text-sm-end'>
                 <Button
-                  type='button'
-                  color='primary'
+                  color='primary w-md'
                   className='btn-rounded mb-2 me-2'
                   onClick={openModal}>
                   <i className='mdi mdi-plus-circle-outline me-1' />
@@ -433,12 +433,12 @@ const ClientsList = () => {
               </span>
               <Input
                 name='email'
-                placeholder='Enter Valid Email'
+                placeholder='name@example.com'
                 type='email'
                 value={newEmail}
                 onChange={(e) => setNewEmail(e.target.value)}
                 required='@'
-                title='Please enter a valid email address with @'
+                title='Please Enter Valid Email With @'
               />
             </ModalBody>
             <ModalBody>
@@ -448,7 +448,7 @@ const ClientsList = () => {
               </span>
               <Input
                 name='phone'
-                placeholder='Enter Only Number'
+                placeholder='(+00) 0000-0000'
                 label='Phone'
                 type='number'
                 value={newPhone}

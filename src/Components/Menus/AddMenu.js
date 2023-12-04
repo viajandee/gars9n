@@ -12,6 +12,9 @@ import {
   Input,
   Label,
   Row,
+  Modal,
+  ModalHeader,
+  ModalBody,
 } from "reactstrap";
 import Select from "react-select";
 import Dropzone from "react-dropzone";
@@ -52,6 +55,8 @@ const AddFood = () => {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
   }
+
+  
 
   return (
     <React.Fragment>
@@ -270,6 +275,7 @@ const AddFood = () => {
               </Card>
             </Col>
           </Row>
+        
         </Container>
       </div>
     </React.Fragment>
