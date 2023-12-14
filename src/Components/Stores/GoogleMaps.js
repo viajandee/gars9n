@@ -10,19 +10,22 @@ import { StoreDataService } from "../../helpers/firebase_helper";
 import { useParams } from "react-router-dom";
 
 const GoogleMaps = () => {
-  // Get Store
-  const [store, setStore] = useState([]);
   const { id } = useParams();
-  // for firstore
-  const storeDataService = new StoreDataService();
 
+  // State variables
+  const [store, setStore] = useState([]);
   const [reload, setReload] = useState(false);
 
+  // Firestore service
+  const storeDataService = new StoreDataService();
+
+  // Calculate position based on store's latitude and longitude
   const position =
     store.latitude && store.longitude
       ? { lat: store.latitude, lng: store.longitude }
       : { lat: 0, lng: 0 };
 
+  // Fetch store data
   const getStore = async (id) => {
     try {
       const storeDoc = await storeDataService.getStoreFirebase(id);
@@ -30,11 +33,13 @@ const GoogleMaps = () => {
 
       setStore(storeData);
     } catch (error) {
-      console.log("get store error : ", error);
+      // console.log("get store error : ", error);
+      console.error(error);
     }
   };
   // console.log("the store: ", store);
 
+  // Effect to fetch store data when 'id' changes
   useEffect(() => {
     if (id) {
       getStore(id);
@@ -42,7 +47,7 @@ const GoogleMaps = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  // Refresh the page by AJAX
+  // Effect to refresh page by AJAX
   useEffect(() => {
     if (reload) {
       getStore();
@@ -51,6 +56,7 @@ const GoogleMaps = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reload]);
 
+  // Styles
   const InfoWindowStyle = {
     textTransform: "uppercase",
     color: "black",
@@ -59,9 +65,9 @@ const GoogleMaps = () => {
   };
 
   return (
-    <APIProvider apiKey={process.env.REACT_PUBLIC_GOOGLE_MAPS_API_KEY}>
+    <APIProvider apiKey='GOOGLE_MAPS_API_KEY'>
       <div style={{ height: "100vh", width: "100%" }}>
-        <Map zoom={9} center={position} mapId={process.env.MAP_ID}>
+        <Map zoom={17} center={position} mapId='GOOGLE_MAPS_ID'>
           <AdvancedMarker position={position} onClick={() => setStore(true)}>
             <Pin borderColor={"white"} glyphColor={"white"} />
           </AdvancedMarker>

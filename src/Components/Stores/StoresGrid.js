@@ -19,16 +19,14 @@ import {
   Row,
   Container,
   Button,
-  OffcanvasBody,
-  OffcanvasHeader,
-  Offcanvas,
+  ModalFooter,
+  CardTitle,
 } from "reactstrap";
 import { Link, withRouter } from "react-router-dom";
 import { map } from "lodash";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Breadcrumbs from "../Breadcrumbs";
-import DeleteModal from "CommonTable/DeleteModal";
 import {
   StoreDataService,
   ClientDataService,
@@ -39,21 +37,23 @@ import JumpArrow from "./JumpArrow";
 const StoresGrid = () => {
   document.title = "Stores | Gars9n - Digital Menu & Ordering System";
 
+  // State variables
   const [deleteModal, setDeleteModal] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
   const [isEdit, setIsEdit] = useState(false);
   const [modal, setModal] = useState(false);
-  const [canvasIsOpen, setCanvasIsOpen] = useState(false);
   const [reload, setReload] = useState(false);
   const [stores, setStores] = useState([]);
   const [storeName, setStoreName] = useState("");
+  const [branch, setBranch] = useState("");
   const [location, setLocation] = useState("");
   const [phone, setPhone] = useState([]);
-  const [storeWebSite, setStoreWebSite] = useState("");
+  const [storeEmail, setStoreEmail] = useState("");
   const [clients, setClients] = useState([]);
   const [newName, setNewName] = useState("");
-  const [newEmail, setNewEmail] = useState("");
-  const [newPhone, setNewPhone] = useState([]);
-  const [jobTitle, setJobTitle] = useState(null);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [emailError, setEmailError] = useState("");
 
   // for firstore
   const storeDataService = new StoreDataService();
@@ -63,28 +63,6 @@ const StoresGrid = () => {
   const getClients = async () => {
     const data = await clientDataService.getAllClientsFirebase();
     setClients(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-  };
-
-  // GetClient
-  const getClient = async (id) => {
-    try {
-      const clientDoc = await clientDataService.getClientFirebase(id);
-      const clientData = clientDoc.data();
-      // console.log("get client succses by id:", id);
-      // console.log("get store succses by storeData:", clientData);
-
-      validation.setValues({
-        id: id,
-        name: clientData.name,
-        email: clientData.email,
-        phone: clientData.phone,
-      });
-      setReload(true);
-      setModal(true);
-      setIsEdit(true);
-    } catch (error) {
-      console.log("get client error", error);
-    }
   };
 
   useEffect(() => {
@@ -100,32 +78,35 @@ const StoresGrid = () => {
       name: "",
       location: "",
       phone: "",
-      webSite: "",
-      title: "",
+      email: "",
+      branch: "",
     },
     validationSchema: Yup.object({
-      name: Yup.string().required("Please Enter Store Name"),
-      location: Yup.string().required("Please Enter Location"),
-      webSite: Yup.string().required("Please Enter webSite"),
-      title: Yup.string().required("Please Select a Job Title"),
+      name: Yup.string().required("Please Enter Your Store Name"),
+      branch: Yup.string().required("Please Enter Your Branch Name"),
+      location: Yup.string().required("Please Enter Your Store Address"),
+      phone: Yup.number(1234567890).required("Please Enter Your Store Number"),
+      email: Yup.string()
+        .email()
+        .required("Please Enter Your Store Email")
+        .max(255),
     }),
     onSubmit: async (values) => {
-      console.log("Updating store with id:", values.id);
-      console.log("New name:", values.name);
-      console.log("New location:", values.location);
-      console.log("phone:", values.phone);
-      console.log("website:", values.webSite);
-      console.log("website:", values.title);
+      // console.log("Updating store with id:", values.id);
+      // console.log("New name:", values.name);
+      // console.log("New location:", values.location);
+      // console.log("phone:", values.phone);
+      // console.log("email:", values.email);
 
       if (
         !values.id ||
         !values.name ||
         !values.location ||
         !values.phone ||
-        !values.webSite ||
-        !values.title
+        !values.email ||
+        !values.branch
       ) {
-        console.error("Invalid data provided for store update");
+        // console.error("Invalid data provided for store update");
         return;
       }
 
@@ -135,30 +116,29 @@ const StoresGrid = () => {
 
         const updatedStore = {
           name: values.name,
+          branch: values.branch,
           location: values.location,
           phone: values.phone,
-          webSite: values.webSite,
+          email: values.email,
           latitude: lat,
           longitude: lng,
           client: newName,
-          clientPhone: newPhone,
-          clientEmail: newEmail,
-          title: values.title,
         };
 
         try {
           await storeDataService.updateStoreFirebase(values.id, updatedStore);
-          console.log(
-            "Store updated successfully!",
-            values.id,
-            "and updatedStore:",
-            updatedStore
-          );
+          // console.log(
+          //   "Store updated successfully!",
+          //   values.id,
+          //   "and updatedStore:",
+          //   updatedStore
+          // );
           setReload(true);
           setModal(false);
           toggle();
         } catch (error) {
-          console.log("Error updated store:", error);
+          // console.log("Error updated store:", error);
+          console.error(error);
         }
       }
     },
@@ -178,78 +158,67 @@ const StoresGrid = () => {
     try {
       const storeDoc = await storeDataService.getStoreFirebase(id);
       const storeData = storeDoc.data();
-
-      console.log("get store succses by id:", id);
-      console.log("get store succses by storeData:", storeData);
+      // console.log("get store succses by id:", id);
+      // console.log("get store succses by storeData:", storeData);
 
       validation.setValues({
         id: id,
         name: storeData.name,
+        branch: storeData.branch,
         location: storeData.location,
         phone: storeData.phone,
-        webSite: storeData.webSite,
-        title: storeData.title,
+        email: storeData.email,
       });
+      setNewName(storeData.client);
 
-      setReload(true);
       setModal(true);
       setIsEdit(true);
+      setReload(true);
     } catch (error) {
-      console.log("get store error:", error);
+      // console.log("get store error:", error);
+      console.error(error);
     }
   };
 
   // Add Store
   const addStore = async (e) => {
     e.preventDefault();
-    if (
-      storeName &&
-      location &&
-      phone &&
-      storeWebSite &&
-      newName &&
-      newPhone &&
-      newEmail &&
-      jobTitle
-    ) {
+    if (storeName && location && phone && storeEmail && newName && branch) {
       try {
         const { lat, lng } = await storeDataService.geocode(location);
 
         const newStore = {
           name: storeName,
+          branch: branch,
           location: location,
           phone: phone,
-          webSite: storeWebSite,
+          email: storeEmail,
           latitude: lat,
           longitude: lng,
           client: newName,
-          clientPhone: newPhone,
-          clientEmail: newEmail,
-          title: jobTitle,
         };
         // console.log("Latitude:", lat, "Longitude:", lng);
 
         await storeDataService.addStoreFirebase(newStore);
         setReload(true);
-        console.log("New store added successfully!");
+        // console.log("New store added successfully!");
       } catch (error) {
-        console.log("Error adding store:", error);
+        // console.log("Error adding store:", error);
+        console.error(error);
       }
 
-      setCanvasIsOpen(false);
+      setModalIsOpen(false);
       setStoreName("");
       setLocation("");
       setPhone([]);
-      setStoreWebSite("");
+      setStoreEmail("");
       setNewName("");
-      setNewPhone("");
-      setNewEmail("");
-      setJobTitle("");
+      setBranch("");
     }
   };
 
-  const openCanvas = () => {
-    setCanvasIsOpen(true);
+  const openModal = () => {
+    setModalIsOpen(true);
   };
 
   // Refresh the page by AJAX
@@ -262,13 +231,25 @@ const StoresGrid = () => {
   }, [reload]);
 
   // Delete store
-  const deleteStore = async (id) => {
-    await storeDataService.deleteStoreFirebase(id);
-    getStores();
+  const deleteStore = async (storeId) => {
+    if (storeId) {
+      try {
+        await storeDataService.deleteStoreFirebase(deleteId);
+        getStores();
+        setReload(true);
+        // console.log("store deleted successfully!");
+      } catch (error) {
+        // console.error("Error deleting store", error);
+        console.error(error);
+      }
+    }
+    setDeleteId(null);
+    setDeleteModal(false);
   };
-  const handleDeleteStore = () => {
-    if (doc.id) {
-      setDeleteModal(false);
+  const handleDeleteStore = async (id) => {
+    if (id) {
+      setDeleteId(id);
+      setDeleteModal(true);
     }
   };
 
@@ -286,19 +267,19 @@ const StoresGrid = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // short address
-  const shortLocation = (location) => {
-    if (!location || typeof location !== "string") {
-      return <div>{doc.location}</div>;
+  // Short name
+  const shortName = (shortname) => {
+    if (!shortname || typeof shortname !== "string") {
+      return <div>{doc.shortname}</div>;
     }
-    const parts = location.split(",");
+    const parts = shortname.split(",");
 
     if (parts.length > 1) {
       const shortAddress = parts.slice(0, 2).join(", ");
       return (
         <div>
           {shortAddress.length > 10
-            ? shortAddress.substring(0, 25) + "..."
+            ? shortAddress.substring(0, 17) + ""
             : shortAddress}
         </div>
       );
@@ -306,19 +287,39 @@ const StoresGrid = () => {
 
     return (
       <div>
-        {location.length > 15 ? location.substring(0, 25) + "..." : location}
+        {shortname.length > 18 ? shortname.substring(0, 18) + "..." : shortname}
       </div>
     );
   };
 
+  // validation email
+  const isEmailValid = (email) => {
+    // Basic email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const allowedDomains = ["yahoo.com", "gmail.com", "hotmail.com"];
+
+    if (!emailRegex.test(email)) {
+      setEmailError("Please enter a valid email address.");
+      return false;
+    }
+
+    const domain = email.split("@")[1];
+    if (!allowedDomains.includes(domain)) {
+      setEmailError("");
+      return true; // true or false
+    }
+    setEmailError("");
+    return true;
+  };
+
+  const handleEmailBlur = () => {
+    if (!isEmailValid(storeEmail)) {
+      setStoreEmail("");
+    }
+  };
+
   return (
     <React.Fragment>
-      <DeleteModal
-        show={deleteModal}
-        onDeleteClick={handleDeleteStore}
-        onCloseClick={() => setDeleteModal(false)}
-      />
-
       <div className='page-content'>
         <Container fluid>
           <Breadcrumbs title='Stores' BreadcrumbItem='Stores Grid' />
@@ -328,162 +329,192 @@ const StoresGrid = () => {
                 <Button
                   color='primary w-md'
                   className='btn-rounded mb-2 me-2'
-                  onClick={openCanvas}>
-                  <i className='mdi mdi-plus-circle-outline me-1' />
+                  onClick={openModal}>
                   Add New Store
                 </Button>
               </div>
             </Col>
           </Row>
-          <Offcanvas
-            isOpen={canvasIsOpen}
-            direction='end'
-            toggle={() => setCanvasIsOpen(false)}>
-            <OffcanvasHeader toggle={() => setCanvasIsOpen(false)}>
+
+          <Modal isOpen={modalIsOpen} toggle={() => setModalIsOpen(false)}>
+            <ModalHeader toggle={() => setModalIsOpen(false)}>
               Add Store
-            </OffcanvasHeader>
-            <OffcanvasBody>
-              <Label className='form-label'>Store Name</Label>{" "}
-              <span className='required-indicator' style={{ color: "#f46a6a" }}>
+            </ModalHeader>
+            <ModalBody>
+              <Label className='form-label'>Store Name</Label>
+              <span
+                className='required-indicator ms-1'
+                style={{ color: "#dc3545" }}>
                 *
               </span>
               <Input
                 style={{
                   textTransform: "capitalize",
                 }}
-                className='mb-3'
+                placeholder='Enter Your Store Name'
                 type='text'
                 value={storeName}
-                onChange={(e) => setStoreName(e.target.value)}
+                onChange={(e) => {
+                  const inputValue = e.target.value;
+                  const validInput = inputValue.replace(/[^a-zA-Z\s]/g, "");
+                  setStoreName(validInput);
+                }}
+                required='required'
+                title='Please enter your store name.'
               />
-              <Label className='form-label '>Store Location</Label>{" "}
-              <span className='required-indicator' style={{ color: "#f46a6a" }}>
+            </ModalBody>
+            <ModalBody>
+              <Label className='form-label'>Branch</Label>
+              <span
+                className='required-indicator ms-1'
+                style={{ color: "#dc3545" }}>
                 *
               </span>
               <Input
                 style={{
                   textTransform: "capitalize",
                 }}
-                className='mb-3'
+                placeholder='Enter Your Branch Name'
+                type='text'
+                value={branch}
+                onChange={(e) => setBranch(e.target.value)}
+                required='required'
+                title='Please enter your branch no. or name.'
+              />
+            </ModalBody>
+            <ModalBody>
+              <Label className='form-label'>Store Address</Label>
+              <span
+                className='required-indicator ms-1'
+                style={{ color: "#dc3545" }}>
+                *
+              </span>
+              <Input
+                style={{
+                  textTransform: "capitalize",
+                }}
+                placeholder='Enter Your Store Address'
                 type='text'
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
+                required='required'
+                title='Please enter only store address.'
               />
-              <Label className='form-label'>Store Phone</Label>{" "}
-              <span className='required-indicator' style={{ color: "#f46a6a" }}>
+            </ModalBody>
+            <ModalBody>
+              <Label className='form-label'>Store Phone</Label>
+              <span
+                className='required-indicator ms-1'
+                style={{ color: "#dc3545" }}>
                 *
               </span>
               <Input
                 type='number'
-                className='mb-3'
+                placeholder='Enter Your Store Number'
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
+                required='required'
+                title='Please enter only store number.'
               />
-              <Label className='form-label'>WebSite/Store Email</Label>{" "}
-              <span className='required-indicator' style={{ color: "#f46a6a" }}>
+            </ModalBody>
+            <ModalBody>
+              <Label className='form-label'>Store Email</Label>
+              <span
+                className='required-indicator ms-1'
+                style={{ color: "#dc3545" }}>
                 *
               </span>
               <Input
                 type='text'
-                className='mb-3'
-                value={storeWebSite}
-                onChange={(e) => setStoreWebSite(e.target.value)}
+                placeholder='Enter Your Store Email'
+                value={storeEmail}
+                onChange={(e) => setStoreEmail(e.target.value)}
+                required='required'
+                title='Please enter only store email.'
+                onBlur={handleEmailBlur}
               />
-              <Label>Job Title</Label>{" "}
-              <span className='required-indicator' style={{ color: "#f46a6a" }}>
-                *
-              </span>
-              <div className='form-label mb-3' style={{ color: "black" }}>
-                <Input
-                  type='select'
-                  className='mb-3'
-                  style={{ textTransform: "capitalize" }}
-                  value={jobTitle}
-                  onChange={(e) => setJobTitle(e.target.value)}>
-                  <option value=''>Select Your Title</option>
-                  <option value='Owner'>Owner</option>
-                  <option value='Assistant director'>Assistant director</option>
-                  <option value='Senior manager'>Senior manager</option>
-                  <option value='Manager'>Manager</option>
-                  <option value='Assistant'>Assistant</option>
-                  <option value='Supervisor'>Supervisor</option>
-                  <option value='Senior'>Senior</option>
-                  <option value='Coordinator'>Coordinator</option>
-                  <option value='Team lead'>Team lead</option>
-                  <option value='Lead'>Lead</option>
-                </Input>
-              </div>
-              <Label className='form-label'>Client Name</Label>{" "}
-              <span className='required-indicator' style={{ color: "#f46a6a" }}>
+            </ModalBody>
+            <ModalBody>
+              <Label className='form-label'>Client Name</Label>
+              <span
+                className='required-indicator ms-1'
+                style={{ color: "#dc3545" }}>
                 *
               </span>
               <Input
                 type='select'
                 className='mb-3'
                 required='required'
+                title='Please select your name.'
                 style={{ textTransform: "capitalize" }}
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}>
-                <option value=''>Select Your Name</option>
+                <option value=''>Choose here</option>
                 {clients.map((doc) => (
-                  <option key={doc.id} value={doc.name}>
-                    {doc.name}
+                  <option key={doc.id} value={doc.id}>
+                    {`${doc.name} - ${doc.title}`}
                   </option>
                 ))}
               </Input>
-              <Label className='form-label'>Phone Number</Label>{" "}
-              <span className='required-indicator' style={{ color: "#f46a6a" }}>
-                *
-              </span>
-              <Input
-                type='select'
-                className='mb-3'
-                required='required'
-                style={{ textTransform: "capitalize" }}
-                value={newPhone}
-                onChange={(e) => setNewPhone(e.target.value)}>
-                <option value=''>Select Your Phone</option>
-                {clients.map((doc) => (
-                  <option key={doc.id} value={doc.phone}>
-                    {doc.phone}
-                  </option>
-                ))}
-              </Input>
-              <Label className='form-label'>Email address</Label>{" "}
-              <span className='required-indicator' style={{ color: "#f46a6a" }}>
-                *
-              </span>
-              <Input
-                type='select'
-                className='mb-3'
-                required='required'
-                style={{ textTransform: "capitalize" }}
-                value={newEmail}
-                onChange={(e) => setNewEmail(e.target.value)}>
-                <option value=''>Select Your Email</option>
-                {clients.map((doc) => (
-                  <option key={doc.id} value={doc.email}>
-                    {doc.email}
-                  </option>
-                ))}
-              </Input>
-            </OffcanvasBody>
-            <div style={{ margin: "10px 0 10px 20px" }}>
+            </ModalBody>
+            <ModalFooter>
               <Button
-                className='btn-rounded'
-                color='outline-success w-md'
+                className='btn-rounded w-md'
+                color='primary'
                 onClick={addStore}>
                 Save
               </Button>
               <Button
-                style={{ marginLeft: "9px" }}
-                className='btn-rounded'
-                color='outline-danger w-md'
-                onClick={() => setCanvasIsOpen(false)}>
+                style={{ backgroundColor: "#32394e" }}
+                className='btn-rounded w-md'
+                color='primary'
+                onClick={() => setModalIsOpen(false)}>
                 Cancel
               </Button>
-            </div>
-          </Offcanvas>
+            </ModalFooter>
+          </Modal>
+
+          {/* Delete Pop-Up */}
+          <Modal
+            isOpen={deleteModal}
+            toggle={() => setDeleteModal(false)}
+            centered={true}>
+            <ModalBody className='py-3 px-5'>
+              <Row>
+                <Col sm={12}>
+                  <div className='text-center'>
+                    <i
+                      className='mdi mdi-trash-can-outline'
+                      style={{ fontSize: "3em", color: "white" }}
+                    />
+                    <h4 style={{ fontWeight: "bold" }}>Delete store?</h4>
+                    <CardTitle>
+                      {"Are you sure you want to delete this store?"}
+                    </CardTitle>
+                  </div>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <div className='text-center mt-3'>
+                    <button
+                      type='button'
+                      className='btn btn-danger btn-rounded btn-lg ms-2'
+                      onClick={deleteStore}>
+                      Yes, I'm sure
+                    </button>
+                    <button
+                      style={{ borderColor: "#007bff" }}
+                      type='button'
+                      className='btn btn-light btn-rounded btn-lg ms-2'
+                      onClick={() => setDeleteModal(false)}>
+                      No, Cancel
+                    </button>
+                  </div>
+                </Col>
+              </Row>
+            </ModalBody>
+          </Modal>
 
           <Row>
             {map(stores, (doc) => {
@@ -522,9 +553,8 @@ const StoresGrid = () => {
                           className='font-size-15 text-white mb-1'
                           style={{
                             textTransform: "uppercase",
-                            fontWeight: "bold",
                           }}>
-                          {doc.name}
+                          {shortName(doc.name)}
                         </Label>
                       </div>
 
@@ -534,7 +564,7 @@ const StoresGrid = () => {
                           style={{
                             textTransform: "capitalize",
                           }}>
-                          {shortLocation(doc.location)}
+                          {shortName(doc.branch)}
                         </h6>
                       </div>
                     </CardBody>
@@ -543,15 +573,17 @@ const StoresGrid = () => {
                       <div className='contact-links d-flex font-size-20'>
                         <div className='flex-fill'>
                           <Link
-                            to={"/stores-grid/account-info/" + doc.id}
-                            id={"detail" + doc.id}>
+                            to={`/stores-grid/account-info/${doc.id}?c=${doc.client}`}
+                            id={`detail${doc.id}`}>
                             <i className='bx bxs-user-detail' />
                             <UncontrolledTooltip
                               onClick={() =>
-                                getStore(`/stores-grid/account-info/${doc.id}`)
+                                getStore(
+                                  `/stores-grid/account-info/${doc.id}?c=${doc.client}`
+                                )
                               }
                               placement='top'
-                              target={"detail" + doc.id}>
+                              target={`detail${doc.id}`}>
                               Account Info
                             </UncontrolledTooltip>
                           </Link>
@@ -594,16 +626,12 @@ const StoresGrid = () => {
                               <i className='mdi mdi-dots-horizontal font-size-18' />
                             </DropdownToggle>
                             <DropdownMenu className='dropdown-menu-end'>
-                              <DropdownItem
-                                onClick={(e) => {
-                                  getStore(doc.id);
-                                  getClient(doc.id);
-                                }}>
+                              <DropdownItem onClick={(e) => getStore(doc.id)}>
                                 <i className='mdi mdi-pencil font-size-16 text-success me-1' />{" "}
                                 Edit
                               </DropdownItem>
                               <DropdownItem
-                                onClick={(e) => deleteStore(doc.id)}>
+                                onClick={(e) => handleDeleteStore(doc.id)}>
                                 <i className='mdi mdi-trash-can font-size-16 text-danger me-1' />{" "}
                                 Delete
                               </DropdownItem>
@@ -635,7 +663,6 @@ const StoresGrid = () => {
                       <Label className='form-label'>Store Name</Label>
                       <Input
                         id='name'
-                        placeholder='Name'
                         style={{ textTransform: "capitalize" }}
                         name='name'
                         type='text'
@@ -656,10 +683,32 @@ const StoresGrid = () => {
                     </div>
 
                     <div className='mb-3'>
-                      <Label className='form-label'>Store Location</Label>
+                      <Label className='form-label'>Branch</Label>
+                      <Input
+                        id='branch'
+                        style={{ textTransform: "capitalize" }}
+                        name='branch'
+                        type='text'
+                        onChange={validation.handleChange}
+                        onBlur={validation.handleBlur}
+                        value={validation.values.branch}
+                        invalid={
+                          validation.touched.branch && validation.errors.branch
+                            ? true
+                            : false
+                        }
+                      />
+                      {validation.touched.branch && validation.errors.branch ? (
+                        <FormFeedback type='invalid'>
+                          {validation.errors.branch}
+                        </FormFeedback>
+                      ) : null}
+                    </div>
+
+                    <div className='mb-3'>
+                      <Label className='form-label'>Store Address</Label>
                       <Input
                         name='location'
-                        placeholder='Location'
                         style={{ textTransform: "capitalize" }}
                         type='text'
                         onChange={validation.handleChange}
@@ -683,9 +732,8 @@ const StoresGrid = () => {
                     <div className='mb-3'>
                       <Label className='form-label'>Store Phone</Label>
                       <Input
-                        placeholder='Phone'
                         name='phone'
-                        type='number'
+                        label='Phone'
                         onChange={validation.handleChange}
                         onBlur={validation.handleBlur}
                         value={validation.values.phone || ""}
@@ -703,58 +751,21 @@ const StoresGrid = () => {
                     </div>
 
                     <div className='mb-3'>
-                      <Label className='form-label'>WebSite/Store Email</Label>
+                      <Label className='form-label'>Store Email</Label>
                       <Input
-                        placeholder='WebSite'
-                        name='webSite'
+                        name='email'
                         type='text'
                         onChange={validation.handleChange}
                         onBlur={validation.handleBlur}
-                        value={validation.values.webSite}
+                        value={validation.values.email}
                         invalid={
-                          validation.touched.webSite &&
-                          validation.errors.webSite
+                          validation.touched.email && validation.errors.email
                             ? true
                             : false
                         }
                       />
-                      {validation.touched.webSite &&
-                      validation.errors.webSite ? (
-                        <FormFeedback type='invalid'>
-                          {validation.errors.webSite}
-                        </FormFeedback>
-                      ) : null}
+                      {validation.touched.email && validation.errors.email}
                     </div>
-                    <div className='mb-3'>
-                      <Label className='form-label'>Job Title</Label>
-                      <Input
-                        style={{ textTransform: "capitalize" }}
-                        name='title'
-                        label='select'
-                        type='select'
-                        onChange={validation.handleChange}
-                        value={jobTitle}>
-                        <option value=''>Please Select</option>
-                        <option value='Owner'>Owner</option>
-                        <option value='Assistant director'>
-                          Assistant director
-                        </option>
-                        <option value='Senior manager'>Senior manager</option>
-                        <option value='Manager'>Manager</option>
-                        <option value='Assistant'>Assistant</option>
-                        <option value='Supervisor'>Supervisor</option>
-                        <option value='Senior'>Senior</option>
-                        <option value='Coordinator'>Coordinator</option>
-                        <option value='Team lead'>Team lead</option>
-                        <option value='Lead'>Lead</option>
-                      </Input>
-                      {validation.touched.title && validation.errors.title ? (
-                        <FormFeedback type='invalid'>
-                          {validation.errors.title}
-                        </FormFeedback>
-                      ) : null}
-                    </div>
-
                     <div className='mb-3'>
                       <Label className='form-label'>Client Name</Label>
                       <Input
@@ -765,79 +776,35 @@ const StoresGrid = () => {
                         type='select'
                         onChange={(e) => setNewName(e.target.value)}
                         value={newName}>
-                        <option value=''>Please Select</option>
+                        <option value=''>Choose here</option>
                         {clients.map((doc) => (
-                          <option key={doc.id} value={doc.name}>
-                            {doc.name}
+                          <option key={doc.id} value={doc.id}>
+                            {`${doc.name} - ${doc.title}`}
                           </option>
                         ))}
                       </Input>
-                      {validation.touched.client && validation.errors.client ? (
-                        <FormFeedback type='invalid'>
-                          {validation.errors.client}
-                        </FormFeedback>
-                      ) : null}
-                    </div>
-                    <div className='mb-3'>
-                      <Label className='form-label'>Phone Number</Label>
-                      <Input
-                        required='required'
-                        style={{ textTransform: "capitalize" }}
-                        name='store'
-                        label='select'
-                        type='select'
-                        onChange={(e) => setNewPhone(e.target.value)}
-                        value={newPhone}>
-                        <option value=''>Please Select</option>
-                        {clients.map((doc) => (
-                          <option key={doc.id} value={doc.phone}>
-                            {doc.phone}
-                          </option>
-                        ))}
-                      </Input>
-                      {validation.touched.clientPhone &&
-                      validation.errors.clientPhone ? (
-                        <FormFeedback type='invalid'>
-                          {validation.errors.clientPhone}
-                        </FormFeedback>
-                      ) : null}
-                    </div>
-                    <div className='mb-3'>
-                      <Label className='form-label'>Email</Label>
-                      <Input
-                        required='required'
-                        style={{ textTransform: "capitalize" }}
-                        name='store'
-                        label='select'
-                        type='select'
-                        onChange={(e) => setNewEmail(e.target.value)}
-                        value={newEmail}>
-                        <option value=''>Please Select</option>
-                        {clients.map((doc) => (
-                          <option key={doc.id} value={doc.email}>
-                            {doc.email}
-                          </option>
-                        ))}
-                      </Input>
-                      {validation.touched.clientEmail &&
-                      validation.errors.clientEmail ? (
-                        <FormFeedback type='invalid'>
-                          {validation.errors.clientEmail}
-                        </FormFeedback>
-                      ) : null}
                     </div>
                   </Col>
                 </Row>
                 <Row>
                   <Col>
                     <div className='text-end'>
-                      <button
-                        style={{ borderRadius: "20px" }}
+                      <Button
+                        className='btn-rounded'
                         type='submit'
-                        color=''
-                        className='btn btn-outline-success w-md save-user '>
-                        Save
-                      </button>
+                        color='primary w-md'>
+                        Update
+                      </Button>
+                      <Button
+                        style={{ backgroundColor: "#32394e" }}
+                        className='btn-rounded'
+                        color='primary w-md ms-2'
+                        onClick={() => {
+                          setModal(false);
+                          validation.resetForm();
+                        }}>
+                        Cancel
+                      </Button>
                     </div>
                   </Col>
                 </Row>

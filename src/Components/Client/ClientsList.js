@@ -16,26 +16,25 @@ import {
   ModalHeader,
   Button,
   ModalFooter,
+  CardTitle,
 } from "reactstrap";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import Breadcrumbs from "../Breadcrumbs";
-import DeleteModal from "../../CommonTable/DeleteModal";
 import TableContainer from "../../CommonTable/TableContainer";
 import {
   ClientDataService,
   StoreDataService,
 } from "../../helpers/firebase_helper";
-import { doc } from "firebase/firestore";
 
 const ClientsList = () => {
   document.title = "Clients | Gars9n - React Admin & Dashboard Template";
 
-  // eslint-disable-next-line no-unused-vars
-  const [clientList, setClientList] = useState([]);
+  // State variables
   const [modal, setModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
   const [reload, setReload] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [newName, setNewName] = useState("");
@@ -44,43 +43,22 @@ const ClientsList = () => {
   const [stores, setStores] = useState([]);
   const [clients, setClients] = useState([]);
   const [storeName, setStoreName] = useState("");
+  const [jobTitle, setJobTitle] = useState(null);
+  const [branch, setBranch] = useState("");
+  // eslint-disable-next-line no-unused-vars
+  const [emailError, setEmailError] = useState("");
+  // eslint-disable-next-line no-unused-vars
+  const [clientList, setClientList] = useState([]);
 
-  //firestore
+  // Firestore service
   const clientDataService = new ClientDataService();
   const storeDataService = new StoreDataService();
-
-  // Get Stores
-  const getStores = async () => {
-    const data = await storeDataService.getAllStoresFirebase();
-    setStores(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-  };
-
-  // Get Store
-  const getStore = async (id) => {
-    try {
-      const storeDoc = await storeDataService.getStoreFirebase(id);
-      const storeData = storeDoc.data();
-
-      validation.setValues({
-        id: id,
-        name: storeData.name,
-        location: storeData.location,
-      });
-
-      setReload(true);
-      setModal(true);
-      setIsEdit(true);
-    } catch (error) {
-      console.log("or error 2: ", error);
-    }
-  };
 
   useEffect(() => {
     getStores();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  
   // update client
   const validation = useFormik({
     enableReinitialize: true,
@@ -89,14 +67,17 @@ const ClientsList = () => {
       name: "",
       email: "",
       phone: "",
+      title: "",
     },
     validationSchema: Yup.object({
-      name: Yup.string().required("Please Enter Your Name"),
+      name: Yup.string()
+        .matches(/^[a-zA-Z\s]+$/, "Must contain only letters and spaces")
+        .required("Please Enter Your Name"),
       email: Yup.string()
-        .email("Must be a valid Email")
-        .max(255)
-        .required("Please Enter Your Email"),
-      phone: Yup.number().required("Please Enter Your Phone Number"),
+        .email()
+        .required("Please Enter Your Email Address")
+        .max(255),
+      phone: Yup.number(1234567890).required("Please Enter Your Phone Number"),
     }),
     onSubmit: async (values) => {
       if (isEdit) {
@@ -104,7 +85,9 @@ const ClientsList = () => {
           name: values.name,
           email: values.email,
           phone: values.phone,
+          title: values.title,
           store: storeName,
+          branch: branch,
         };
         try {
           await clientDataService.updateClientFirebase(
@@ -121,11 +104,27 @@ const ClientsList = () => {
           setModal(false);
           toggle();
         } catch (error) {
-          console.log("Error update client", error);
+          // console.log("Error update client", error);
+          console.error(error);
         }
       }
     },
   });
+
+  const handleClientClicks = () => {
+    setClientList("");
+    setIsEdit(false);
+    toggle();
+  };
+
+  // Get Stores
+  const getStores = async () => {
+    const data = await storeDataService.getAllStoresFirebase();
+    const stortStores = data.docs
+      .map((doc) => ({ ...doc.data(), id: doc.id }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+    setStores(stortStores);
+  };
 
   // GetClient
   const getClient = async (id) => {
@@ -140,24 +139,31 @@ const ClientsList = () => {
         name: clientData.name,
         email: clientData.email,
         phone: clientData.phone,
+        title: clientData.title,
       });
+      setStoreName(clientData.store);
+      setBranch(clientData.store);
+
       setReload(true);
       setModal(true);
       setIsEdit(true);
     } catch (error) {
-      console.log("get client error", error);
+      // console.log("get client error", error);
+      console.error(error);
     }
   };
 
   //Add Client
   const addClient = async (e) => {
     e.preventDefault();
-    if (newName && newEmail && newPhone && storeName) {
+    if (newName && newEmail && newPhone && storeName && jobTitle && branch) {
       const newClient = {
         name: newName,
         email: newEmail,
         phone: newPhone,
         store: storeName,
+        title: jobTitle,
+        branch: branch,
       };
 
       try {
@@ -165,15 +171,19 @@ const ClientsList = () => {
         setReload(true);
         // console.log("new client added successfully", newClient);
       } catch (error) {
-        console.log("error adding client", error);
+        // console.log("error adding client", error);
+        console.error(error);
       }
       setModalIsOpen(false);
       setNewName("");
       setNewEmail("");
       setNewPhone([]);
       setStoreName("");
+      setBranch("");
+      setJobTitle("");
     }
   };
+
   const openModal = () => {
     setModalIsOpen(true);
   };
@@ -192,22 +202,28 @@ const ClientsList = () => {
   };
 
   // Delete Clients
-  const deleteClient = async (id) => {
-    await clientDataService.deleteClientFirebase(id);
-    getClients();
-    setReload(true);
-  };
-  const handleDeleteClient = () => {
-    if (doc.id) {
-      setDeleteModal(false);
-      onPaginationPageChange(1);
+  const deleteClient = async (clientId) => {
+    if (clientId) {
+      try {
+        await clientDataService.deleteClientFirebase(deleteId);
+        getClients();
+        setReload(true);
+        // console.log("client deleted successfully!");
+      } catch (error) {
+        // console.error("Error deleting client", error);
+        console.error(error);
+      }
     }
+    setDeleteId(null);
+    setDeleteModal(false);
   };
 
-  const handleClientClicks = () => {
-    setClientList("");
-    setIsEdit(false);
-    toggle();
+  const handleDeleteClient = async (id) => {
+    if (id) {
+      setDeleteId(id);
+      setDeleteModal(true);
+      onPaginationPageChange(1);
+    }
   };
 
   const getClients = async () => {
@@ -274,7 +290,7 @@ const ClientsList = () => {
         ),
       },
       {
-        Header: "Client Name",
+        Header: "Clients Name",
         accessor: "name",
         filterable: true,
 
@@ -292,23 +308,7 @@ const ClientsList = () => {
         },
       },
       {
-        Header: "Email",
-        accessor: "email",
-        filterable: true,
-        Cell: (cellProps) => {
-          return (
-            <div
-              style={{
-                textAlign: "start",
-                marginTop: "12px",
-              }}>
-              {cellProps.value}
-            </div>
-          );
-        },
-      },
-      {
-        Header: "Phone Number",
+        Header: "Phone Numbers",
         accessor: "phone",
         filterable: true,
         Cell: (cellProps) => {
@@ -325,7 +325,23 @@ const ClientsList = () => {
         },
       },
       {
-        Header: "Store Name",
+        Header: "Email Address",
+        accessor: "email",
+        filterable: true,
+        Cell: (cellProps) => {
+          return (
+            <div
+              style={{
+                textAlign: "start",
+                marginTop: "12px",
+              }}>
+              {cellProps.value}
+            </div>
+          );
+        },
+      },
+      {
+        Header: "Stores & Branchs",
         accessor: "store",
         filterable: true,
         Cell: (cellProps) => {
@@ -341,7 +357,6 @@ const ClientsList = () => {
           );
         },
       },
-
       {
         Header: "Edit & Delete",
         Cell: (cellProps) => {
@@ -357,21 +372,22 @@ const ClientsList = () => {
                 onClick={() => {
                   const doc = cellProps.row.original;
                   getClient(doc.id);
-                  getStore(doc.id);
                 }}>
                 <i className='mdi mdi-pencil font-size-16' id='edittooltip' />
                 <UncontrolledTooltip placement='top' target='edittooltip'>
                   Edit
                 </UncontrolledTooltip>
               </div>
-
               <div
                 className='text-danger'
                 onClick={(e) => {
                   const doc = cellProps.row.original;
-                  deleteClient(doc.id);
+                  handleDeleteClient(doc.id);
                 }}>
-                <i className='mdi mdi-delete font-size-16' id='deletetooltip' />
+                <i
+                  className='mdi mdi-trash-can font-size-16'
+                  id='deletetooltip'
+                />
                 <UncontrolledTooltip placement='top' target='deletetooltip'>
                   Delete
                 </UncontrolledTooltip>
@@ -385,13 +401,34 @@ const ClientsList = () => {
     []
   );
 
+  // validation email
+  const isEmailValid = (email) => {
+    // Basic email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const allowedDomains = ["yahoo.com", "gmail.com", "hotmail.com"];
+
+    if (!emailRegex.test(email)) {
+      setEmailError("Please enter a valid email address.");
+      return false;
+    }
+
+    const domain = email.split("@")[1];
+    if (!allowedDomains.includes(domain)) {
+      setEmailError("");
+      return true; // true or false
+    }
+    setEmailError("");
+    return true;
+  };
+
+  const handleEmailBlur = () => {
+    if (!isEmailValid(newEmail)) {
+      setNewEmail("");
+    }
+  };
+
   return (
     <React.Fragment>
-      <DeleteModal
-        show={deleteModal}
-        onDeleteClick={handleDeleteClient}
-        onCloseClick={() => setDeleteModal(false)}
-      />
       <div className='page-content'>
         <Container fluid>
           <Breadcrumbs title='Clients' BreadcrumbItem='Client List' />
@@ -400,9 +437,8 @@ const ClientsList = () => {
               <div className='text-sm-end'>
                 <Button
                   color='primary w-md'
-                  className='btn-rounded mb-2 me-2'
+                  className='btn-rounded mb-2 me-2 '
                   onClick={openModal}>
-                  <i className='mdi mdi-plus-circle-outline me-1' />
                   Add New Client
                 </Button>
               </div>
@@ -413,37 +449,60 @@ const ClientsList = () => {
               Add Client
             </ModalHeader>
             <ModalBody>
-              <Label className='form-label'>Client Name</Label>{" "}
-              <span className='required-indicator' style={{ color: "#f46a6a" }}>
+              <Label className='form-label'>Job Title</Label>
+              <span
+                className='required-indicator ms-1'
+                style={{ color: "#dc3545" }}>
+                *
+              </span>
+              <Input
+                required='required'
+                type='select'
+                style={{ textTransform: "capitalize" }}
+                title='Please select your title.'
+                value={jobTitle}
+                onChange={(e) => setJobTitle(e.target.value)}>
+                <option value=''>Choose here</option>
+                <option value='Owner'>Owner</option>
+                <option value='Assistant director'>Assistant director</option>
+                <option value='Senior manager'>Senior manager</option>
+                <option value='Manager'>Manager</option>
+                <option value='Assistant'>Assistant</option>
+                <option value='Supervisor'>Supervisor</option>
+                <option value='Senior'>Senior</option>
+                <option value='Coordinator'>Coordinator</option>
+                <option value='Team lead'>Team lead</option>
+                <option value='Lead'>Lead</option>
+                <option value='Other'>Other</option>
+              </Input>
+            </ModalBody>
+            <ModalBody>
+              <Label className='form-label'>Client Name</Label>
+              <span
+                className='required-indicator ms-1'
+                style={{ color: "#dc3545" }}>
                 *
               </span>
               <Input
                 name='name'
-                placeholder='Enter Your Name'
+                title='Please enter your full name.'
+                placeholder='Enter Your Full Name'
+                style={{ textTransform: "capitalize" }}
                 type='text'
                 value={newName}
-                onChange={(e) => setNewName(e.target.value)}
+                onChange={(e) => {
+                  const inputValue = e.target.value;
+                  const validInput = inputValue.replace(/[^a-zA-Z\s]/g, "");
+                  setNewName(validInput);
+                }}
                 required='required'
               />
             </ModalBody>
             <ModalBody>
-              <Label className='form-label'>Email</Label>{" "}
-              <span className='required-indicator' style={{ color: "#f46a6a" }}>
-                *
-              </span>
-              <Input
-                name='email'
-                placeholder='name@example.com'
-                type='email'
-                value={newEmail}
-                onChange={(e) => setNewEmail(e.target.value)}
-                required='@'
-                title='Please Enter Valid Email With @'
-              />
-            </ModalBody>
-            <ModalBody>
-              <Label className='form-label'>Phone Number</Label>{" "}
-              <span className='required-indicator' style={{ color: "#f46a6a" }}>
+              <Label className='form-label'>Phone Number</Label>
+              <span
+                className='required-indicator ms-1'
+                style={{ color: "#dc3545" }}>
                 *
               </span>
               <Input
@@ -454,41 +513,110 @@ const ClientsList = () => {
                 value={newPhone}
                 onChange={(e) => setNewPhone(e.target.value)}
                 required='required'
+                title='Please enter only number.'
               />
             </ModalBody>
             <ModalBody>
-              <Label className='form-label'>Store Name</Label>{" "}
-              <span className='required-indicator' style={{ color: "#f46a6a" }}>
+              <Label className='form-label'>Email Address</Label>
+              <span
+                className='required-indicator ms-1'
+                style={{ color: "#dc3545" }}>
+                *
+              </span>
+              <Input
+                name='email'
+                placeholder='name@example.com'
+                type='email'
+                value={newEmail}
+                onChange={(e) => setNewEmail(e.target.value)}
+                required='required'
+                title='Please enter a valid email address.'
+                onBlur={handleEmailBlur}
+              />
+            </ModalBody>
+            <ModalBody>
+              <Label className='form-label'>Store Name</Label>
+              <span
+                className='required-indicator ms-1'
+                style={{ color: "#dc3545" }}>
                 *
               </span>
               <Input
                 type='select'
                 required='required'
+                title='Please select your store name.'
                 style={{ textTransform: "capitalize" }}
-                value={storeName}
-                onChange={(e) => setStoreName(e.target.value)}>
-                <option value=''>Select Store</option>
+                value={storeName && branch}
+                onChange={(e) => {
+                  setStoreName(e.target.value);
+                  setBranch(e.target.value);
+                }}>
+                <option value=''>Choose here</option>
                 {stores.map((doc) => (
-                  <option key={doc.id} value={doc.name}>
-                    {doc.name}
+                  <option key={doc.id} value={`${doc.name} - ${doc.branch}`}>
+                    {`${doc.name} - ${doc.branch}`}
                   </option>
                 ))}
+                <option value='Unknown'>Unknown</option>
               </Input>
             </ModalBody>
             <ModalFooter>
               <Button
-                className='btn-rounded w-md'
-                color='outline-success'
+                className='btn-rounded w-md ms-2'
+                color='primary'
                 onClick={addClient}>
                 Save
-              </Button>{" "}
+              </Button>
               <Button
+                style={{ backgroundColor: "#32394e" }}
                 className='btn-rounded w-md'
-                color='outline-danger'
+                color='primary'
                 onClick={() => setModalIsOpen(false)}>
                 Cancel
               </Button>
             </ModalFooter>
+          </Modal>
+
+          {/* Delete Pop-Up */}
+          <Modal
+            isOpen={deleteModal}
+            toggle={() => setDeleteModal(false)}
+            centered={true}>
+            <ModalBody className='py-3 px-5'>
+              <Row>
+                <Col sm={12}>
+                  <div className='text-center'>
+                    <i
+                      className='mdi mdi-trash-can-outline'
+                      style={{ fontSize: "3em", color: "white" }}
+                    />
+                    <h4 style={{ fontWeight: "bold" }}>Delete client?</h4>
+                    <CardTitle>
+                      {"Are you sure you want to delete this client?"}
+                    </CardTitle>
+                  </div>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <div className='text-center mt-3'>
+                    <button
+                      type='button'
+                      className='btn btn-danger btn-rounded btn-lg ms-2'
+                      onClick={deleteClient}>
+                      Yes, I'm sure
+                    </button>
+                    <button
+                      style={{ borderColor: "#007bff" }}
+                      type='button'
+                      className='btn btn-light btn-rounded btn-lg ms-2'
+                      onClick={() => setDeleteModal(false)}>
+                      No, Cancel
+                    </button>
+                  </div>
+                </Col>
+              </Row>
+            </ModalBody>
           </Modal>
 
           <Row>
@@ -519,10 +647,48 @@ const ClientsList = () => {
                         <Row form>
                           <Col xs={12}>
                             <div className='mb-3'>
-                              <Label className='form-label'></Label>
+                              <Label className='form-label'>Job Title</Label>
+                              <Input
+                                required='required'
+                                style={{ textTransform: "capitalize" }}
+                                name='title'
+                                label='select'
+                                type='select'
+                                onChange={(e) =>
+                                  validation.setFieldValue(
+                                    "title",
+                                    e.target.value
+                                  )
+                                }
+                                value={validation.values.title}>
+                                <option value=''>Choose here</option>
+                                <option value='Owner'>Owner</option>
+                                <option value='Assistant director'>
+                                  Assistant director
+                                </option>
+                                <option value='Senior manager'>
+                                  Senior manager
+                                </option>
+                                <option value='Manager'>Manager</option>
+                                <option value='Assistant'>Assistant</option>
+                                <option value='Supervisor'>Supervisor</option>
+                                <option value='Senior'>Senior</option>
+                                <option value='Coordinator'>Coordinator</option>
+                                <option value='Team lead'>Team lead</option>
+                                <option value='Lead'>Lead</option>
+                              </Input>
+                              {validation.touched.title &&
+                              validation.errors.title ? (
+                                <FormFeedback type='invalid'>
+                                  {validation.errors.title}
+                                </FormFeedback>
+                              ) : null}
+                            </div>
+                            <div className='mb-3'>
+                              <Label className='form-label'>Client Name</Label>
                               <Input
                                 name='name'
-                                placeholder='Client Name'
+                                style={{ textTransform: "capitalize" }}
                                 type='text'
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
@@ -541,32 +707,10 @@ const ClientsList = () => {
                                 </FormFeedback>
                               ) : null}
                             </div>
-
                             <div className='mb-3'>
-                              <Label className='form-label'></Label>
+                              <Label className='form-label'>Phone Number</Label>
                               <Input
-                                name='email'
-                                placeholder='Email'
-                                label='Email'
-                                type='email'
-                                onChange={validation.handleChange}
-                                onBlur={validation.handleBlur}
-                                value={validation.values.email || ""}
-                                invalid={
-                                  validation.touched.email &&
-                                  validation.errors.email
-                                    ? true
-                                    : false
-                                }
-                              />
-                            </div>
-
-                            <div className='mb-3'>
-                              <Label className='form-label'></Label>
-                              <Input
-                                required='required'
                                 name='phone'
-                                placeholder='Client Phone'
                                 label='Phone'
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
@@ -586,40 +730,71 @@ const ClientsList = () => {
                               ) : null}
                             </div>
                             <div className='mb-3'>
-                              <Label className='form-label'></Label>
+                              <Label className='form-label'>Email</Label>
+                              <Input
+                                name='email'
+                                type='text'
+                                onChange={validation.handleChange}
+                                onBlur={validation.handleBlur}
+                                value={validation.values.email}
+                                invalid={
+                                  validation.touched.email &&
+                                  validation.errors.email
+                                    ? true
+                                    : false
+                                }
+                              />
+                              {validation.touched.email &&
+                              validation.errors.email ? (
+                                <FormFeedback type='invalid'>
+                                  {validation.errors.email}
+                                </FormFeedback>
+                              ) : null}
+                            </div>
+                            <div className='mb-3'>
+                              <Label className='form-label'>Store Name</Label>
                               <Input
                                 required='required'
                                 style={{ textTransform: "capitalize" }}
                                 name='store'
                                 label='select'
                                 type='select'
-                                onChange={(e) => setStoreName(e.target.value)}
+                                onChange={(e) => {
+                                  setStoreName(e.target.value);
+                                  setBranch(e.target.value);
+                                }}
                                 value={storeName}>
-                                <option value=''>Select Store</option>
+                                <option value=''>Choose here</option>
                                 {stores.map((doc) => (
-                                  <option key={doc.id} value={doc.name}>
-                                    {doc.name}
+                                  <option
+                                    key={doc.id}
+                                    value={`${doc.name} - ${doc.branch}`}>
+                                    {`${doc.name} - ${doc.branch}`}
                                   </option>
                                 ))}
                               </Input>
-                              {validation.touched.store &&
-                              validation.errors.store ? (
-                                <FormFeedback type='invalid'>
-                                  {validation.errors.store}
-                                </FormFeedback>
-                              ) : null}
                             </div>
                           </Col>
                         </Row>
                         <Row>
                           <Col>
                             <div className='text-end'>
-                              <button
-                                style={{ borderRadius: "20px" }}
+                              <Button
+                                className='btn-rounded'
                                 type='submit'
-                                className='btn btn-outline-success w-md save-client'>
-                                Save
-                              </button>
+                                color='primary w-md'>
+                                Update
+                              </Button>
+                              <Button
+                                style={{ backgroundColor: "#32394e" }}
+                                className='btn-rounded'
+                                color='primary w-md ms-2'
+                                onClick={() => {
+                                  setModal(false);
+                                  validation.resetForm();
+                                }}>
+                                Cancel
+                              </Button>
                             </div>
                           </Col>
                         </Row>

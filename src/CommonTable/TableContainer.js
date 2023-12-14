@@ -9,7 +9,7 @@ import {
   useExpanded,
   usePagination,
 } from "react-table";
-import { Table, Row, Col, Button, Input } from "reactstrap";
+import { Table, Row, Col, Button } from "reactstrap";
 import { Filter, DefaultColumnFilter } from "./filter";
 
 // function GlobalFilter({
@@ -188,6 +188,7 @@ const TableContainer = ({
           <div className='d-flex gap-1'>
             <Button
               color='outline-primary'
+              className='btn-rounded'
               onClick={previousPage}
               disabled={!canPreviousPage}>
               {"<"}
@@ -195,7 +196,7 @@ const TableContainer = ({
           </div>
         </Col>
 
-        <Col className='col-md-auto d-none d-md-block'>
+        <Col className='col-md-auto d-none d-md-block '>
           Page{" "}
           <strong>
             {pageIndex + 1} of {pageOptions.length}
@@ -214,7 +215,9 @@ const TableContainer = ({
         <Col className='col-md-auto'>
           <div className='d-flex gap-1'>
             <Button
+              style={{ marginLeft: "-25px" }}
               color='outline-primary'
+              className='btn-rounded'
               onClick={nextPage}
               disabled={!canNextPage}>
               {">"}

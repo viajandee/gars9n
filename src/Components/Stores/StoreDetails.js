@@ -9,13 +9,15 @@ const StoreDetails = () => {
   document.title = "Store Details | Gars9n - Digital Menu & Ordering System";
 
   const { id } = useParams();
-  // for firstore
+
+  // State variables
+  const [store, setStore] = useState([]);
+  const [reload, setReload] = useState(false);
+
+  // Firestore service
   const storeDataService = new StoreDataService();
 
-  const [reload, setReload] = useState(false);
-  // Get Store
-  const [store, setStore] = useState([]);
-
+  // Fetch store data
   const getStore = async (id) => {
     try {
       const storeDoc = await storeDataService.getStoreFirebase(id);
@@ -24,11 +26,13 @@ const StoreDetails = () => {
       setStore(storeData);
       setReload(true);
     } catch (error) {
-      console.log("get store error : ", error);
+      // console.log("get store error : ", error);
+      console.error(error);
     }
   };
   // console.log("the store: ", store);
 
+  // Effect to fetch store data when 'id' changes
   useEffect(() => {
     if (id) {
       getStore(id);
@@ -36,7 +40,7 @@ const StoreDetails = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  // Refresh the page by AJAX
+  // Effect to refresh page by AJAX
   useEffect(() => {
     if (reload) {
       getStore();
@@ -45,19 +49,19 @@ const StoreDetails = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reload]);
 
-  // short address
-  const shortLocation = (location) => {
-    if (!location || typeof location !== "string") {
-      return <div>{store.location}</div>;
+  // Function for short name
+  const shortName = (shortname) => {
+    if (!shortname || typeof shortname !== "string") {
+      return <div>{store.shortname}</div>;
     }
-    const parts = location.split(",");
+    const parts = shortname.split(",");
 
     if (parts.length > 1) {
       const shortAddress = parts.slice(0, 2).join(", ");
       return (
         <div>
-          {shortAddress.length > 15
-            ? shortAddress.substring(0, 27) + "..."
+          {shortAddress.length > 10
+            ? shortAddress.substring(0, 24) + ""
             : shortAddress}
         </div>
       );
@@ -65,11 +69,12 @@ const StoreDetails = () => {
 
     return (
       <div>
-        {location.length > 15 ? location.substring(0, 27) + "..." : location}
+        {shortname.length > 25 ? shortname.substring(0, 31) + "..." : shortname}
       </div>
     );
   };
 
+  // Styles
   const tdStyle = {
     textTransform: "capitalize",
     textAlign: "start",
@@ -96,29 +101,32 @@ const StoreDetails = () => {
                           style={{ paddingRight: "3px" }}>
                           <i className='bx bxs-store' />
                         </th>
-                        <td style={tdStyle}>{store.name}</td>
+                        <td style={tdStyle}>{shortName(store.name)}</td>
                       </tr>
 
                       <tr>
-                        <th className='font-size-20 text-center'
-                        style={{ paddingRight: "3px" }}>
+                        <th
+                          className='font-size-20 text-center'
+                          style={{ paddingRight: "3px" }}>
                           <i className='bx bx-map' />
                         </th>
-                        <td style={tdStyle}>{shortLocation(store.location)}</td>
+                        <td style={tdStyle}>{shortName(store.location)}</td>
                       </tr>
 
                       <tr>
-                        <th className='font-size-20 text-center'
-                        style={{ paddingRight: "3px" }}>
+                        <th
+                          className='font-size-20 text-center'
+                          style={{ paddingRight: "3px" }}>
                           <i className='bx bx-phone' />
                         </th>
                         <td style={tdStyle}>{store.phone}</td>
                       </tr>
 
                       <tr>
-                        <th className='font-size-20 text-center'
-                        style={{ paddingRight: "3px" }}>
-                          <i className='mdi mdi-web' />
+                        <th
+                          className='font-size-20 text-center'
+                          style={{ paddingRight: "3px" }}>
+                          <i className='bx bx-at' />
                         </th>
                         <td
                           style={{
@@ -126,7 +134,7 @@ const StoreDetails = () => {
                             textAlign: "start",
                             paddingTop: "18px",
                           }}>
-                          {shortLocation(store.webSite)}
+                          {shortName(store.email)}
                         </td>
                       </tr>
                     </tbody>

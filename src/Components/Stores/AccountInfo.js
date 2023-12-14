@@ -2,29 +2,55 @@ import React, { useState, useEffect } from "react";
 import { Row, Card, CardBody, Container, Table, CardTitle } from "reactstrap";
 import Breadcrumbs from "../Breadcrumbs";
 import user from "../../assets/images/users/default-user.jpg";
-import { useParams } from "react-router-dom";
-import { StoreDataService } from "../../helpers/firebase_helper";
+import { useParams, useLocation } from "react-router-dom";
+import {
+  StoreDataService,
+  ClientDataService,
+} from "../../helpers/firebase_helper";
 
 const AccountInfo = () => {
   const { id } = useParams();
-  // for firstore
-  const storeDataService = new StoreDataService();
-  const [store, setStore] = useState([]);
-  const [reload, setReload] = useState(false);
+  const location = useLocation();
 
-  // get Store
+  // State variables
+  const [store, setStore] = useState([]);
+  const [reload, setReload] = useState(true);
+  const [client, setClient] = useState([]);
+
+  // Firestore service
+  const storeDataService = new StoreDataService();
+  const clientDataService = new ClientDataService();
+
+  // Fetch store and client data
   const getStore = async (id) => {
     try {
-      const storeDoc = await storeDataService.getStoreFirebase(id);
-      const storeData = storeDoc.data();
+      if (id) {
+        const urlParams = new URLSearchParams(location.search);
+        const c = urlParams.get("c");
 
-      setStore(storeData);
+        // Fetch store data
+        const storeDoc = await storeDataService.getStoreFirebase(id);
+        const storeData = storeDoc.data();
+        setStore(storeData);
+        // console.log("Getting store with ID:", id);
+
+        // Fetch client data if 'c' parameter is present
+        if (c) {
+          const clientDoc = await clientDataService.getClientFirebase(c);
+          const clientData = clientDoc.data();
+          setClient(clientData);
+          // console.log("this error:", clientData);
+        }
+      }
     } catch (error) {
-      console.log("get store error : ", error);
+      // console.log("get store error : ", error);
+      console.error(error);
     }
   };
-  console.log("the store: ", store.title);
+  // console.log("the client :", client);
+  // console.log("the store :", store);
 
+  // Effect to fetch store data when 'id' changes
   useEffect(() => {
     if (id) {
       getStore(id);
@@ -32,7 +58,7 @@ const AccountInfo = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  // Refresh the page by AJAX
+  // Effect to refresh page by AJAX
   useEffect(() => {
     if (reload) {
       getStore();
@@ -41,7 +67,7 @@ const AccountInfo = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reload]);
 
-  // style
+  // Styles
   const thStyle = {
     backgroundColor: "#32394e",
     width: "20%",
@@ -66,25 +92,36 @@ const AccountInfo = () => {
                     src={user}
                     alt='User'
                   />
+                  <div>
+                    <h6
+                      key={store}
+                      className='font-size-15 mt-3'
+                      style={{
+                        textTransform: "capitalize",
+                        fontWeight: "bold",
+                      }}>
+                      {store.name} - {store.branch}
+                    </h6>
+                  </div>
                 </div>
                 <CardTitle className='mb-4'>Basic Info</CardTitle>
                 <Table hover>
                   <tbody>
-                    <tr key={store}>
+                    <tr key={client.id}>
                       <th style={thStyle}>Job Title</th>
-                      <td style={tdStyle}>{store.title}</td>
+                      <td style={tdStyle}>{client.title}</td>
                     </tr>
                     <tr>
-                      <th style={thStyle}>Full name</th>
-                      <td style={tdStyle}>{store.client}</td>
+                      <th style={thStyle}>Full Name</th>
+                      <td style={tdStyle}>{client.name}</td>
                     </tr>
                     <tr>
                       <th style={thStyle}>Phone Number</th>
-                      <td style={tdStyle}>{store.clientPhone}</td>
+                      <td style={tdStyle}>{client.phone}</td>
                     </tr>
                     <tr>
-                      <th style={thStyle}>Email address</th>
-                      <td style={tdStyle}>{store.clientEmail}</td>
+                      <th style={thStyle}>Email Address</th>
+                      <td>{client.email}</td>
                     </tr>
                   </tbody>
                 </Table>

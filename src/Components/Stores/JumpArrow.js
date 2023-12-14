@@ -36,14 +36,16 @@ const JumpArrow = () => {
     borderRadius: "50%",
     cursor: "pointer",
     fontSize: "15px",
-    padding: "5px 10px",
+    textAlign: "center",
+    width: "30px",
+    paddingTop:"0.5%",
     display: isVisible ? "block" : "none",
     transition: "background-color 0.3s",
   };
 
   return (
     <div style={arrowStyle} onClick={scrollToTop}>
-      <span>&#129129;</span>
+      <span className='dripicons-arrow-thin-up'></span>
     </div>
   );
 };

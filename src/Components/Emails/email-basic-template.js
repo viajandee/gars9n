@@ -226,9 +226,9 @@ const EmailBasicTemplte = () => {
                                           display: "inline-block",
                                           borderRadius: "5px",
                                           textTransform: "capitalize",
-                                          backgroundColor: "#34c38f",
+                                          backgroundColor: "#25d366",
                                           margin: "0",
-                                          borderColor: "#34c38f",
+                                          borderColor: "#25d366",
                                           borderStyle: "solid",
                                           borderWidth: "8px 16px",
                                         }}>
