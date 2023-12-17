@@ -1,12 +1,12 @@
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-
 import logo from "../../src/assets/images/logo.svg";
 import logoLightSvg from "../../src/assets/images/logo-light.svg";
+import ProfileMenu from "./TopbarDropdown/ProfileMenu";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-import ProfileMenu from './TopbarDropdown/ProfileMenu';
-
-const Header = props => {
-
+const Header = (props) => {
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
   function tToggle() {
     var body = document.body;
     if (window.screen.width <= 998) {
@@ -17,11 +17,17 @@ const Header = props => {
     }
   }
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!isSidebarOpen);
+    tToggle(); // Call tToggle to handle sidebar visibility
+  };
+
+  const getToggleIconClass = () => {
+    return isSidebarOpen ? "bx bx-chevron-right" : "bx bx-chevron-left";
+  };
+
   function toggleFullscreen() {
-    if (
-      !document.fullscreenElement &&
-      !document.webkitFullscreenElement
-    ) {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
       if (document.documentElement.requestFullscreen) {
         document.documentElement.requestFullscreen();
       } else if (document.documentElement.webkitFullscreenElement) {
@@ -38,32 +44,43 @@ const Header = props => {
     }
   }
 
+  const buttonStyle = {
+    fontSize: "22px",
+    backgroundColor: "rgb(42 48 66)",
+    hover:"white",
+    borderRadius: "50px",
+    marginLeft: "15px",
+    height: "auto",
+    paddingTop: "5px",
+    paddingLeft: "4px",
+  };
+
   return (
     <>
       <header id='page-topbar'>
         <div className='navbar-header'>
           <div className='d-flex'>
             <div className='navbar-brand-box d-lg-none d-md-block'>
-              <Link to="/" className="logo logo-dark">
+              <Link to='/' className='logo logo-dark'>
                 <span className='logo-sm'>
                   <img src={logo} alt='' height='22' />
                 </span>
               </Link>
-              <Link to="/" className="logo logo-light">
+              <Link to='/' className='logo logo-light'>
                 <span className='logo-sm'>
                   <img src={logoLightSvg} alt='' height='22' />
                 </span>
               </Link>
             </div>
             <button
+              style={buttonStyle}
               type='button'
-              onClick={() => {
-                tToggle();
-              }}
-              className='btn btn-sm px-3 font-size-16 header-item'
-              id='vertical-menu-btn'
-            >
-              <i className='fa fa-fw fa-bars' />
+              className='header-item'
+              onClick={toggleSidebar}
+              id='vertical-menu-btn'>
+              <i
+                className={`fa fa-fw ${getToggleIconClass()} transition-icon`}
+              />
             </button>
           </div>
           <div className='d-flex'>
@@ -74,8 +91,7 @@ const Header = props => {
                   toggleFullscreen();
                 }}
                 className='btn header-item noti-icon'
-                data-toggle='fullscreen'
-              >
+                data-toggle='fullscreen'>
                 <i className='bx bx-fullscreen' />
               </button>
             </div>
@@ -84,7 +100,7 @@ const Header = props => {
         </div>
       </header>
     </>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

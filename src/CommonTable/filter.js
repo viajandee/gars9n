@@ -19,11 +19,12 @@ export const DefaultColumnFilter = ({
 }) => {
   return (
     <Input
+      style={{ borderRadius: "20px" }}
       value={filterValue || ""}
       onChange={(e) => {
         setFilter(e.target.value || undefined);
       }}
-      placeholder={`search (${length}) ...`}
+      placeholder={`Search (${length}) `}
     />
   );
 };

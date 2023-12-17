@@ -527,6 +527,7 @@ const StoresGrid = () => {
                           <span
                             style={{
                               textTransform: "uppercase",
+                              paddingTop:"4px"
                             }}
                             className={
                               "avatar-title rounded-circle bg-soft bg-" +

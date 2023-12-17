@@ -126,7 +126,7 @@ const StoreDetails = () => {
                         <th
                           className='font-size-20 text-center'
                           style={{ paddingRight: "3px" }}>
-                          <i className='bx bx-at' />
+                          <i className='bx bx-envelope' />
                         </th>
                         <td
                           style={{

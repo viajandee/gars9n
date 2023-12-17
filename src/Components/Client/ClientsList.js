@@ -273,6 +273,7 @@ const ClientsList = () => {
                     textTransform: "capitalize",
                     textAlign: "center",
                     marginTop: "6px",
+                    paddingTop:"5px"
                   }}>
                   {cellProps.name.charAt(0)}
                 </span>

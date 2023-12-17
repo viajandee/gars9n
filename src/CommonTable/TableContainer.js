@@ -12,44 +12,6 @@ import {
 import { Table, Row, Col, Button } from "reactstrap";
 import { Filter, DefaultColumnFilter } from "./filter";
 
-// function GlobalFilter({
-//   preGlobalFilteredRows,
-//   globalFilter,
-//   setGlobalFilter,
-// }) {
-//   const count = preGlobalFilteredRows.length;
-//   const [value, setValue] = React.useState(globalFilter);
-//   const onChange = useAsyncDebounce((value) => {
-//     setGlobalFilter(value || undefined);
-//   }, 200);
-
-// return (
-// <Col sm={4}>
-//   <div className='search-box me-2 mb-2 d-inline-block'>
-//     <div className='position-relative'>
-//       <label htmlFor='search-bar-0' className='search-label'>
-//         <span id='search-bar-0-label' className='sr-only'>
-//           Search this table
-//         </span>
-//         <input
-//           onChange={(e) => {
-//             setValue(e.target.value);
-//             onChange(e.target.value);
-//           }}
-//           id='search-bar-0'
-//           type='text'
-//           className='form-control'
-//           placeholder={`${count} records...`}
-//           value={value || ""}
-//         />
-//       </label>
-//       <i className='bx bx-search-alt search-icon'></i>
-//     </div>
-//   </div>
-// </Col>
-// );
-// }
-
 const TableContainer = ({
   columns,
   data,
@@ -187,19 +149,24 @@ const TableContainer = ({
         <Col className='col-md-auto'>
           <div className='d-flex gap-1'>
             <Button
-              color='outline-primary'
+              style={{
+                paddingBottom: "0.5px",
+                fontSize: "17px",
+                borderColor: "white",
+                backgroundColor: "#32394e",
+              }}
+              color='white'
               className='btn-rounded'
               onClick={previousPage}
               disabled={!canPreviousPage}>
-              {"<"}
+              <i className='bx bx-left-arrow-alt' />
             </Button>
           </div>
         </Col>
 
         <Col className='col-md-auto d-none d-md-block '>
-          Page{" "}
           <strong>
-            {pageIndex + 1} of {pageOptions.length}
+            {pageIndex + 1} - {pageOptions.length}
           </strong>
         </Col>
 
@@ -215,12 +182,18 @@ const TableContainer = ({
         <Col className='col-md-auto'>
           <div className='d-flex gap-1'>
             <Button
-              style={{ marginLeft: "-25px" }}
-              color='outline-primary'
+              style={{
+                marginLeft: "-25px",
+                paddingBottom: "0.5px",
+                fontSize: "17px",
+                borderColor: "white",
+                backgroundColor: "#32394e",
+              }}
+              color='white'
               className='btn-rounded'
               onClick={nextPage}
               disabled={!canNextPage}>
-              {">"}
+              <i className='bx bx-right-arrow-alt' />
             </Button>
           </div>
         </Col>
