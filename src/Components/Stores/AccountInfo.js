@@ -47,6 +47,7 @@ const AccountInfo = () => {
       console.error(error);
     }
   };
+  
   // console.log("the client :", client);
   // console.log("the store :", store);
 
@@ -69,59 +70,74 @@ const AccountInfo = () => {
 
   // Styles
   const thStyle = {
-    backgroundColor: "#32394e",
     width: "20%",
     textAlign: "center",
     borderColor: "#2a3042",
+    borderRadius: "30px",
+    backgroundColor: "#32394e",
   };
   const tdStyle = {
     textTransform: "capitalize",
+    borderRadius: "30px",
+    textAlign: "center",
+    fontWeight: "bold",
+    borderColor: "#2a3042",
+    backgroundColor: "#222736",
   };
 
   return (
     <React.Fragment>
-      <div className='page-content'>
+      <div className="page-content">
         <Container fluid>
-          <Breadcrumbs title='Stores Grid' BreadcrumbItem='Account Info' />
+          <Breadcrumbs title="Stores Grid" BreadcrumbItem="Account Info" />
           <Row>
-            <Card>
+            <Card className="mt-4">
               <CardBody>
-                <div className='d-flex mb-4'>
+                <div className="d-flex mb-4">
                   <img
-                    className='d-flex me-3 rounded-circle avatar-sm'
+                    className="d-flex me-3 rounded-circle avatar-sm"
                     src={user}
-                    alt='User'
+                    alt="User"
                   />
                   <div>
                     <h6
                       key={store}
-                      className='font-size-15 mt-3'
+                      className="font-size-15 mt-3"
                       style={{
                         textTransform: "capitalize",
                         fontWeight: "bold",
-                      }}>
+                      }}
+                    >
                       {store.name} - {store.branch}
                     </h6>
                   </div>
                 </div>
-                <CardTitle className='mb-4'>Basic Info</CardTitle>
-                <Table hover>
+                <CardTitle className="mb-4">Basic Information</CardTitle>
+                <Table>
                   <tbody>
                     <tr key={client.id}>
                       <th style={thStyle}>Job Title</th>
                       <td style={tdStyle}>{client.title}</td>
-                    </tr>
-                    <tr>
+
                       <th style={thStyle}>Full Name</th>
                       <td style={tdStyle}>{client.name}</td>
                     </tr>
                     <tr>
                       <th style={thStyle}>Phone Number</th>
                       <td style={tdStyle}>{client.phone}</td>
-                    </tr>
-                    <tr>
+
                       <th style={thStyle}>Email Address</th>
-                      <td>{client.email}</td>
+                      <td
+                        style={{
+                          borderRadius: "30px",
+                          textAlign: "center",
+                          fontWeight: "bold",
+                          borderColor: "#2a3042",
+                          backgroundColor: "#222736",
+                        }}
+                      >
+                        {client.email}
+                      </td>
                     </tr>
                   </tbody>
                 </Table>

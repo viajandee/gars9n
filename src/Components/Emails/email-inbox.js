@@ -81,7 +81,6 @@ const EmailInbox = (props) => {
 
           <Row>
             <Col xs='12'>
-              {/* Render Email SideBar */}
               <Card className='email-leftbar'>
                 <Button
                   className='btn-rounded'

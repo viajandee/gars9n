@@ -1,5 +1,4 @@
 import firebase from "firebase/compat/app";
-
 // Add the Firebase products that you want to use
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
@@ -12,16 +11,20 @@ import {
   updateDoc,
   deleteDoc,
   doc,
+  query,
+  where,
 } from "firebase/firestore";
 
+// Stores
 const storesCollecionRef = collection(db, "stores");
+
 export class StoreDataService {
-  // Add Stores
+  // Add store
   addStoreFirebase = (newStore) => {
     return addDoc(storesCollecionRef, newStore);
   };
 
-  // Update Stores
+  // Update store
   updateStoreFirebase = async (id, updatedStore) => {
     // console.log("Received id:", id);
     // console.log("Received updatedStore:", updatedStore);
@@ -50,18 +53,18 @@ export class StoreDataService {
     }
   };
 
-  // Delete Stores
+  // Delete store
   deleteStoreFirebase = (id) => {
     const storeDoc = doc(db, "stores", id);
     return deleteDoc(storeDoc);
   };
 
-  // Get All Stores
+  // Get all stores
   getAllStoresFirebase = () => {
     return getDocs(storesCollecionRef);
   };
 
-  // Get Store
+  // Get store
   getStoreFirebase = (id) => {
     const storeDoc = doc(db, "stores", id);
     return getDoc(storeDoc);
@@ -73,7 +76,7 @@ export class StoreDataService {
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
           location
-        )}&key=GOOGLE_MAPS_API_KEY` 
+        )}&key=AIzaSyAelqFKluixvanU-Rwz1P4-bZrePAgLQz4`
       );
 
       if (!response.ok) {
@@ -94,8 +97,201 @@ export class StoreDataService {
       return null;
     }
   }
+
+  //TODO: Categories
+  addCategoriesFirebase = async (id, newCategories) => {
+    try {
+      const categoriesCollectionRef = collection(
+        db,
+        "stores",
+        id,
+        "categories"
+      );
+
+      await addDoc(categoriesCollectionRef, newCategories);
+
+      console.log("Category added with ID: ", categoriesCollectionRef.id);
+      console.log(
+        "Categories Collection Reference: ",
+        categoriesCollectionRef.path
+      );
+
+      return categoriesCollectionRef;
+    } catch (error) {
+      console.error("Error adding category in Firebase File: ", error);
+      throw error;
+    }
+  };
+
+  // Update category
+  // async updateCategoriesFirebase(id, updateCategory) {
+  //   try {
+  //     const categoriesCollectionRef = collection(
+  //       db,
+  //       "stores",
+  //       id,
+  //       "categories"
+  //     );
+  //     await updateDoc(categoriesCollectionRef, updateCategory);
+  //     console.log("Category updated successfully!", id);
+  //   } catch (error) {
+  //     console.error("Error updating category:", error);
+  //     throw error;
+  //   }
+  // }
+
+  // Update category
+  updateCategoriesFirebase = async (id, updateCategory) => {
+    console.log("Received id:", id);
+    console.log("Received updatedMenu on Firebase:", updateCategory);
+
+    if (
+      typeof id === "string" &&
+      updateCategory &&
+      typeof updateCategory === "object"
+    ) {
+      if (id && updateCategory) {
+        const categoriesCollectionRef = collection(
+          db,
+          "stores",
+          id,
+          "categories",
+          id
+        );
+        try {
+          await updateDoc(categoriesCollectionRef, updateCategory);
+          console.log("Category updated successfully!", id);
+        } catch (error) {
+          console.log("Error Updating Category: ", error);
+        }
+      } else {
+        console.error(
+          "Invalid data provided for Category update. ID:",
+          id,
+          "updated Category :",
+          updateCategory
+        );
+        return Promise.reject("Invalid data");
+      }
+    }
+  };
+
+  // Delete category
+  deleteCategoriesFirebase = (id) => {
+    const categoriesCollectionRef = doc(db, "stores", id, "categories", id);
+    return deleteDoc(categoriesCollectionRef);
+  };
+
+  // Get all categores
+  getAllCategoriesFirebase = (id) => {
+    const categoriesCollectionRef = collection(db, "stores", id, "categories");
+    return getDocs(categoriesCollectionRef);
+  };
+
+  // Get category
+  getCategoryFirebase = (id) => {
+    const categoriesCollectionRef = doc(db, "stores", id, "categories", id);
+    return getDoc(categoriesCollectionRef);
+  };
+
+  // Items
+  addItemsFirebase = async (id, categoryId, itemData) => {
+    if (categoryId === id) {
+      try {
+        // const itemsCollectionRef = collection(
+        //   storesCollecionRef.doc(storeId),
+        //   "categories",
+        //   categoryId,
+        //   "items"
+        // );
+        const itemsCollectionRef = await addDoc(
+          collection(
+            doc(db, "stores", id),
+            "categories",
+            categoryId,
+            "items",
+            itemData
+          )
+        );
+        console.log("Item added with ID: ", itemsCollectionRef.id);
+        return itemsCollectionRef.id;
+      } catch (error) {
+        console.error("Error adding item in Firebase File: ", error);
+        throw error;
+      }
+    }
+  };
+
+  // Update item
+  updateItemsFirebase = async (id, updatedItem) => {
+    console.log("Received id:", id);
+    console.log("Received updatedMenu on Firebase:", updatedItem);
+
+    if (
+      typeof id === "string" &&
+      updatedItem &&
+      typeof updatedItem === "object"
+    ) {
+      if (id && updatedItem) {
+        const itemDoc = doc(db, "stores", id);
+        try {
+          await updateDoc(itemDoc, updatedItem);
+          console.log("Item updated successfully!", id);
+        } catch (error) {
+          console.log("Error Updating Item: ", error);
+        }
+      } else {
+        console.error(
+          "Invalid data provided for Item update. ID:",
+          id,
+          "updated Menu :",
+          updatedItem
+        );
+        return Promise.reject("Invalid data");
+      }
+    }
+  };
+
+  // Delete item
+  deleteItemsFirebase = async (id) => {
+    try {
+      const itemDoc = doc(db, "stores", id);
+      await deleteDoc(itemDoc);
+      console.log("Item deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting item in Firebase File: ", error);
+      throw error;
+    }
+  };
+
+  // Get all item
+  getAllItemsFirebase = () => {
+    return getDocs(storesCollecionRef);
+  };
+
+  // Get item
+  getItemFirebase = (id) => {
+    const itemDoc = doc(db, "stores", id);
+    return getDoc(itemDoc);
+  };
+
+  getItemsByCategory = async (id) => {
+    try {
+      const q = query(storesCollecionRef, where("categoryId", "==", id));
+      const querySnapshot = await getDocs(q);
+      const items = [];
+      querySnapshot.forEach((doc) => {
+        items.push({ id: doc.id, ...doc.data() });
+      });
+      return items;
+    } catch (error) {
+      console.error("Error getting items by category: ", error);
+      throw error;
+    }
+  };
 }
 
+// Clients
 const clientsCollectionRef = collection(db, "clients");
 export class ClientDataService {
   // Add Clients
@@ -147,6 +343,62 @@ export class ClientDataService {
   getClientFirebase = (id) => {
     const clientDoc = doc(db, "clients", id);
     return getDoc(clientDoc);
+  };
+}
+
+// Menus
+const menusCollectionRef = collection(db, "menus");
+export class MenuDataService {
+  // Add Menu
+  addMenuFirebase = (newMenu) => {
+    return addDoc(menusCollectionRef, newMenu);
+  };
+
+  // Update Menu
+  updateMenuFirebase = async (id, updatedMenu) => {
+    console.log("Received id:", id);
+    console.log("Received updatedMenu on Firebase:", updatedMenu);
+
+    if (
+      typeof id === "string" &&
+      updatedMenu &&
+      typeof updatedMenu === "object"
+    ) {
+      if (id && updatedMenu) {
+        const menuDoc = doc(db, "menus", id);
+        try {
+          await updateDoc(menuDoc, updatedMenu);
+          console.log("menus updated successfully!", id);
+        } catch (error) {
+          console.log("Error Updating Menu: ", error);
+        }
+      } else {
+        console.error(
+          "Invalid data provided for Menu update. ID:",
+          id,
+          "updated Menu :",
+          updatedMenu
+        );
+        return Promise.reject("Invalid data");
+      }
+    }
+  };
+
+  // Delete Menu
+  deleteMenuFirebase = (id) => {
+    const menuDoc = doc(db, "menus", id);
+    return deleteDoc(menuDoc);
+  };
+
+  // Get All Menus
+  getAllMenusFirebase = () => {
+    return getDocs(menusCollectionRef);
+  };
+
+  // Get Menu
+  getMenuFirebase = (id) => {
+    const menuDoc = doc(db, "menus", id);
+    return getDoc(menuDoc);
   };
 }
 
@@ -410,10 +662,7 @@ class FirebaseAuthBackend {
 
 let _fireBaseBackend = null;
 
-/**
- * Initilize the backend
- * @param {*} config
- */
+/* Initilize the backend @param {*} config */
 const initFirebaseBackend = (config) => {
   if (!_fireBaseBackend) {
     _fireBaseBackend = new FirebaseAuthBackend(config);

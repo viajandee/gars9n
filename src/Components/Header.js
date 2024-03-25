@@ -13,7 +13,6 @@ const Header = (props) => {
       body.classList.toggle("sidebar-enable");
     } else {
       body.classList.toggle("vertical-collpsed");
-      body.classList.toggle("sidebar-enable");
     }
   }
 
@@ -47,52 +46,57 @@ const Header = (props) => {
   const buttonStyle = {
     fontSize: "22px",
     backgroundColor: "rgb(42 48 66)",
-    hover:"white",
+    hover: "white",
     borderRadius: "50px",
     marginLeft: "15px",
     height: "auto",
     paddingTop: "5px",
     paddingLeft: "4px",
+    marginTop: "auto",
+    marginBottom: "auto",
   };
 
   return (
     <>
-      <header id='page-topbar'>
-        <div className='navbar-header'>
-          <div className='d-flex'>
-            <div className='navbar-brand-box d-lg-none d-md-block'>
-              <Link to='/' className='logo logo-dark'>
-                <span className='logo-sm'>
-                  <img src={logo} alt='' height='22' />
+      <header id="page-topbar">
+        <div className="navbar-header">
+          <div className="d-flex">
+            <div className="navbar-brand-box d-lg-none d-md-block">
+              <Link to="/" className="logo logo-dark">
+                <span className="logo-sm">
+                  <img src={logo} alt="" height="22" />
                 </span>
               </Link>
-              <Link to='/' className='logo logo-light'>
-                <span className='logo-sm'>
-                  <img src={logoLightSvg} alt='' height='22' />
+              <Link to="/" className="logo logo-light">
+                <span className="logo-sm">
+                  <img src={logoLightSvg} alt="" height="22" />
                 </span>
               </Link>
             </div>
+            {/* FIXME: */}
             <button
               style={buttonStyle}
-              type='button'
-              className='header-item'
+              type="button"
+              className="header-item"
               onClick={toggleSidebar}
-              id='vertical-menu-btn'>
+              id="vertical-menu-btn"
+            >
               <i
                 className={`fa fa-fw ${getToggleIconClass()} transition-icon`}
               />
             </button>
           </div>
-          <div className='d-flex'>
-            <div className='dropdown d-none d-lg-inline-block ms-1'>
+          <div className="d-flex">
+            <div className="dropdown d-none d-lg-inline-block ms-1">
               <button
-                type='button'
+                type="button"
                 onClick={() => {
                   toggleFullscreen();
                 }}
-                className='btn header-item noti-icon'
-                data-toggle='fullscreen'>
-                <i className='bx bx-fullscreen' />
+                className="btn header-item noti-icon"
+                data-toggle="fullscreen"
+              >
+                <i className="bx bx-fullscreen" />
               </button>
             </div>
             <ProfileMenu />

@@ -26,6 +26,7 @@ import {
   ClientDataService,
   StoreDataService,
 } from "../../helpers/firebase_helper";
+import user from "../../assets/images/users/default-user.jpg";
 
 const ClientsList = () => {
   document.title = "Clients | Gars9n - React Admin & Dashboard Template";
@@ -54,10 +55,40 @@ const ClientsList = () => {
   const clientDataService = new ClientDataService();
   const storeDataService = new StoreDataService();
 
-  useEffect(() => {
-    getStores();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  //Add Client
+  const addClient = async (e) => {
+    e.preventDefault();
+    if (newName && newEmail && newPhone && storeName && jobTitle && branch) {
+      const newClient = {
+        name: newName,
+        email: newEmail,
+        phone: newPhone,
+        store: storeName,
+        title: jobTitle,
+        branch: branch,
+      };
+
+      try {
+        await clientDataService.addClientFirebase(newClient);
+        setReload(true);
+        // console.log("new client added successfully", newClient);
+      } catch (error) {
+        // console.log("error adding client", error);
+        console.error(error);
+      }
+      setModalIsOpen(false);
+      setNewName("");
+      setNewEmail("");
+      setNewPhone([]);
+      setStoreName("");
+      setBranch("");
+      setJobTitle("");
+    }
+  };
+
+  const openModal = () => {
+    setModalIsOpen(true);
+  };
 
   // update client
   const validation = useFormik({
@@ -117,16 +148,52 @@ const ClientsList = () => {
     toggle();
   };
 
-  // Get Stores
-  const getStores = async () => {
-    const data = await storeDataService.getAllStoresFirebase();
-    const stortStores = data.docs
-      .map((doc) => ({ ...doc.data(), id: doc.id }))
-      .sort((a, b) => a.name.localeCompare(b.name));
-    setStores(stortStores);
+  // Delete Clients
+  const deleteClient = async (clientId) => {
+    if (clientId) {
+      try {
+        await clientDataService.deleteClientFirebase(deleteId);
+        getClients();
+        setReload(true);
+        // console.log("client deleted successfully!");
+      } catch (error) {
+        // console.error("Error deleting client", error);
+        console.error(error);
+      }
+    }
+    setDeleteId(null);
+    setDeleteModal(false);
   };
 
-  // GetClient
+  const handleDeleteClient = async (id) => {
+    if (id) {
+      setDeleteId(id);
+      setDeleteModal(true);
+      onPaginationPageChange(1);
+    }
+  };
+
+  // Get Clients
+  const getClients = async () => {
+    const data = await clientDataService.getAllClientsFirebase();
+    setClients(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  };
+
+  // Refresh the page by AJAX
+  useEffect(() => {
+    if (reload) {
+      getClients();
+      setReload(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reload]);
+
+  useEffect(() => {
+    getClients();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Get Client
   const getClient = async (id) => {
     try {
       const clientDoc = await clientDataService.getClientFirebase(id);
@@ -153,40 +220,22 @@ const ClientsList = () => {
     }
   };
 
-  //Add Client
-  const addClient = async (e) => {
-    e.preventDefault();
-    if (newName && newEmail && newPhone && storeName && jobTitle && branch) {
-      const newClient = {
-        name: newName,
-        email: newEmail,
-        phone: newPhone,
-        store: storeName,
-        title: jobTitle,
-        branch: branch,
-      };
-
-      try {
-        await clientDataService.addClientFirebase(newClient);
-        setReload(true);
-        // console.log("new client added successfully", newClient);
-      } catch (error) {
-        // console.log("error adding client", error);
-        console.error(error);
-      }
-      setModalIsOpen(false);
-      setNewName("");
-      setNewEmail("");
-      setNewPhone([]);
-      setStoreName("");
-      setBranch("");
-      setJobTitle("");
-    }
+  // Get Stores
+  const getStores = async () => {
+    const data = await storeDataService.getAllStoresFirebase();
+    const stortStores = data.docs
+      .map((doc) => ({ ...doc.data(), id: doc.id }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+    setStores(stortStores);
   };
 
-  const openModal = () => {
-    setModalIsOpen(true);
-  };
+  useEffect(() => {
+    getStores();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // eslint-disable-next-line no-unused-vars
+  const keyField = "id";
 
   var node = useRef();
   const onPaginationPageChange = (page) => {
@@ -200,53 +249,6 @@ const ClientsList = () => {
       node.current.props.pagination.options.onPageChange(page);
     }
   };
-
-  // Delete Clients
-  const deleteClient = async (clientId) => {
-    if (clientId) {
-      try {
-        await clientDataService.deleteClientFirebase(deleteId);
-        getClients();
-        setReload(true);
-        // console.log("client deleted successfully!");
-      } catch (error) {
-        // console.error("Error deleting client", error);
-        console.error(error);
-      }
-    }
-    setDeleteId(null);
-    setDeleteModal(false);
-  };
-
-  const handleDeleteClient = async (id) => {
-    if (id) {
-      setDeleteId(id);
-      setDeleteModal(true);
-      onPaginationPageChange(1);
-    }
-  };
-
-  const getClients = async () => {
-    const data = await clientDataService.getAllClientsFirebase();
-    setClients(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-  };
-
-  // eslint-disable-next-line no-unused-vars
-  const keyField = "id";
-
-  // Refresh the page by AJAX
-  useEffect(() => {
-    if (reload) {
-      getClients();
-      setReload(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reload]);
-
-  useEffect(() => {
-    getClients();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const toggle = () => {
     if (modal) {
@@ -265,28 +267,23 @@ const ClientsList = () => {
         filterable: true,
         accessor: (cellProps) => (
           <>
-            {!cellProps.img ? (
-              <div className='avatar-xs'>
-                <span
-                  className='avatar-title rounded-circle'
-                  style={{
-                    textTransform: "capitalize",
-                    textAlign: "center",
-                    marginTop: "6px",
-                    paddingTop:"5px"
-                  }}>
-                  {cellProps.name.charAt(0)}
-                </span>
-              </div>
-            ) : (
-              <div>
+            <div className="avatar-xs">
+              <span
+                className="avatar-title rounded-circle"
+                style={{
+                  textTransform: "capitalize",
+                  textAlign: "center",
+                  marginTop: "6px",
+                  paddingTop: "2px",
+                }}
+              >
                 <img
-                  className='rounded-circle avatar-xs'
-                  src={cellProps.img}
-                  alt=''
+                  className="rounded-circle avatar-xs"
+                  src={user}
+                  alt="user"
                 />
-              </div>
-            )}
+              </span>
+            </div>
           </>
         ),
       },
@@ -302,7 +299,8 @@ const ClientsList = () => {
                 textTransform: "capitalize",
                 textAlign: "center",
                 marginTop: "12px",
-              }}>
+              }}
+            >
               {cellProps.value}
             </div>
           );
@@ -319,7 +317,8 @@ const ClientsList = () => {
                 textTransform: "capitalize",
                 textAlign: "center",
                 marginTop: "12px",
-              }}>
+              }}
+            >
               {cellProps.value}
             </div>
           );
@@ -335,7 +334,8 @@ const ClientsList = () => {
               style={{
                 textAlign: "start",
                 marginTop: "12px",
-              }}>
+              }}
+            >
               {cellProps.value}
             </div>
           );
@@ -352,7 +352,8 @@ const ClientsList = () => {
                 textTransform: "capitalize",
                 textAlign: "center",
                 marginTop: "12px",
-              }}>
+              }}
+            >
               {cellProps.value}
             </div>
           );
@@ -367,29 +368,32 @@ const ClientsList = () => {
                 display: "flex",
                 justifyContent: "space-evenly",
                 marginTop: "12px",
-              }}>
+              }}
+            >
               <div
-                className='text-success'
+                className="text-success"
                 onClick={() => {
                   const doc = cellProps.row.original;
                   getClient(doc.id);
-                }}>
-                <i className='mdi mdi-pencil font-size-16' id='edittooltip' />
-                <UncontrolledTooltip placement='top' target='edittooltip'>
+                }}
+              >
+                <i className="mdi mdi-pencil font-size-16" id="edittooltip" />
+                <UncontrolledTooltip placement="top" target="edittooltip">
                   Edit
                 </UncontrolledTooltip>
               </div>
               <div
-                className='text-danger'
-                onClick={(e) => {
+                className="text-danger"
+                onClick={() => {
                   const doc = cellProps.row.original;
                   handleDeleteClient(doc.id);
-                }}>
+                }}
+              >
                 <i
-                  className='mdi mdi-trash-can font-size-16'
-                  id='deletetooltip'
+                  className="mdi mdi-trash-can font-size-16"
+                  id="deletetooltip"
                 />
-                <UncontrolledTooltip placement='top' target='deletetooltip'>
+                <UncontrolledTooltip placement="top" target="deletetooltip">
                   Delete
                 </UncontrolledTooltip>
               </div>
@@ -430,149 +434,165 @@ const ClientsList = () => {
 
   return (
     <React.Fragment>
-      <div className='page-content'>
+      <div className="page-content">
         <Container fluid>
-          <Breadcrumbs title='Clients' BreadcrumbItem='Client List' />
+          <Breadcrumbs title="Clients" BreadcrumbItem="Client List" />
           <Row>
-            <Col sm='12'>
-              <div className='text-sm-end'>
+            <Col sm="12">
+              <div className="text-sm-end">
                 <Button
-                  color='primary w-md'
-                  className='btn-rounded mb-2 me-2 '
-                  onClick={openModal}>
-                  Add New Client
+                  color="primary w-md"
+                  style={{
+                    backgroundColor: "#B79A6D",
+                    borderColor: "#B79A6D",
+                    fontWeight: "bold",
+                  }}
+                  className="btn-rounded mb-4 me-2 "
+                  onClick={openModal}
+                >
+                  Add Clients
                 </Button>
               </div>
             </Col>
           </Row>
+
           <Modal isOpen={modalIsOpen} toggle={() => setModalIsOpen(false)}>
-            <ModalHeader toggle={() => setModalIsOpen(false)}>
-              Add Client
-            </ModalHeader>
+            <ModalHeader>Add Clients</ModalHeader>
             <ModalBody>
-              <Label className='form-label'>Job Title</Label>
+              <Label className="form-label">Job Title</Label>
               <span
-                className='required-indicator ms-1'
-                style={{ color: "#dc3545" }}>
+                className="required-indicator ms-1"
+                style={{ color: "#dc3545" }}
+              >
                 *
               </span>
               <Input
-                required='required'
-                type='select'
+                required={true}
+                type="select"
                 style={{ textTransform: "capitalize" }}
-                title='Please select your title.'
+                title="Please select your title."
                 value={jobTitle}
-                onChange={(e) => setJobTitle(e.target.value)}>
-                <option value=''>Choose here</option>
-                <option value='Owner'>Owner</option>
-                <option value='Assistant director'>Assistant director</option>
-                <option value='Senior manager'>Senior manager</option>
-                <option value='Manager'>Manager</option>
-                <option value='Assistant'>Assistant</option>
-                <option value='Supervisor'>Supervisor</option>
-                <option value='Senior'>Senior</option>
-                <option value='Coordinator'>Coordinator</option>
-                <option value='Team lead'>Team lead</option>
-                <option value='Lead'>Lead</option>
-                <option value='Other'>Other</option>
+                onChange={(e) => setJobTitle(e.target.value)}
+              >
+                <option value="">Choose here</option>
+                <option value="Owner">Owner</option>
+                <option value="Assistant director">Assistant director</option>
+                <option value="Senior manager">Senior manager</option>
+                <option value="Manager">Manager</option>
+                <option value="Assistant">Assistant</option>
+                <option value="Supervisor">Supervisor</option>
+                <option value="Senior">Senior</option>
+                <option value="Coordinator">Coordinator</option>
+                <option value="Team lead">Team lead</option>
+                <option value="Lead">Lead</option>
+                <option value="Other">Other</option>
               </Input>
             </ModalBody>
             <ModalBody>
-              <Label className='form-label'>Client Name</Label>
+              <Label className="form-label">Client Name</Label>
               <span
-                className='required-indicator ms-1'
-                style={{ color: "#dc3545" }}>
+                className="required-indicator ms-1"
+                style={{ color: "#dc3545" }}
+              >
                 *
               </span>
               <Input
-                name='name'
-                title='Please enter your full name.'
-                placeholder='Enter Your Full Name'
-                style={{ textTransform: "capitalize" }}
-                type='text'
+                name="name"
+                title="Please enter your full name."
+                placeholder="Enter your full name"
+                type="text"
                 value={newName}
                 onChange={(e) => {
                   const inputValue = e.target.value;
                   const validInput = inputValue.replace(/[^a-zA-Z\s]/g, "");
                   setNewName(validInput);
                 }}
-                required='required'
+                required={true}
               />
             </ModalBody>
             <ModalBody>
-              <Label className='form-label'>Phone Number</Label>
+              <Label className="form-label">Phone Number</Label>
               <span
-                className='required-indicator ms-1'
-                style={{ color: "#dc3545" }}>
+                className="required-indicator ms-1"
+                style={{ color: "#dc3545" }}
+              >
                 *
               </span>
               <Input
-                name='phone'
-                placeholder='(+00) 0000-0000'
-                label='Phone'
-                type='number'
+                name="phone"
+                placeholder="(+00) 0000-0000"
+                label="Phone"
+                type="tel"
                 value={newPhone}
                 onChange={(e) => setNewPhone(e.target.value)}
-                required='required'
-                title='Please enter only number.'
+                required={true}
+                title="Please enter only number."
+                min="0"
+                maxLength="11"
+                pattern="\d{1,11}"
               />
             </ModalBody>
             <ModalBody>
-              <Label className='form-label'>Email Address</Label>
+              <Label className="form-label">Email Address</Label>
               <span
-                className='required-indicator ms-1'
-                style={{ color: "#dc3545" }}>
+                className="required-indicator ms-1"
+                style={{ color: "#dc3545" }}
+              >
                 *
               </span>
               <Input
-                name='email'
-                placeholder='name@example.com'
-                type='email'
+                name="email"
+                placeholder="name@example.com"
+                type="text"
                 value={newEmail}
                 onChange={(e) => setNewEmail(e.target.value)}
-                required='required'
-                title='Please enter a valid email address.'
+                required={true}
+                title="Please enter a valid email address."
                 onBlur={handleEmailBlur}
               />
             </ModalBody>
-            <ModalBody>
-              <Label className='form-label'>Store Name</Label>
+            <ModalBody className="mb-3">
+              <Label className="form-label">Store Name</Label>
               <span
-                className='required-indicator ms-1'
-                style={{ color: "#dc3545" }}>
+                className="required-indicator ms-1"
+                style={{ color: "#dc3545" }}
+              >
                 *
               </span>
               <Input
-                type='select'
-                required='required'
-                title='Please select your store name.'
+                type="select"
+                required={true}
+                title="Please select your store name."
                 style={{ textTransform: "capitalize" }}
                 value={storeName && branch}
                 onChange={(e) => {
                   setStoreName(e.target.value);
                   setBranch(e.target.value);
-                }}>
-                <option value=''>Choose here</option>
+                }}
+              >
+                <option value="">Choose here</option>
                 {stores.map((doc) => (
                   <option key={doc.id} value={`${doc.name} - ${doc.branch}`}>
                     {`${doc.name} - ${doc.branch}`}
                   </option>
                 ))}
-                <option value='Unknown'>Unknown</option>
+                <option value="Unknown">Unknown</option>
               </Input>
             </ModalBody>
             <ModalFooter>
               <Button
-                className='btn-rounded w-md ms-2'
-                color='primary'
-                onClick={addClient}>
+                className="btn-rounded w-md ms-2"
+                color="primary"
+                onClick={addClient}
+              >
                 Save
               </Button>
               <Button
                 style={{ backgroundColor: "#32394e" }}
-                className='btn-rounded w-md'
-                color='primary'
-                onClick={() => setModalIsOpen(false)}>
+                className="btn-rounded w-md"
+                color="primary"
+                onClick={() => setModalIsOpen(false)}
+              >
                 Cancel
               </Button>
             </ModalFooter>
@@ -582,13 +602,14 @@ const ClientsList = () => {
           <Modal
             isOpen={deleteModal}
             toggle={() => setDeleteModal(false)}
-            centered={true}>
-            <ModalBody className='py-3 px-5'>
+            centered={true}
+          >
+            <ModalBody className="py-3 px-5">
               <Row>
                 <Col sm={12}>
-                  <div className='text-center'>
+                  <div className="text-center">
                     <i
-                      className='mdi mdi-trash-can-outline'
+                      className="mdi mdi-trash-can-outline"
                       style={{ fontSize: "3em", color: "white" }}
                     />
                     <h4 style={{ fontWeight: "bold" }}>Delete client?</h4>
@@ -600,18 +621,20 @@ const ClientsList = () => {
               </Row>
               <Row>
                 <Col>
-                  <div className='text-center mt-3'>
+                  <div className="text-center mt-3">
                     <button
-                      type='button'
-                      className='btn btn-danger btn-rounded btn-lg ms-2'
-                      onClick={deleteClient}>
+                      type="button"
+                      className="btn btn-danger btn-rounded btn-lg ms-2"
+                      onClick={deleteClient}
+                    >
                       Yes, I'm sure
                     </button>
                     <button
                       style={{ borderColor: "#007bff" }}
-                      type='button'
-                      className='btn btn-light btn-rounded btn-lg ms-2'
-                      onClick={() => setDeleteModal(false)}>
+                      type="button"
+                      className="btn btn-light btn-rounded btn-lg ms-2"
+                      onClick={() => setDeleteModal(false)}
+                    >
                       No, Cancel
                     </button>
                   </div>
@@ -621,21 +644,20 @@ const ClientsList = () => {
           </Modal>
 
           <Row>
-            <Col sm='12'>
+            <Col sm="12">
               <Card>
                 <CardBody>
                   <TableContainer
                     columns={columns}
                     data={clients}
                     isGlobalFilter={true}
-                    isAddUserList={true}
                     handleUserClick={handleClientClicks}
                     customPageSize={10}
-                    className='custom-header-css text-center'
+                    className="custom-header-css text-center"
                   />
 
                   <Modal isOpen={modal} toggle={toggle}>
-                    <ModalHeader toggle={toggle} tag='h4'>
+                    <ModalHeader>
                       {isEdit ? "Edit Client" : "Add Client"}
                     </ModalHeader>
                     <ModalBody>
@@ -644,53 +666,55 @@ const ClientsList = () => {
                           e.preventDefault();
                           validation.handleSubmit();
                           return false;
-                        }}>
+                        }}
+                      >
                         <Row form>
                           <Col xs={12}>
-                            <div className='mb-3'>
-                              <Label className='form-label'>Job Title</Label>
+                            <div className="mb-3">
+                              <Label className="form-label">Job Title</Label>
                               <Input
-                                required='required'
+                                required={true}
                                 style={{ textTransform: "capitalize" }}
-                                name='title'
-                                label='select'
-                                type='select'
+                                name="title"
+                                label="select"
+                                type="select"
                                 onChange={(e) =>
                                   validation.setFieldValue(
                                     "title",
                                     e.target.value
                                   )
                                 }
-                                value={validation.values.title}>
-                                <option value=''>Choose here</option>
-                                <option value='Owner'>Owner</option>
-                                <option value='Assistant director'>
+                                value={validation.values.title}
+                              >
+                                <option value="">Choose here</option>
+                                <option value="Owner">Owner</option>
+                                <option value="Assistant director">
                                   Assistant director
                                 </option>
-                                <option value='Senior manager'>
+                                <option value="Senior manager">
                                   Senior manager
                                 </option>
-                                <option value='Manager'>Manager</option>
-                                <option value='Assistant'>Assistant</option>
-                                <option value='Supervisor'>Supervisor</option>
-                                <option value='Senior'>Senior</option>
-                                <option value='Coordinator'>Coordinator</option>
-                                <option value='Team lead'>Team lead</option>
-                                <option value='Lead'>Lead</option>
+                                <option value="Manager">Manager</option>
+                                <option value="Assistant">Assistant</option>
+                                <option value="Supervisor">Supervisor</option>
+                                <option value="Senior">Senior</option>
+                                <option value="Coordinator">Coordinator</option>
+                                <option value="Team lead">Team lead</option>
+                                <option value="Lead">Lead</option>
                               </Input>
                               {validation.touched.title &&
                               validation.errors.title ? (
-                                <FormFeedback type='invalid'>
+                                <FormFeedback type="invalid">
                                   {validation.errors.title}
                                 </FormFeedback>
                               ) : null}
                             </div>
-                            <div className='mb-3'>
-                              <Label className='form-label'>Client Name</Label>
+                            <div className="mb-3">
+                              <Label className="form-label">Client Name</Label>
                               <Input
-                                name='name'
+                                name="name"
                                 style={{ textTransform: "capitalize" }}
-                                type='text'
+                                type="text"
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.name || ""}
@@ -703,16 +727,20 @@ const ClientsList = () => {
                               />
                               {validation.touched.name &&
                               validation.errors.name ? (
-                                <FormFeedback type='invalid'>
+                                <FormFeedback type="invalid">
                                   {validation.errors.name}
                                 </FormFeedback>
                               ) : null}
                             </div>
-                            <div className='mb-3'>
-                              <Label className='form-label'>Phone Number</Label>
+                            <div className="mb-3">
+                              <Label className="form-label">Phone Number</Label>
                               <Input
-                                name='phone'
-                                label='Phone'
+                                name="phone"
+                                label="Phone"
+                                min="0"
+                                maxLength="11"
+                                pattern="\d{1,11}"
+                                type="tel"
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.phone || ""}
@@ -725,16 +753,16 @@ const ClientsList = () => {
                               />
                               {validation.touched.phone &&
                               validation.errors.phone ? (
-                                <FormFeedback type='invalid'>
+                                <FormFeedback type="invalid">
                                   {validation.errors.phone}
                                 </FormFeedback>
                               ) : null}
                             </div>
-                            <div className='mb-3'>
-                              <Label className='form-label'>Email</Label>
+                            <div className="mb-3">
+                              <Label className="form-label">Email</Label>
                               <Input
-                                name='email'
-                                type='text'
+                                name="email"
+                                type="text"
                                 onChange={validation.handleChange}
                                 onBlur={validation.handleBlur}
                                 value={validation.values.email}
@@ -747,29 +775,31 @@ const ClientsList = () => {
                               />
                               {validation.touched.email &&
                               validation.errors.email ? (
-                                <FormFeedback type='invalid'>
+                                <FormFeedback type="invalid">
                                   {validation.errors.email}
                                 </FormFeedback>
                               ) : null}
                             </div>
-                            <div className='mb-3'>
-                              <Label className='form-label'>Store Name</Label>
+                            <div className="mb-3">
+                              <Label className="form-label">Store Name</Label>
                               <Input
-                                required='required'
+                                required={true}
                                 style={{ textTransform: "capitalize" }}
-                                name='store'
-                                label='select'
-                                type='select'
+                                name="store"
+                                label="select"
+                                type="select"
                                 onChange={(e) => {
                                   setStoreName(e.target.value);
                                   setBranch(e.target.value);
                                 }}
-                                value={storeName}>
-                                <option value=''>Choose here</option>
+                                value={storeName}
+                              >
+                                <option value="">Choose here</option>
                                 {stores.map((doc) => (
                                   <option
                                     key={doc.id}
-                                    value={`${doc.name} - ${doc.branch}`}>
+                                    value={`${doc.name} - ${doc.branch}`}
+                                  >
                                     {`${doc.name} - ${doc.branch}`}
                                   </option>
                                 ))}
@@ -777,30 +807,29 @@ const ClientsList = () => {
                             </div>
                           </Col>
                         </Row>
-                        <Row>
-                          <Col>
-                            <div className='text-end'>
-                              <Button
-                                className='btn-rounded'
-                                type='submit'
-                                color='primary w-md'>
-                                Update
-                              </Button>
-                              <Button
-                                style={{ backgroundColor: "#32394e" }}
-                                className='btn-rounded'
-                                color='primary w-md ms-2'
-                                onClick={() => {
-                                  setModal(false);
-                                  validation.resetForm();
-                                }}>
-                                Cancel
-                              </Button>
-                            </div>
-                          </Col>
-                        </Row>
                       </Form>
                     </ModalBody>
+                    <ModalFooter>
+                      <Button
+                        className="btn-rounded"
+                        type="submit"
+                        color="primary w-md"
+                        onClick={() => validation.handleSubmit()}
+                      >
+                        Update
+                      </Button>
+                      <Button
+                        style={{ backgroundColor: "#32394e" }}
+                        className="btn-rounded"
+                        color="primary w-md ms-2"
+                        onClick={() => {
+                          setModal(false);
+                          validation.resetForm();
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </ModalFooter>
                   </Modal>
                 </CardBody>
               </Card>

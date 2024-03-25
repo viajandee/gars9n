@@ -37,7 +37,6 @@ const GoogleMaps = () => {
       console.error(error);
     }
   };
-  // console.log("the store: ", store);
 
   // Effect to fetch store data when 'id' changes
   useEffect(() => {
@@ -65,9 +64,9 @@ const GoogleMaps = () => {
   };
 
   return (
-    <APIProvider apiKey='GOOGLE_MAPS_API_KEY'>
+    <APIProvider apiKey="AIzaSyAelqFKluixvanU-Rwz1P4-bZrePAgLQz4">
       <div style={{ height: "100vh", width: "100%" }}>
-        <Map zoom={17} center={position} mapId='GOOGLE_MAPS_id'>
+        <Map zoom={17} center={position} mapId="e22b8fb5b9022403">
           <AdvancedMarker position={position} onClick={() => setStore(true)}>
             <Pin borderColor={"white"} glyphColor={"white"} />
           </AdvancedMarker>

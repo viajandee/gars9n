@@ -1,12 +1,9 @@
 import SimpleBar from "simplebar-react";
-
 import React, { useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { Link } from "react-router-dom";
-
 import { withTranslation } from "react-i18next";
-
 import MetisMenu from "metismenujs";
 
 const SidebarContent = (props) => {
@@ -60,20 +57,20 @@ const SidebarContent = (props) => {
       const parent2 = parent.parentElement;
 
       if (parent2) {
-        parent2.classList.add("mm-show"); // ul tag
+        parent2.classList.add("mm-show"); 
 
-        const parent3 = parent2.parentElement; // li tag
+        const parent3 = parent2.parentElement; 
 
         if (parent3) {
-          parent3.classList.add("mm-active"); // li
-          parent3.childNodes[0].classList.add("mm-active"); //a
-          const parent4 = parent3.parentElement; // ul
+          parent3.classList.add("mm-active"); 
+          parent3.childNodes[0].classList.add("mm-active"); 
+          const parent4 = parent3.parentElement; 
           if (parent4) {
-            parent4.classList.add("mm-show"); // ul
+            parent4.classList.add("mm-show"); 
             const parent5 = parent4.parentElement;
             if (parent5) {
-              parent5.classList.add("mm-show"); // li
-              parent5.childNodes[0].classList.add("mm-active"); // a tag
+              parent5.classList.add("mm-show");
+              parent5.childNodes[0].classList.add("mm-active"); 
             }
           }
         }
@@ -114,18 +111,12 @@ const SidebarContent = (props) => {
             </li>
 
             <li>
-              <Link to='/menus' className='has-arrow'>
+              {/* <Link to='/menus' className='has-arrow'> */}
+              <Link to='/menu-list' >
                 <i className='bx bx-food-menu'></i>
                 <span>{props.t("Menus")}</span>
               </Link>
-              <ul className='sub-menu'>
-                <li>
-                  <Link to='/all-menus'>{props.t("All Menus")}</Link>
-                </li>
-                <li>
-                  <Link to='/add-menu'>{props.t("Add Menu")}</Link>
-                </li>
-              </ul>
+           
             </li>
             <li className='menu-title'>{props.t("Utilities")} </li>
             <li>
@@ -201,7 +192,7 @@ const SidebarContent = (props) => {
 
 SidebarContent.propTypes = {
   location: PropTypes.object,
-  t: PropTypes.any,
+  t: PropTypes.func, 
 };
 
 export default withRouter(withTranslation()(SidebarContent));

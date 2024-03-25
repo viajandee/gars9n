@@ -35,11 +35,9 @@ const TableContainer = ({
     canPreviousPage,
     canNextPage,
     pageOptions,
-
     gotoPage,
     nextPage,
     previousPage,
-
     state: { pageIndex },
   } = useTable(
     {
@@ -74,16 +72,17 @@ const TableContainer = ({
 
   return (
     <Fragment>
-      <Row className='mb-2'>
+      <Row className="mb-2">
         {isAddOptions && (
-          <Col sm='7'>
-            <div className='text-sm-end'>
+          <Col sm="7">
+            <div className="text-sm-end">
               <Button
-                type='button'
-                color='success'
-                className='btn-rounded  mb-2 me-2'
-                onClick={handleOrderClicks}>
-                <i className='mdi mdi-plus me-1' />
+                type="button"
+                color="primary"
+                className="btn-rounded  mb-2 me-2"
+                onClick={handleOrderClicks}
+              >
+                <i className="mdi mdi-plus me-1" />
                 Add New Order
               </Button>
             </div>
@@ -91,14 +90,15 @@ const TableContainer = ({
         )}
 
         {isAddCustList && (
-          <Col sm='7'>
-            <div className='text-sm-end'>
+          <Col sm="7">
+            <div className="text-sm-end">
               <Button
-                type='button'
-                color='success'
-                className='btn-rounded mb-2 me-2'
-                onClick={handleCustomerClick}>
-                <i className='mdi mdi-plus me-1' />
+                type="button"
+                color="success"
+                className="btn-rounded mb-2 me-2"
+                onClick={handleCustomerClick}
+              >
+                <i className="mdi mdi-plus me-1" />
                 New Customers
               </Button>
             </div>
@@ -106,14 +106,14 @@ const TableContainer = ({
         )}
       </Row>
 
-      <div className='table-responsive react-table'>
+      <div className="table-responsive react-table">
         <Table bordered hover {...getTableProps()} className={className}>
-          <thead className='table-light table-nowrap'>
+          <thead className="table-light table-nowrap">
             {headerGroups.map((headerGroup) => (
               <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
                   <th key={column.id}>
-                    <div className='mb-2' {...column.getSortByToggleProps()}>
+                    <div className="mb-2" {...column.getSortByToggleProps()}>
                       {column.render("Header")}
                       {generateSortingIndicator(column)}
                     </div>
@@ -145,9 +145,9 @@ const TableContainer = ({
         </Table>
       </div>
 
-      <Row className='justify-content-md-center justify-content-center align-items-center'>
-        <Col className='col-md-auto'>
-          <div className='d-flex gap-1'>
+      <Row className="justify-content-md-center justify-content-center align-items-center">
+        <Col className="col-md-auto">
+          <div className="d-flex gap-1">
             <Button
               style={{
                 paddingBottom: "0.5px",
@@ -155,22 +155,23 @@ const TableContainer = ({
                 borderColor: "white",
                 backgroundColor: "#32394e",
               }}
-              color='white'
-              className='btn-rounded'
+              color="white"
+              className="btn-rounded"
               onClick={previousPage}
-              disabled={!canPreviousPage}>
-              <i className='bx bx-left-arrow-alt' />
+              disabled={!canPreviousPage}
+            >
+              <i className="bx bx-left-arrow-alt" />
             </Button>
           </div>
         </Col>
 
-        <Col className='col-md-auto d-none d-md-block '>
+        <Col className="col-md-auto d-none d-md-block ">
           <strong>
             {pageIndex + 1} - {pageOptions.length}
           </strong>
         </Col>
 
-        <Col className='col-md-auto'>
+        <Col className="col-md-auto">
           <div
             min={1}
             max={pageOptions.length}
@@ -179,8 +180,8 @@ const TableContainer = ({
           />
         </Col>
 
-        <Col className='col-md-auto'>
-          <div className='d-flex gap-1'>
+        <Col className="col-md-auto">
+          <div className="d-flex gap-1">
             <Button
               style={{
                 marginLeft: "-25px",
@@ -189,11 +190,12 @@ const TableContainer = ({
                 borderColor: "white",
                 backgroundColor: "#32394e",
               }}
-              color='white'
-              className='btn-rounded'
+              color="white"
+              className="btn-rounded"
               onClick={nextPage}
-              disabled={!canNextPage}>
-              <i className='bx bx-right-arrow-alt' />
+              disabled={!canNextPage}
+            >
+              <i className="bx bx-right-arrow-alt" />
             </Button>
           </div>
         </Col>

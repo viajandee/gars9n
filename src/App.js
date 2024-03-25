@@ -32,6 +32,7 @@ const firebaseConfig = {
 
 initFirebaseBackend(firebaseConfig);
 
+
 const App = (props) => {
   function getLayout() {
     let layoutCls = VerticalLayout;

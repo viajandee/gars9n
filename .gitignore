@@ -28,5 +28,5 @@ package-lock.json
 .eslintcache
 debug.log
 
-# Add the following line
+# Ignore GoogleMaps.js file
 GoogleMaps.js

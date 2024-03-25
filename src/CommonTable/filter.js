@@ -24,7 +24,7 @@ export const DefaultColumnFilter = ({
       onChange={(e) => {
         setFilter(e.target.value || undefined);
       }}
-      placeholder={`Search (${length}) `}
+      placeholder={`Number of Items ${length} `}
     />
   );
 };

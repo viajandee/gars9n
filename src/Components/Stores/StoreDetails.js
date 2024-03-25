@@ -30,7 +30,6 @@ const StoreDetails = () => {
       console.error(error);
     }
   };
-  // console.log("the store: ", store);
 
   // Effect to fetch store data when 'id' changes
   useEffect(() => {
@@ -74,66 +73,83 @@ const StoreDetails = () => {
     );
   };
 
-  // Styles
-  const tdStyle = {
-    textTransform: "capitalize",
-    textAlign: "start",
-    paddingTop: "18px",
-    fontWeight: "bold",
-  };
-
   return (
     <React.Fragment>
-      <div className='page-content'>
+      <div className="page-content">
         <Container fluid>
-          <Breadcrumbs title='Stores Grid' BreadcrumbItem='Store Details' />
+          <Breadcrumbs title="Stores Grid" BreadcrumbItem="Store Details" />
           <Row>
             <Col>
               <Card>
                 <CardBody>
-                  <Table hover>
+                  <Table>
                     <tbody
-                      className='contact-links d-flex'
-                      style={{ justifyContent: "space-between" }}>
+                      className="contact-links d-flex"
+                      style={{ justifyContent: "space-between" }}
+                    >
                       <tr key={store}>
                         <th
-                          className='font-size-20 text-center'
-                          style={{ paddingRight: "3px" }}>
-                          <i className='bx bxs-store' />
-                        </th>
-                        <td style={tdStyle}>{shortName(store.name)}</td>
-                      </tr>
-
-                      <tr>
-                        <th
-                          className='font-size-20 text-center'
-                          style={{ paddingRight: "3px" }}>
-                          <i className='bx bx-map' />
-                        </th>
-                        <td style={tdStyle}>{shortName(store.location)}</td>
-                      </tr>
-
-                      <tr>
-                        <th
-                          className='font-size-20 text-center'
-                          style={{ paddingRight: "3px" }}>
-                          <i className='bx bx-phone' />
-                        </th>
-                        <td style={tdStyle}>{store.phone}</td>
-                      </tr>
-
-                      <tr>
-                        <th
-                          className='font-size-20 text-center'
-                          style={{ paddingRight: "3px" }}>
-                          <i className='bx bx-envelope' />
+                          className="font-size-20 text-center"
+                          style={{ paddingTop: "1%", borderColor: "#2a3042" }}
+                        >
+                          <i className="bx bxs-store" />
                         </th>
                         <td
                           style={{
-                            fontWeight: "bold",
-                            textAlign: "start",
-                            paddingTop: "18px",
-                          }}>
+                            paddingTop: "3%",
+                            borderColor: "#2a3042",
+                            textTransform: "capitalize",
+                          }}
+                        >
+                          {shortName(store.name)}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <th
+                          className="font-size-20 text-center"
+                          style={{
+                            paddingTop: "1%",
+                            borderColor: "#2a3042",
+                          }}
+                        >
+                          <i className="bx bx-map" />
+                        </th>
+                        <td
+                          style={{
+                            paddingTop: "4%",
+                            borderColor: "#2a3042",
+                            textTransform: "capitalize",
+                          }}
+                        >
+                          {shortName(store.location)}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <th
+                          className="font-size-20 text-center"
+                          style={{ paddingTop: "1%", borderColor: "#2a3042" }}
+                        >
+                          <i className="bx bx-phone" />
+                        </th>
+                        <td
+                          style={{ paddingTop: "4%", borderColor: "#2a3042" }}
+                        >
+                          {store.phone}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <th
+                          className="font-size-20 text-center"
+                          style={{ paddingTop: "1%", borderColor: "#2a3042" }}
+                        >
+                          <i className="bx bx-envelope" />
+                        </th>
+                        <td
+                          style={{ paddingTop: "3%", borderColor: "#2a3042" }}
+                        >
                           {shortName(store.email)}
                         </td>
                       </tr>

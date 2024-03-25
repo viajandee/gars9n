@@ -33,11 +33,11 @@ import {
 } from "../../helpers/firebase_helper";
 import { doc } from "firebase/firestore";
 import JumpArrow from "./JumpArrow";
+import spic from "../../assets/images/users/stores.png";
 
 const StoresGrid = () => {
   document.title = "Stores | Gars9n - Digital Menu & Ordering System";
 
-  // State variables
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const [isEdit, setIsEdit] = useState(false);
@@ -46,7 +46,7 @@ const StoresGrid = () => {
   const [stores, setStores] = useState([]);
   const [storeName, setStoreName] = useState("");
   const [branch, setBranch] = useState("");
-  const [location, setLocation] = useState("");
+  // const [location, setLocation] = useState("");
   const [phone, setPhone] = useState([]);
   const [storeEmail, setStoreEmail] = useState("");
   const [clients, setClients] = useState([]);
@@ -55,20 +55,63 @@ const StoresGrid = () => {
   // eslint-disable-next-line no-unused-vars
   const [emailError, setEmailError] = useState("");
 
-  // for firstore
+  // Firestore service
   const storeDataService = new StoreDataService();
   const clientDataService = new ClientDataService();
 
-  // get Clients
-  const getClients = async () => {
-    const data = await clientDataService.getAllClientsFirebase();
-    setClients(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  // Add Store
+  const addStore = async (e) => {
+    e.preventDefault();
+    if (
+      storeName &&
+      // && location
+      phone &&
+      storeEmail &&
+      newName &&
+      branch
+    ) {
+      try {
+        // const { lat, lng } = await storeDataService.geocode(location);
+
+        const newStore = {
+          name: storeName,
+          branch: branch,
+          // location: location,
+          phone: phone,
+          email: storeEmail,
+          // latitude: lat,
+          // longitude: lng,
+          client: newName,
+        };
+        // console.log("Latitude:", lat, "Longitude:", lng);
+
+        await storeDataService.addStoreFirebase(newStore);
+        setReload(true);
+        // console.log("New store added successfully!", newStore);
+      } catch (error) {
+        // console.log("Error adding store:", error);
+        console.error(error);
+      }
+
+      setModalIsOpen(false);
+      setStoreName("");
+      // setLocation("");
+      setPhone([]);
+      setStoreEmail("");
+      setNewName("");
+      setBranch("");
+    }
   };
 
-  useEffect(() => {
-    getClients();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const openModal = () => {
+    setModalIsOpen(true);
+    setStoreName("");
+    // setLocation("");
+    setPhone([]);
+    setStoreEmail("");
+    setNewName("");
+    setBranch("");
+  };
 
   // Update Store
   const validation = useFormik({
@@ -153,6 +196,58 @@ const StoresGrid = () => {
     }
   };
 
+  // Delete store
+  const deleteStore = async (storeId) => {
+    if (storeId) {
+      try {
+        await storeDataService.deleteStoreFirebase(deleteId);
+        getStores();
+        setReload(true);
+        // console.log("store deleted successfully!");
+      } catch (error) {
+        // console.error("Error deleting store", error);
+        console.error(error);
+      }
+    }
+    setDeleteId(null);
+    setDeleteModal(false);
+  };
+
+  const handleDeleteStore = async (id) => {
+    if (id) {
+      setDeleteId(id);
+      setDeleteModal(true);
+    }
+  };
+
+  // Get Stores
+  const getStores = async () => {
+    const data = await storeDataService.getAllStoresFirebase();
+    const stortStores = data.docs
+      .map((doc) => ({ ...doc.data(), id: doc.id }))
+      // .sort((a, b) => a.name.localeCompare(b.name));
+      .sort((a, b) => {
+        const nameA = a.name || "";
+        const nameB = b.name || "";
+        return nameA.localeCompare(nameB);
+      });
+    setStores(stortStores);
+  };
+
+  // Refresh the page by AJAX
+  useEffect(() => {
+    if (reload) {
+      getStores();
+      setReload(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reload]);
+
+  useEffect(() => {
+    getStores();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Get Store
   const getStore = async (id) => {
     try {
@@ -180,90 +275,14 @@ const StoresGrid = () => {
     }
   };
 
-  // Add Store
-  const addStore = async (e) => {
-    e.preventDefault();
-    if (storeName && location && phone && storeEmail && newName && branch) {
-      try {
-        const { lat, lng } = await storeDataService.geocode(location);
-
-        const newStore = {
-          name: storeName,
-          branch: branch,
-          location: location,
-          phone: phone,
-          email: storeEmail,
-          latitude: lat,
-          longitude: lng,
-          client: newName,
-        };
-        // console.log("Latitude:", lat, "Longitude:", lng);
-
-        await storeDataService.addStoreFirebase(newStore);
-        setReload(true);
-        // console.log("New store added successfully!");
-      } catch (error) {
-        // console.log("Error adding store:", error);
-        console.error(error);
-      }
-
-      setModalIsOpen(false);
-      setStoreName("");
-      setLocation("");
-      setPhone([]);
-      setStoreEmail("");
-      setNewName("");
-      setBranch("");
-    }
-  };
-
-  const openModal = () => {
-    setModalIsOpen(true);
-  };
-
-  // Refresh the page by AJAX
-  useEffect(() => {
-    if (reload) {
-      getStores();
-      setReload(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reload]);
-
-  // Delete store
-  const deleteStore = async (storeId) => {
-    if (storeId) {
-      try {
-        await storeDataService.deleteStoreFirebase(deleteId);
-        getStores();
-        setReload(true);
-        // console.log("store deleted successfully!");
-      } catch (error) {
-        // console.error("Error deleting store", error);
-        console.error(error);
-      }
-    }
-    setDeleteId(null);
-    setDeleteModal(false);
-  };
-  const handleDeleteStore = async (id) => {
-    if (id) {
-      setDeleteId(id);
-      setDeleteModal(true);
-    }
-  };
-
-  // Get Stores
-  const getStores = async () => {
-    const data = await storeDataService.getAllStoresFirebase();
-    const stortStores = data.docs
-      .map((doc) => ({ ...doc.data(), id: doc.id }))
-      .sort((a, b) => a.name.localeCompare(b.name));
-    setStores(stortStores);
+  // get Clients
+  const getClients = async () => {
+    const data = await clientDataService.getAllClientsFirebase();
+    setClients(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   };
 
   useEffect(() => {
-    getStores();
+    getClients();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -320,136 +339,141 @@ const StoresGrid = () => {
 
   return (
     <React.Fragment>
-      <div className='page-content'>
+      <div className="page-content">
         <Container fluid>
-          <Breadcrumbs title='Stores' BreadcrumbItem='Stores Grid' />
+          <Breadcrumbs title="Stores" BreadcrumbItem="Stores Grid" />
           <Row>
-            <Col sm='12'>
-              <div className='text-sm-end'>
+            <Col sm="12">
+              <div className="text-sm-end">
                 <Button
-                  color='primary w-md'
-                  className='btn-rounded mb-2 me-2'
-                  onClick={openModal}>
-                  Add New Store
+                  color="primary w-md"
+                  style={{
+                    backgroundColor: "#B79A6D",
+                    borderColor: "#B79A6D",
+                    fontWeight: "bold",
+                  }}
+                  className="btn-rounded mb-4 me-2"
+                  onClick={openModal}
+                >
+                  Add Stores
                 </Button>
               </div>
             </Col>
           </Row>
 
           <Modal isOpen={modalIsOpen} toggle={() => setModalIsOpen(false)}>
-            <ModalHeader toggle={() => setModalIsOpen(false)}>
-              Add Store
-            </ModalHeader>
+            <ModalHeader>Add Stores</ModalHeader>
             <ModalBody>
-              <Label className='form-label'>Store Name</Label>
+              <Label className="form-label">Store Name</Label>
               <span
-                className='required-indicator ms-1'
-                style={{ color: "#dc3545" }}>
+                className="required-indicator ms-1"
+                style={{ color: "#dc3545" }}
+              >
                 *
               </span>
               <Input
-                style={{
-                  textTransform: "capitalize",
-                }}
-                placeholder='Enter Your Store Name'
-                type='text'
+                placeholder="Enter your store name"
+                type="text"
                 value={storeName}
                 onChange={(e) => {
                   const inputValue = e.target.value;
                   const validInput = inputValue.replace(/[^a-zA-Z\s]/g, "");
                   setStoreName(validInput);
                 }}
-                required='required'
-                title='Please enter your store name.'
+                required={true}
+                title="Please enter your store name."
               />
             </ModalBody>
             <ModalBody>
-              <Label className='form-label'>Branch</Label>
+              <Label className="form-label">Branch</Label>
               <span
-                className='required-indicator ms-1'
-                style={{ color: "#dc3545" }}>
+                className="required-indicator ms-1"
+                style={{ color: "#dc3545" }}
+              >
                 *
               </span>
               <Input
-                style={{
-                  textTransform: "capitalize",
-                }}
-                placeholder='Enter Your Branch Name'
-                type='text'
+                placeholder="Enter your branch name"
+                type="text"
                 value={branch}
                 onChange={(e) => setBranch(e.target.value)}
-                required='required'
-                title='Please enter your branch no. or name.'
+                required={true}
+                title="Please enter your branch no. or name."
               />
             </ModalBody>
             <ModalBody>
-              <Label className='form-label'>Store Address</Label>
+              <Label className="form-label">Store Address</Label>
               <span
-                className='required-indicator ms-1'
-                style={{ color: "#dc3545" }}>
+                className="required-indicator ms-1"
+                style={{ color: "#dc3545" }}
+              >
                 *
               </span>
               <Input
-                style={{
-                  textTransform: "capitalize",
-                }}
-                placeholder='Enter Your Store Address'
-                type='text'
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                required='required'
-                title='Please enter only store address.'
+                placeholder="Enter your store address"
+                type="text"
+                // value={location}
+                // onChange={(e) => setLocation(e.target.value)}
+                // required={true}
+                title="Please enter only store address."
               />
             </ModalBody>
             <ModalBody>
-              <Label className='form-label'>Store Phone</Label>
+              <Label className="form-label">Store Phone</Label>
               <span
-                className='required-indicator ms-1'
-                style={{ color: "#dc3545" }}>
+                className="required-indicator ms-1"
+                style={{ color: "#dc3545" }}
+              >
                 *
               </span>
               <Input
-                type='number'
-                placeholder='Enter Your Store Number'
+                type="tel"
+                placeholder="Enter your store number"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                required='required'
-                title='Please enter only store number.'
+                required={true}
+                pattern="\d{1,11}"
+                title="Please enter only store number."
+                min="0"
+                maxLength="11"
               />
             </ModalBody>
             <ModalBody>
-              <Label className='form-label'>Store Email</Label>
+              <Label className="form-label">Store Email</Label>
               <span
-                className='required-indicator ms-1'
-                style={{ color: "#dc3545" }}>
+                className="required-indicator ms-1"
+                style={{ color: "#dc3545" }}
+              >
                 *
               </span>
               <Input
-                type='text'
-                placeholder='Enter Your Store Email'
+                type="text"
+                placeholder="Enter your store email"
                 value={storeEmail}
                 onChange={(e) => setStoreEmail(e.target.value)}
-                required='required'
-                title='Please enter only store email.'
+                required={true}
+                title="Please enter only store email."
                 onBlur={handleEmailBlur}
               />
             </ModalBody>
             <ModalBody>
-              <Label className='form-label'>Client Name</Label>
+              <Label className="form-label">Client Name</Label>
               <span
-                className='required-indicator ms-1'
-                style={{ color: "#dc3545" }}>
+                className="required-indicator ms-1"
+                style={{ color: "#dc3545" }}
+              >
                 *
               </span>
               <Input
-                type='select'
-                className='mb-3'
-                required='required'
-                title='Please select your name.'
+                type="select"
+                className="mb-3"
+                required={true}
+                title="Please select your name."
                 style={{ textTransform: "capitalize" }}
                 value={newName}
-                onChange={(e) => setNewName(e.target.value)}>
-                <option value=''>Choose here</option>
+                onChange={(e) => setNewName(e.target.value)}
+              >
+                <option value="">Choose here</option>
                 {clients.map((doc) => (
                   <option key={doc.id} value={doc.id}>
                     {`${doc.name} - ${doc.title}`}
@@ -459,16 +483,18 @@ const StoresGrid = () => {
             </ModalBody>
             <ModalFooter>
               <Button
-                className='btn-rounded w-md'
-                color='primary'
-                onClick={addStore}>
+                className="btn-rounded w-md"
+                color="primary"
+                onClick={addStore}
+              >
                 Save
               </Button>
               <Button
                 style={{ backgroundColor: "#32394e" }}
-                className='btn-rounded w-md'
-                color='primary'
-                onClick={() => setModalIsOpen(false)}>
+                className="btn-rounded w-md"
+                color="primary"
+                onClick={() => setModalIsOpen(false)}
+              >
                 Cancel
               </Button>
             </ModalFooter>
@@ -478,13 +504,14 @@ const StoresGrid = () => {
           <Modal
             isOpen={deleteModal}
             toggle={() => setDeleteModal(false)}
-            centered={true}>
-            <ModalBody className='py-3 px-5'>
+            centered={true}
+          >
+            <ModalBody className="py-3 px-5">
               <Row>
                 <Col sm={12}>
-                  <div className='text-center'>
+                  <div className="text-center">
                     <i
-                      className='mdi mdi-trash-can-outline'
+                      className="mdi mdi-trash-can-outline"
                       style={{ fontSize: "3em", color: "white" }}
                     />
                     <h4 style={{ fontWeight: "bold" }}>Delete store?</h4>
@@ -496,18 +523,20 @@ const StoresGrid = () => {
               </Row>
               <Row>
                 <Col>
-                  <div className='text-center mt-3'>
+                  <div className="text-center mt-3">
                     <button
-                      type='button'
-                      className='btn btn-danger btn-rounded btn-lg ms-2'
-                      onClick={deleteStore}>
+                      type="button"
+                      className="btn btn-danger btn-rounded btn-lg ms-2"
+                      onClick={deleteStore}
+                    >
                       Yes, I'm sure
                     </button>
                     <button
                       style={{ borderColor: "#007bff" }}
-                      type='button'
-                      className='btn btn-light btn-rounded btn-lg ms-2'
-                      onClick={() => setDeleteModal(false)}>
+                      type="button"
+                      className="btn btn-light btn-rounded btn-lg ms-2"
+                      onClick={() => setDeleteModal(false)}
+                    >
                       No, Cancel
                     </button>
                   </div>
@@ -519,121 +548,132 @@ const StoresGrid = () => {
           <Row>
             {map(stores, (doc) => {
               return (
-                <Col xl='3' sm='6' key={doc.id}>
-                  <Card className='text-center rounded-4'>
+                <Col xl="3" sm="6" key={doc.id}>
+                  <Card className="text-center rounded-4">
                     <CardBody>
-                      {!doc.img ? (
-                        <div className='avatar-sm mx-auto mb-4'>
-                          <span
-                            style={{
-                              textTransform: "uppercase",
-                              paddingTop:"4px"
-                            }}
-                            className={
-                              "avatar-title rounded-circle bg-soft bg-" +
-                              doc.color +
-                              " text-" +
-                              doc.color +
-                              " font-size-16"
-                            }>
-                            {doc.name.charAt(0)}
-                          </span>
-                        </div>
-                      ) : (
-                        <div className='mb-4'>
+                      <div className="avatar-sm mx-auto mb-4">
+                        <span
+                          style={{
+                            textTransform: "uppercase",
+                            paddingTop: "4px",
+                          }}
+                          className={
+                            "avatar-title rounded-circle bg-soft bg-" +
+                            doc.color +
+                            " text-" +
+                            doc.color +
+                            " font-size-16"
+                          }
+                        >
                           <img
-                            className='rounded-circle avatar-sm'
-                            src={doc.img}
-                            alt=''
+                            className="rounded-circle avatar-sm"
+                            src={spic}
+                            alt=""
                           />
-                        </div>
-                      )}
+                        </span>
+                      </div>
 
                       <div>
                         <Label
-                          className='font-size-15 text-white mb-1'
+                          className="font-size-15 text-white mb-1"
                           style={{
-                            textTransform: "uppercase",
-                          }}>
+                            textTransform: "capitalize",
+                            fontWeight: "bold",
+                          }}
+                        >
                           {shortName(doc.name)}
                         </Label>
                       </div>
 
                       <div>
                         <h6
-                          className='font-size-14 mb-1'
+                          className="font-size-14 mb-1"
                           style={{
                             textTransform: "capitalize",
-                          }}>
+                          }}
+                        >
                           {shortName(doc.branch)}
                         </h6>
                       </div>
                     </CardBody>
 
-                    <CardFooter className='bg-transparent border-top'>
-                      <div className='contact-links d-flex font-size-20'>
-                        <div className='flex-fill'>
+                    <CardFooter className="bg-transparent border-top">
+                      <div className="contact-links d-flex font-size-20">
+                        <div className="flex-fill">
                           <Link
                             to={`/stores-grid/account-info/${doc.id}?c=${doc.client}`}
-                            id={`detail${doc.id}`}>
-                            <i className='bx bxs-user-detail' />
+                            id={`detail${doc.id}`}
+                          >
+                            <i className="bx bxs-user-detail" />
                             <UncontrolledTooltip
                               onClick={() =>
                                 getStore(
                                   `/stores-grid/account-info/${doc.id}?c=${doc.client}`
                                 )
                               }
-                              placement='top'
-                              target={`detail${doc.id}`}>
+                              placement="top"
+                              target={`detail${doc.id}`}
+                            >
                               Account Info
                             </UncontrolledTooltip>
                           </Link>
                         </div>
 
-                        <div className='flex-fill'>
+                        <div className="flex-fill">
                           <Link
                             to={"/stores-grid/store-details/" + doc.id}
-                            id={"profile" + doc.id}>
-                            <i className='bx bx-store' />
+                            id={"profile" + doc.id}
+                          >
+                            <i className="bx bx-store" />
                             <UncontrolledTooltip
                               onClick={() =>
                                 getStore(`/stores-grid/store-details/${doc.id}`)
                               }
-                              placement='top'
-                              target={"profile" + doc.id}>
+                              placement="top"
+                              target={"profile" + doc.id}
+                            >
                               Store Details
                             </UncontrolledTooltip>
                           </Link>
                         </div>
 
-                        <div className='flex-fill'>
-                          <Link to='#' id={"menu" + doc.id}>
-                            <i className='bx bx-food-menu' />
+                        <div className="flex-fill">
+                          <Link
+                            to={"/stores-grid/store-menu/" + doc.id}
+                            id={"menu" + doc.id}
+                          >
+                            <i className="bx bx-food-menu" />
                             <UncontrolledTooltip
-                              placement='top'
-                              target={"menu" + doc.id}>
+                              onClick={() =>
+                                getStore("/stores-grid/store-menu/" + doc.id)
+                              }
+                              placement="top"
+                              target={"menu" + doc.id}
+                            >
                               Store Menu
                             </UncontrolledTooltip>
                           </Link>
                         </div>
 
                         {/* EDIT & DELETE */}
-                        <div className='flex-fill'>
+                        <div className="flex-fill">
                           <UncontrolledDropdown>
                             <DropdownToggle
-                              href='#'
-                              className='card-drop'
-                              tag='i'>
-                              <i className='mdi mdi-dots-horizontal font-size-18' />
+                              href="#"
+                              className="card-drop"
+                              tag="i"
+                            >
+                              <i className="mdi mdi-dots-horizontal font-size-18" />
                             </DropdownToggle>
-                            <DropdownMenu className='dropdown-menu-end'>
-                              <DropdownItem onClick={(e) => getStore(doc.id)}>
-                                <i className='mdi mdi-pencil font-size-16 text-success me-1' />{" "}
+                            <DropdownMenu className="dropdown-menu-end">
+                              <DropdownItem onClick={() => getStore(doc.id)}>
+                                <i className="mdi mdi-pencil font-size-16 text-success me-1" />{" "}
                                 Edit
                               </DropdownItem>
                               <DropdownItem
-                                onClick={(e) => handleDeleteStore(doc.id)}>
-                                <i className='mdi mdi-trash-can font-size-16 text-danger me-1' />{" "}
+                                onClick={() => handleDeleteStore(doc.id)}
+                              >
+                                <i className="mdi mdi-trash-can font-size-16 text-danger me-1" />{" "}
                                 Delete
                               </DropdownItem>
                             </DropdownMenu>
@@ -648,25 +688,25 @@ const StoresGrid = () => {
           </Row>
 
           <Modal isOpen={modal} toggle={() => setModal(false)}>
-            <ModalHeader toggle={() => setModal(false)}>
-              {isEdit ? "Edit Store" : "Add Store"}
-            </ModalHeader>
+            {/* <ModalHeader>{isEdit ? "Edit Store" : "Add Store"}</ModalHeader> */}
+            <ModalHeader>Edit Store</ModalHeader>
             <ModalBody>
               <Form
                 onSubmit={(e) => {
                   e.preventDefault();
                   validation.handleSubmit();
                   return false;
-                }}>
+                }}
+              >
                 <Row form>
-                  <Col className='col-12'>
-                    <div className='mb-3'>
-                      <Label className='form-label'>Store Name</Label>
+                  <Col className="col-12">
+                    <div className="mb-3">
+                      <Label className="form-label">Store Name</Label>
                       <Input
-                        id='name'
+                        id="name"
                         style={{ textTransform: "capitalize" }}
-                        name='name'
-                        type='text'
+                        name="name"
+                        type="text"
                         onChange={validation.handleChange}
                         onBlur={validation.handleBlur}
                         value={validation.values.name}
@@ -677,19 +717,18 @@ const StoresGrid = () => {
                         }
                       />
                       {validation.touched.name && validation.errors.name ? (
-                        <FormFeedback type='invalid'>
+                        <FormFeedback type="invalid">
                           {validation.errors.name}
                         </FormFeedback>
                       ) : null}
                     </div>
-
-                    <div className='mb-3'>
-                      <Label className='form-label'>Branch</Label>
+                    <div className="mb-3">
+                      <Label className="form-label">Branch</Label>
                       <Input
-                        id='branch'
+                        id="branch"
                         style={{ textTransform: "capitalize" }}
-                        name='branch'
-                        type='text'
+                        name="branch"
+                        type="text"
                         onChange={validation.handleChange}
                         onBlur={validation.handleBlur}
                         value={validation.values.branch}
@@ -700,18 +739,18 @@ const StoresGrid = () => {
                         }
                       />
                       {validation.touched.branch && validation.errors.branch ? (
-                        <FormFeedback type='invalid'>
+                        <FormFeedback type="invalid">
                           {validation.errors.branch}
                         </FormFeedback>
                       ) : null}
                     </div>
 
-                    <div className='mb-3'>
-                      <Label className='form-label'>Store Address</Label>
+                    <div className="mb-3">
+                      <Label className="form-label">Store Address</Label>
                       <Input
-                        name='location'
+                        name="location"
                         style={{ textTransform: "capitalize" }}
-                        type='text'
+                        type="text"
                         onChange={validation.handleChange}
                         onBlur={validation.handleBlur}
                         value={validation.values.location}
@@ -724,17 +763,21 @@ const StoresGrid = () => {
                       />
                       {validation.touched.location &&
                       validation.errors.location ? (
-                        <FormFeedback type='invalid'>
+                        <FormFeedback type="invalid">
                           {validation.errors.location}
                         </FormFeedback>
                       ) : null}
                     </div>
 
-                    <div className='mb-3'>
-                      <Label className='form-label'>Store Phone</Label>
+                    <div className="mb-3">
+                      <Label className="form-label">Store Phone</Label>
                       <Input
-                        name='phone'
-                        label='Phone'
+                        name="phone"
+                        label="Phone"
+                        min="0"
+                        maxLength="11"
+                        pattern="\d{1,11}"
+                        type="tel"
                         onChange={validation.handleChange}
                         onBlur={validation.handleBlur}
                         value={validation.values.phone || ""}
@@ -745,17 +788,17 @@ const StoresGrid = () => {
                         }
                       />
                       {validation.touched.phone && validation.errors.phone ? (
-                        <FormFeedback type='invalid'>
+                        <FormFeedback type="invalid">
                           {validation.errors.phone}
                         </FormFeedback>
                       ) : null}
                     </div>
 
-                    <div className='mb-3'>
-                      <Label className='form-label'>Store Email</Label>
+                    <div className="mb-3">
+                      <Label className="form-label">Store Email</Label>
                       <Input
-                        name='email'
-                        type='text'
+                        name="email"
+                        type="text"
                         onChange={validation.handleChange}
                         onBlur={validation.handleBlur}
                         value={validation.values.email}
@@ -767,17 +810,18 @@ const StoresGrid = () => {
                       />
                       {validation.touched.email && validation.errors.email}
                     </div>
-                    <div className='mb-3'>
-                      <Label className='form-label'>Client Name</Label>
+                    <div className="mb-3">
+                      <Label className="form-label">Client Name</Label>
                       <Input
-                        required='required'
+                        required={true}
                         style={{ textTransform: "capitalize" }}
-                        name='store'
-                        label='select'
-                        type='select'
+                        name="store"
+                        label="select"
+                        type="select"
                         onChange={(e) => setNewName(e.target.value)}
-                        value={newName}>
-                        <option value=''>Choose here</option>
+                        value={newName}
+                      >
+                        <option value="">Choose here</option>
                         {clients.map((doc) => (
                           <option key={doc.id} value={doc.id}>
                             {`${doc.name} - ${doc.title}`}
@@ -787,35 +831,35 @@ const StoresGrid = () => {
                     </div>
                   </Col>
                 </Row>
-                <Row>
-                  <Col>
-                    <div className='text-end'>
-                      <Button
-                        className='btn-rounded'
-                        type='submit'
-                        color='primary w-md'>
-                        Update
-                      </Button>
-                      <Button
-                        style={{ backgroundColor: "#32394e" }}
-                        className='btn-rounded'
-                        color='primary w-md ms-2'
-                        onClick={() => {
-                          setModal(false);
-                          validation.resetForm();
-                        }}>
-                        Cancel
-                      </Button>
-                    </div>
-                  </Col>
-                </Row>
               </Form>
             </ModalBody>
+            <ModalFooter>
+              <Button
+                className="btn-rounded w-md"
+                type="submit"
+                color="primary"
+                onClick={() => validation.handleSubmit()}
+              >
+                Update
+              </Button>
+              <Button
+                style={{ backgroundColor: "#32394e" }}
+                className="btn-rounded"
+                color="primary w-md ms-2"
+                onClick={() => {
+                  setModal(false);
+                  validation.resetForm();
+                }}
+              >
+                Cancel
+              </Button>
+            </ModalFooter>
           </Modal>
 
+          {/* Jump Up */}
           <Row>
             <Col>
-              <div className='text-center my-4'>
+              <div className="text-center my-4">
                 <JumpArrow />
               </div>
             </Col>
